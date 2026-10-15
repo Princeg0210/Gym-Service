@@ -17,7 +17,6 @@ import {
   Award
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -234,22 +233,20 @@ export function ClubShowcase({
                   size="lg"
                   variant="outline"
                   onClick={() => onSwitchMode('operations')}
-                  className="rounded-full px-5 text-xs font-bold uppercase tracking-wider border-[#ccff00]/40 text-[#ccff00] hover:bg-[#ccff00] hover:text-black hover:border-[#ccff00]"
+                  className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
                 >
-                  <ShieldCheck className="h-4 w-4" />
+                  <ShieldCheck className="h-4 w-4 text-[#ccff00]" />
                   <span>Admin Portal</span>
-                  <Badge variant="default" className="text-[10px] py-0 px-1.5 font-mono">/admin</Badge>
                 </Button>
 
                 <Button
                   size="lg"
                   variant="secondary"
                   onClick={() => onSwitchMode('member_portal')}
-                  className="rounded-full px-5 text-xs font-bold uppercase tracking-wider"
+                  className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
                 >
                   <Users className="h-4 w-4 text-[#ccff00]" />
                   <span>Member Portal</span>
-                  <Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-mono text-zinc-400">/member</Badge>
                 </Button>
               </motion.div>
 
