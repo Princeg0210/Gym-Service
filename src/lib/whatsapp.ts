@@ -1,4 +1,4 @@
-import { Member, PaymentRecord } from '@/types';
+import { Member, PaymentRecord, ExpiringAlertItem } from '@/types';
 
 export const GYM_DEFAULT_INFO = {
   name: 'GymPRO Fitness Club',
@@ -42,8 +42,8 @@ Thank you for training with us! Keep crushing your goals. 💪`;
 
 export function generateWhatsAppDuesReminder(
   member: Member,
-  gymName = 'Alpha Fitness Gym',
-  upiVpa = 'alphafitness@okhdfcbank'
+  gymName = GYM_DEFAULT_INFO.name,
+  upiVpa = GYM_DEFAULT_INFO.upiVpa
 ): string {
   return `*FEE RENEWAL REMINDER — ${gymName.toUpperCase()}* ⚠️
 
@@ -98,3 +98,134 @@ Let's achieve greatness together! 💥`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
+
+export function generateExpiringSoonWhatsAppUrl(
+  member: Member,
+  daysLeft: number,
+  gymName = GYM_DEFAULT_INFO.name,
+  upiVpa = GYM_DEFAULT_INFO.upiVpa
+): string {
+  const urgencyText = daysLeft === 0
+    ? 'expires *TODAY*'
+    : daysLeft === 1
+      ? 'expires *TOMORROW*'
+      : `expires in *${daysLeft} days* (on ${member.endDate})`;
+
+  const message = `*MEMBERSHIP EXPIRY NOTICE — ${gymName.toUpperCase()}* ⏳
+
+Namaste *${member.fullName}*,
+Your gym membership ${urgencyText}!
+
+• *Current Plan:* ${member.planName}
+• *Valid Until:* ${member.endDate}
+• *Renewal Offer:* Renew today at the desk or via UPI to lock in your active member rate with 0 re-joining fee!
+
+💳 *Instant Renewal UPI:* \`${upiVpa}\`
+Or speak with our front desk team during your next session.
+
+Don't break your workout streak — let's keep the momentum going! 💪🔥`;
+
+  return getWhatsAppWebLink(member.phone, message);
+}
+
+export function generateExpiredMembershipWhatsAppUrl(
+  member: Member,
+  gymName = GYM_DEFAULT_INFO.name,
+  upiVpa = GYM_DEFAULT_INFO.upiVpa
+): string {
+  const message = `*MEMBERSHIP EXPIRED — WE MISS YOU AT ${gymName.toUpperCase()}* 🏋️‍♂️
+
+Namaste *${member.fullName}*,
+Your membership for *${member.planName}* has expired.
+
+We'd love to welcome you back on the floor!
+• *Special Comeback Benefit:* 10% discount on 3-month or 6-month plans this week.
+• *Zero Registration Fee* on immediate renewal.
+
+💳 *Pay via UPI:* \`${upiVpa}\`
+Or drop by the gym today for your next workout!
+
+Best regards,
+${gymName} Team`;
+
+  return getWhatsAppWebLink(member.phone, message);
+}
+
+export function calculateDaysRemaining(endDateStr: string): number {
+  try {
+    const end = new Date(endDateStr);
+    const now = new Date();
+    // Normalize to date-only without time
+    const endUtc = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+    const nowUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffMs = endUtc - nowUtc;
+    return Math.round(diffMs / (1000 * 60 * 60 * 24));
+  } catch {
+    return 0;
+  }
+}
+
+export function buildExpiringAlerts(
+  members: Member[],
+  gymName = GYM_DEFAULT_INFO.name,
+  upiVpa = GYM_DEFAULT_INFO.upiVpa
+): ExpiringAlertItem[] {
+  const alerts: ExpiringAlertItem[] = [];
+
+  for (const m of members) {
+    const days = calculateDaysRemaining(m.endDate);
+
+    if (days < 0 || m.status === 'expired') {
+      alerts.push({
+        member: m,
+        daysRemaining: days,
+        urgency: 'expired',
+        suggestedAction: 'Send Comeback Discount (Expired)',
+        whatsappUrl: generateExpiredMembershipWhatsAppUrl(m, gymName, upiVpa)
+      });
+    } else if (days === 0) {
+      alerts.push({
+        member: m,
+        daysRemaining: 0,
+        urgency: 'today',
+        suggestedAction: 'Expires Today — Send Last Chance Alert',
+        whatsappUrl: generateExpiringSoonWhatsAppUrl(m, 0, gymName, upiVpa)
+      });
+    } else if (days >= 1 && days <= 3) {
+      alerts.push({
+        member: m,
+        daysRemaining: days,
+        urgency: 'urgent',
+        suggestedAction: `Expires in ${days} days — Send Urgent Renewal`,
+        whatsappUrl: generateExpiringSoonWhatsAppUrl(m, days, gymName, upiVpa)
+      });
+    } else if (days >= 4 && days <= 7) {
+      alerts.push({
+        member: m,
+        daysRemaining: days,
+        urgency: 'upcoming',
+        suggestedAction: `Expires in ${days} days — Send Friendly Reminder`,
+        whatsappUrl: generateExpiringSoonWhatsAppUrl(m, days, gymName, upiVpa)
+      });
+    } else if (m.pendingDueInr > 0 && m.status === 'defaulter') {
+      alerts.push({
+        member: m,
+        daysRemaining: days,
+        urgency: 'urgent',
+        suggestedAction: `Pending dues ₹${m.pendingDueInr} — Send Fee Notice`,
+        whatsappUrl: generateDuesReminderWhatsAppUrl(m, gymName, upiVpa)
+      });
+    }
+  }
+
+  // Sort: today > urgent > upcoming > expired
+  const priorityMap: Record<ExpiringAlertItem['urgency'], number> = {
+    today: 0,
+    urgent: 1,
+    upcoming: 2,
+    expired: 3
+  };
+
+  return alerts.sort((a, b) => priorityMap[a.urgency] - priorityMap[b.urgency]);
+}
+

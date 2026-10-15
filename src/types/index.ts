@@ -126,3 +126,32 @@ export interface DietPlan {
   meals: DietMeal[];
   tips: string[];
 }
+
+export interface ExpiringAlertItem {
+  member: Member;
+  daysRemaining: number;
+  urgency: 'expired' | 'today' | 'urgent' | 'upcoming';
+  suggestedAction: string;
+  whatsappUrl: string;
+  lastSentAt?: string;
+}
+
+export interface FinancialAnalytics {
+  totalMembers: number;
+  activeMembers: number;
+  expiredMembers: number;
+  defaulterMembers: number;
+  retentionRate: number;
+  churnRate: number;
+  totalRevenueInr: number;
+  totalPendingDuesInr: number;
+  projectedRenewalInr: number;
+  monthlyRunRateInr: number;
+  paymentMethods: {
+    cash: number;
+    upi: number;
+    card: number;
+    other: number;
+  };
+  duesRecoveryRate: number;
+}

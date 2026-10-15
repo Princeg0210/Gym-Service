@@ -32,7 +32,8 @@ import {
   ChevronRight,
   QrCode,
   UserPlus,
-  Home
+  Home,
+  MessageSquare
 } from 'lucide-react';
 import { AttendanceTab } from './operations/AttendanceTab';
 import { DuesTab } from './operations/DuesTab';
@@ -43,6 +44,8 @@ import { WorkoutsTab } from './operations/WorkoutsTab';
 import { DietTab } from './operations/DietTab';
 import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
 import { CheckInBanner } from './CheckInBanner';
+import { ExpiringAlertsCenter } from './ExpiringAlertsCenter';
+import { BusinessIntelligenceReports } from './BusinessIntelligenceReports';
 import { RecordPaymentModal } from './modals/RecordPaymentModal';
 import { AddMemberModal } from './modals/AddMemberModal';
 import { MemberDetailsModal } from './modals/MemberDetailsModal';
@@ -55,6 +58,7 @@ export type SidebarTab =
   | 'members'
   | 'attendance'
   | 'dues'
+  | 'renewal_bot'
   | 'plans'
   | 'leads'
   | 'workouts'
@@ -425,6 +429,29 @@ export function OperationsDashboard({
             </button>
 
             <button
+              onClick={() => setActiveTab('renewal_bot')}
+              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'renewal_bot'
+                  ? 'bg-[#ccff00] text-black shadow-md'
+                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <MessageSquare className="h-4 w-4 shrink-0" />
+                <span>Renewal Bot</span>
+              </div>
+              <span
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full ${
+                  activeTab === 'renewal_bot'
+                    ? 'bg-black text-[#ccff00]'
+                    : 'bg-[#25d366]/20 text-[#25d366] border border-[#25d366]/30'
+                }`}
+              >
+                AUTO
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('plans')}
               className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'plans'
                   ? 'bg-[#ccff00] text-black shadow-md'
@@ -765,30 +792,18 @@ export function OperationsDashboard({
             </div>
           )}
 
+          {activeTab === 'renewal_bot' && (
+            <ExpiringAlertsCenter
+              members={members}
+              onRefreshData={() => window.location.reload()}
+            />
+          )}
+
           {activeTab === 'reports' && (
-            <div className="space-y-6">
-              <div className="border-b border-[#1b2333] pb-4">
-                <h2 className="text-xl font-black text-white">Business Intelligence & Reports</h2>
-                <p className="text-xs text-zinc-400">Revenue collections, attendance trends, and member retention</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5">
-                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">Monthly Collections</p>
-                  <p className="mt-2 font-mono text-3xl font-black text-emerald-400">₹2,48,600</p>
-                  <p className="mt-1 text-xs text-zinc-400">Cash: 42% • UPI: 38% • Card: 12%</p>
-                </div>
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5">
-                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">Active Membership Rate</p>
-                  <p className="mt-2 font-mono text-3xl font-black text-[#ccff00]">88.4%</p>
-                  <p className="mt-1 text-xs text-zinc-400">Based on 142 total registered lifters</p>
-                </div>
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5">
-                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">Dues Outstanding</p>
-                  <p className="mt-2 font-mono text-3xl font-black text-red-400">₹14,000</p>
-                  <p className="mt-1 text-xs text-zinc-400">Across 3 flagged defaulter accounts</p>
-                </div>
-              </div>
-            </div>
+            <BusinessIntelligenceReports
+              members={members}
+              payments={payments}
+            />
           )}
 
           {activeTab === 'staff' && (
