@@ -1,0 +1,128 @@
+export type EquipmentTier = 'tier_a' | 'tier_b' | 'tier_c';
+
+export type FitnessGoal = 'muscle_gain' | 'fat_loss' | 'strength' | 'general_fitness';
+
+export type DietaryPreference = 'vegetarian' | 'eggetarian' | 'non_veg';
+
+export type MemberStatus = 'active' | 'expired' | 'defaulter' | 'trial';
+
+export interface Member {
+  id: string;
+  fullName: string;
+  phone: string;
+  gender: 'male' | 'female' | 'other';
+  age: number;
+  planId: string;
+  planName: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  totalFeeInr: number;
+  paidAmountInr: number;
+  pendingDueInr: number;
+  status: MemberStatus;
+  emergencyContact?: string;
+  fitnessGoal: FitnessGoal;
+  dietaryPreference: DietaryPreference;
+  avatarSeed: string;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  memberId: string;
+  memberName: string;
+  phone: string;
+  checkInTime: string; // ISO string
+  checkInMethod: 'phone_search' | 'qr_scan';
+  planStatus: MemberStatus;
+  pendingDueInr: number;
+}
+
+export interface PaymentRecord {
+  id: string;
+  memberId: string;
+  memberName: string;
+  amountInr: number;
+  paymentMode: 'cash' | 'upi' | 'card' | 'netbanking' | 'other';
+  transactionRef: string;
+  timestamp: string;
+}
+
+export interface EquipmentItem {
+  id: string;
+  name: string;
+  category: 'strength_machine' | 'free_weights' | 'cardio' | 'cable_station';
+  tier: EquipmentTier;
+  status: 'operational' | 'needs_service' | 'out_of_order';
+  lastServicedDate: string;
+  nextServiceDueDate: string;
+  notes?: string;
+}
+
+export interface LeadItem {
+  id: string;
+  fullName: string;
+  phone: string;
+  goal: FitnessGoal;
+  inquiryDate: string;
+  trialStatus: 'trial_booked' | 'trial_completed' | 'follow_up' | 'converted';
+  nextFollowUpDate: string;
+  notes: string;
+}
+
+export interface Exercise {
+  id: string;
+  name: string;
+  targetMuscle: 'chest' | 'back' | 'quads' | 'hamstrings' | 'deltoids' | 'biceps' | 'triceps' | 'core';
+  movementPattern: 'horizontal_push' | 'vertical_pull' | 'horizontal_pull' | 'squat' | 'hinge' | 'vertical_push' | 'isolation';
+  equipmentTier: EquipmentTier;
+  equipmentRequired: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  cues: string[];
+  alternativeExerciseId?: string;
+}
+
+export interface WorkoutSet {
+  setNumber: number;
+  weightKg: number;
+  targetReps: number;
+  completedReps?: number;
+  completed: boolean;
+  rpe?: number;
+}
+
+export interface WorkoutExerciseItem {
+  exerciseId: string;
+  exercise: Exercise;
+  sets: WorkoutSet[];
+  restSeconds: number;
+}
+
+export interface WorkoutRoutine {
+  id: string;
+  title: string;
+  splitType: 'full_body' | 'push' | 'pull' | 'legs' | 'upper' | 'lower';
+  goal: FitnessGoal;
+  experienceLevel: 'beginner' | 'intermediate' | 'advanced';
+  exercises: WorkoutExerciseItem[];
+  isAiGenerated?: boolean;
+}
+
+export interface DietMeal {
+  mealName: string;
+  timeOfDay: string;
+  items: string[];
+  approxProteinGrams: number;
+  approxCalories: number;
+}
+
+export interface DietPlan {
+  id: string;
+  title: string;
+  preference: DietaryPreference;
+  dailyCalories: number;
+  proteinGrams: number;
+  carbsGrams: number;
+  fatsGrams: number;
+  meals: DietMeal[];
+  tips: string[];
+}

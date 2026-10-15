@@ -1,0 +1,221 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import {
+  Member,
+  AttendanceRecord,
+  PaymentRecord,
+  EquipmentItem,
+  LeadItem,
+  WorkoutRoutine,
+  Exercise
+} from '@/types';
+import { AppStorage } from '@/lib/storage';
+
+export function useGymData() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [attendanceLogs, setAttendanceLogs] = useState<AttendanceRecord[]>([]);
+  const [payments, setPayments] = useState<PaymentRecord[]>([]);
+  const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>([]);
+  const [leads, setLeads] = useState<LeadItem[]>([]);
+  const [routines, setRoutines] = useState<WorkoutRoutine[]>([]);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [checkedInBannerMember, setCheckedInBannerMember] = useState<Member | null>(null);
+
+  // Load from local storage cache first, then sync with Neon PostgreSQL backend
+  useEffect(() => {
+    setMembers(AppStorage.getMembers());
+    setAttendanceLogs(AppStorage.getAttendance());
+    setPayments(AppStorage.getPayments());
+    setEquipmentList(AppStorage.getEquipment());
+    setLeads(AppStorage.getLeads());
+    setRoutines(AppStorage.getRoutines());
+    setExercises(AppStorage.getExercises());
+    setIsLoaded(true);
+
+    async function syncFromBackend() {
+      try {
+        const [mRes, aRes, pRes, eRes, lRes] = await Promise.all([
+          fetch('/api/members').then((r) => r.json()).catch(() => null),
+          fetch('/api/attendance').then((r) => r.json()).catch(() => null),
+          fetch('/api/payments').then((r) => r.json()).catch(() => null),
+          fetch('/api/equipment').then((r) => r.json()).catch(() => null),
+          fetch('/api/leads').then((r) => r.json()).catch(() => null)
+        ]);
+
+        if (mRes?.success && Array.isArray(mRes.data) && mRes.data.length > 0) {
+          setMembers(mRes.data);
+          AppStorage.saveMembers(mRes.data);
+        }
+        if (aRes?.success && Array.isArray(aRes.data)) {
+          setAttendanceLogs(aRes.data);
+          AppStorage.saveAttendance(aRes.data);
+        }
+        if (pRes?.success && Array.isArray(pRes.data)) {
+          setPayments(pRes.data);
+          AppStorage.savePayments(pRes.data);
+        }
+        if (eRes?.success && Array.isArray(eRes.data)) {
+          setEquipmentList(eRes.data);
+          AppStorage.saveEquipment(eRes.data);
+        }
+        if (lRes?.success && Array.isArray(lRes.data)) {
+          setLeads(lRes.data);
+          AppStorage.saveLeads(lRes.data);
+        }
+      } catch (err) {
+        console.warn('Backend sync failed, continuing with cached storage:', err);
+      }
+    }
+
+    syncFromBackend();
+  }, []);
+
+  const handleCheckInMember = useCallback(async (member: Member, method: 'phone_search' | 'qr_scan') => {
+    const newLog: AttendanceRecord = {
+      id: `att-${Date.now()}`,
+      memberId: member.id,
+      memberName: member.fullName,
+      phone: member.phone,
+      checkInTime: new Date().toISOString(),
+      checkInMethod: method,
+      planStatus: member.status,
+      pendingDueInr: member.pendingDueInr
+    };
+
+    setAttendanceLogs((prev) => {
+      const updated = [newLog, ...prev];
+      AppStorage.saveAttendance(updated);
+      return updated;
+    });
+    setCheckedInBannerMember(member);
+
+    try {
+      await fetch('/api/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newLog)
+      });
+    } catch (e) {
+      console.error('Failed to persist attendance to backend:', e);
+    }
+  }, []);
+
+  const handlePaymentSuccess = useCallback(async (newPayment: PaymentRecord, updatedMember: Member) => {
+    setPayments((prev) => {
+      const updated = [newPayment, ...prev];
+      AppStorage.savePayments(updated);
+      return updated;
+    });
+
+    setMembers((prev) => {
+      const updated = prev.map((m) => (m.id === updatedMember.id ? updatedMember : m));
+      AppStorage.saveMembers(updated);
+      return updated;
+    });
+
+    setCheckedInBannerMember((prev) => (prev?.id === updatedMember.id ? updatedMember : prev));
+
+    try {
+      await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPayment)
+      });
+    } catch (e) {
+      console.error('Failed to persist payment to backend:', e);
+    }
+  }, []);
+
+  const handleMemberCreated = useCallback(async (newMember: Member, initialPayment?: PaymentRecord) => {
+    setMembers((prev) => {
+      const updated = [newMember, ...prev];
+      AppStorage.saveMembers(updated);
+      return updated;
+    });
+
+    if (initialPayment) {
+      setPayments((prev) => {
+        const updated = [initialPayment, ...prev];
+        AppStorage.savePayments(updated);
+        return updated;
+      });
+    }
+
+    setCheckedInBannerMember(newMember);
+
+    try {
+      await fetch('/api/members', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMember)
+      });
+
+      if (initialPayment) {
+        await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(initialPayment)
+        });
+      }
+    } catch (e) {
+      console.error('Failed to persist member to backend:', e);
+    }
+  }, []);
+
+  const handleToggleEquipmentStatus = useCallback(async (id: string, newStatus: EquipmentItem['status']) => {
+    setEquipmentList((prev) => {
+      const updated = prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e));
+      AppStorage.saveEquipment(updated);
+      return updated;
+    });
+
+    try {
+      await fetch('/api/equipment', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+    } catch (e) {
+      console.error('Failed to persist equipment to backend:', e);
+    }
+  }, []);
+
+  const handleUpdateRoutines = useCallback((newRoutines: WorkoutRoutine[]) => {
+    setRoutines(newRoutines);
+    AppStorage.saveRoutines(newRoutines);
+  }, []);
+
+  const handleResetData = useCallback(() => {
+    if (confirm('Reset all gym members, dues, and logs to initial sample data?')) {
+      AppStorage.resetAll();
+      setMembers(AppStorage.getMembers());
+      setAttendanceLogs(AppStorage.getAttendance());
+      setPayments(AppStorage.getPayments());
+      setEquipmentList(AppStorage.getEquipment());
+      setLeads(AppStorage.getLeads());
+      setRoutines(AppStorage.getRoutines());
+      setCheckedInBannerMember(null);
+    }
+  }, []);
+
+  return {
+    isLoaded,
+    members,
+    attendanceLogs,
+    payments,
+    equipmentList,
+    leads,
+    routines,
+    exercises,
+    checkedInBannerMember,
+    setCheckedInBannerMember,
+    handleCheckInMember,
+    handlePaymentSuccess,
+    handleMemberCreated,
+    handleToggleEquipmentStatus,
+    handleUpdateRoutines,
+    handleResetData
+  };
+}
