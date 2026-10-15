@@ -14,6 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import type { Metadata } from 'next';
+import { PortalLoadingProvider } from '@/components/PortalLoadingScreen';
 
 export const metadata: Metadata = {
   title: 'GymPRO India — Commercial Gym Engine & Athlete Arena',
@@ -32,7 +33,9 @@ export default function RootLayout({
       className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#060709] text-zinc-100">
-        {children}
+        <PortalLoadingProvider>
+          {children}
+        </PortalLoadingProvider>
       </body>
     </html>
   );

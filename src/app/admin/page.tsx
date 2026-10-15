@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { OperationsDashboard } from '@/components/OperationsDashboard';
 import { AdminAuthGuard } from '@/components/AdminAuthGuard';
 import { useGymData } from '@/lib/useGymData';
+import { usePortalLoading } from '@/components/PortalLoadingScreen';
 
 export default function AdminPage() {
-  const router = useRouter();
+  const { openPortal } = usePortalLoading();
   const {
     isLoaded,
     members,
@@ -54,8 +54,8 @@ export default function AdminPage() {
         onUpdateRoutines={handleUpdateRoutines}
         checkedInBannerMember={checkedInBannerMember}
         onDismissBanner={() => setCheckedInBannerMember(null)}
-        onSwitchToShowcase={() => router.push('/')}
-        onSwitchToMemberPortal={() => router.push('/member')}
+        onSwitchToShowcase={() => openPortal('/')}
+        onSwitchToMemberPortal={() => openPortal('/member')}
       />
     </AdminAuthGuard>
   );

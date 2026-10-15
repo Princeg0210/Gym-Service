@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useGymData } from '@/lib/useGymData';
 import { Header } from '@/components/Header';
 import { ClubShowcase } from '@/components/ClubShowcase';
 import { AddMemberModal } from '@/components/modals/AddMemberModal';
+import { usePortalLoading } from '@/components/PortalLoadingScreen';
 
 export default function Home() {
-  const router = useRouter();
+  const { openPortal } = usePortalLoading();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
   const {
@@ -35,9 +35,9 @@ export default function Home() {
 
   const handleSwitchMode = (mode: 'showcase' | 'operations' | 'member_portal') => {
     if (mode === 'operations') {
-      router.push('/admin');
+      openPortal('/admin');
     } else if (mode === 'member_portal') {
-      router.push('/member');
+      openPortal('/member');
     }
   };
 
