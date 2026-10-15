@@ -25,8 +25,6 @@ export function AddMemberModal({ onClose, onMemberCreated }: AddMemberModalProps
   const [selectedPlanId, setSelectedPlanId] = useState<string>('plan-3m');
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>('muscle_gain');
   const [dietaryPref, setDietaryPref] = useState<DietaryPreference>('vegetarian');
-  const [amountPaid, setAmountPaid] = useState<number>(4500);
-  const [paymentMode, setPaymentMode] = useState<'cash' | 'upi'>('upi');
   const [emergencyPhone, setEmergencyPhone] = useState('');
   const [newlyCreated, setNewlyCreated] = useState<Member | null>(null);
 
@@ -34,59 +32,44 @@ export function AddMemberModal({ onClose, onMemberCreated }: AddMemberModalProps
 
   const handlePlanChange = (planId: string) => {
     setSelectedPlanId(planId);
-    const plan = PLANS.find((p) => p.id === planId);
-    if (plan) {
-      setAmountPaid(plan.fee);
-    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fullName || phone.length < 10) return;
+  const handleSubmit = React.useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!fullName || phone.length < 10) return;
 
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setMonth(startDate.getMonth() + currentPlan.months);
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(startDate.getMonth() + currentPlan.months);
 
-    const pendingDue = Math.max(0, currentPlan.fee - amountPaid);
-    const memberId = `mem-${Date.now().toString().slice(-4)}`;
+      const memberId = `mem-${phone.trim().slice(-4)}`;
 
-    const newMember: Member = {
-      id: memberId,
-      fullName: fullName.trim(),
-      phone: phone.trim().slice(-10),
-      gender,
-      age: Number(age),
-      planId: currentPlan.id,
-      planName: currentPlan.name,
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0],
-      totalFeeInr: currentPlan.fee,
-      paidAmountInr: amountPaid,
-      pendingDueInr: pendingDue,
-      status: pendingDue > 0 && amountPaid === 0 ? 'defaulter' : 'active',
-      emergencyContact: emergencyPhone || undefined,
-      fitnessGoal,
-      dietaryPreference: dietaryPref,
-      avatarSeed: fullName.trim()
-    };
-
-    let initialPayment: PaymentRecord | undefined;
-    if (amountPaid > 0) {
-      initialPayment = {
-        id: `pay-${Date.now()}`,
-        memberId: newMember.id,
-        memberName: newMember.fullName,
-        amountInr: amountPaid,
-        paymentMode,
-        transactionRef: `${paymentMode.toUpperCase()}-INIT-${Date.now().toString().slice(-4)}`,
-        timestamp: new Date().toISOString()
+      const newMember: Member = {
+        id: memberId,
+        fullName: fullName.trim(),
+        phone: phone.trim().slice(-10),
+        gender,
+        age: Number(age),
+        planId: currentPlan.id,
+        planName: currentPlan.name,
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+        totalFeeInr: currentPlan.fee,
+        paidAmountInr: 0,
+        pendingDueInr: currentPlan.fee,
+        status: 'active',
+        emergencyContact: emergencyPhone || undefined,
+        fitnessGoal,
+        dietaryPreference: dietaryPref,
+        avatarSeed: fullName.trim()
       };
-    }
 
-    onMemberCreated(newMember, initialPayment);
-    setNewlyCreated(newMember);
-  };
+      onMemberCreated(newMember);
+      setNewlyCreated(newMember);
+    },
+    [fullName, phone, currentPlan, gender, age, emergencyPhone, fitnessGoal, dietaryPref, onMemberCreated]
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
@@ -248,57 +231,15 @@ export function AddMemberModal({ onClose, onMemberCreated }: AddMemberModalProps
                 </div>
               </div>
 
-              {/* Payment Section */}
-              <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/60">
-                <div className="grid grid-cols-2 gap-3">
+              {/* Membership Fee Summary */}
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3.5 dark:border-[#232b3d] dark:bg-[#121724]">
+                <div className="flex items-center justify-between text-xs">
                   <div>
-                    <label className="mb-1 block font-semibold text-zinc-700 dark:text-zinc-300">
-                      Amount Paid Now (₹)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={currentPlan.fee}
-                      value={amountPaid}
-                      onChange={(e) => setAmountPaid(Number(e.target.value))}
-                      className="w-full rounded-md border border-zinc-200 bg-white px-3 py-1.5 font-mono text-zinc-900 outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-                    />
+                    <span className="font-semibold text-zinc-700 dark:text-zinc-200">Plan Membership Fee:</span>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">Billed to member. Member will pay directly via Member Portal or at desk.</p>
                   </div>
-                  <div>
-                    <label className="mb-1 block font-semibold text-zinc-700 dark:text-zinc-300">
-                      Payment Rail
-                    </label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMode('upi')}
-                        className={`rounded py-1.5 font-medium transition-all ${
-                          paymentMode === 'upi'
-                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                            : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                        }`}
-                      >
-                        UPI
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMode('cash')}
-                        className={`rounded py-1.5 font-medium transition-all ${
-                          paymentMode === 'cash'
-                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                            : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                        }`}
-                      >
-                        Cash
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-2 flex justify-between border-t border-zinc-200 pt-1.5 text-xs text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
-                  <span>Balance Due:</span>
-                  <span className="font-mono font-bold text-red-600 dark:text-red-400">
-                    ₹{Math.max(0, currentPlan.fee - amountPaid).toLocaleString('en-IN')}
+                  <span className="font-mono text-base font-black text-zinc-900 dark:text-[#ccff00]">
+                    ₹{currentPlan.fee.toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>

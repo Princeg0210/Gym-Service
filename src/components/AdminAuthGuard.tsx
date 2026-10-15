@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { Lock, ShieldCheck, ArrowRight, Home, AlertCircle, Dumbbell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,19 +12,29 @@ interface AdminAuthGuardProps {
   children: React.ReactNode;
 }
 
+const emptySubscribe = () => () => {};
+
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
+
 export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    try {
-      return sessionStorage.getItem('gympro_admin_auth') === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const isMounted = useIsMounted();
+  const [sessionAuth, setSessionAuth] = useState<boolean | null>(null);
   const [passcode, setPasscode] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const CORRECT_PIN = process.env.NEXT_PUBLIC_ADMIN_PIN || 'admin123';
+
+  const isAuthenticated = sessionAuth !== null
+    ? sessionAuth
+    : (isMounted && typeof window !== 'undefined'
+        ? sessionStorage.getItem('gympro_admin_auth') === 'true'
+        : false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +45,7 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
       } catch {
         // ignore
       }
-      setIsAuthenticated(true);
+      setSessionAuth(true);
       setErrorMsg('');
     } else {
       setErrorMsg('Invalid authorization passkey. Please check credentials.');
@@ -49,9 +59,20 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
     } catch {
       // ignore
     }
-    setIsAuthenticated(false);
+    setSessionAuth(false);
     setPasscode('');
   };
+
+  if (!isMounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#060709] px-4">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ccff00] border-t-transparent" />
+          <p className="text-xs font-mono text-zinc-400">Verifying authorization passkey...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
