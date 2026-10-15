@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Dumbbell, RefreshCw, Clock, ShieldCheck, UserCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface HeaderProps {
   currentMode?: 'showcase' | 'operations' | 'member_portal';
@@ -44,12 +46,12 @@ export function Header({ onResetData }: HeaderProps) {
               <span className="font-black tracking-tight text-white text-lg">
                 Gym<span className="text-[#ccff00]">PRO</span>
               </span>
-              <span className="rounded-full border border-[#ccff00]/40 bg-[#ccff00]/10 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-[#ccff00]">
+              <Badge variant="default" className="text-[10px] py-0 px-2">
                 INDIA
-              </span>
+              </Badge>
             </div>
             <p className="text-xs text-zinc-400 font-medium leading-none">
-              Commercial & Neighborhood Athlete SaaS
+              Commercial Gym Operating Engine
             </p>
           </div>
         </Link>
@@ -70,31 +72,31 @@ export function Header({ onResetData }: HeaderProps) {
 
         {/* Dedicated Portals Links & Reset */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/admin"
-            className="flex items-center gap-1.5 rounded-xl border border-[#ccff00]/40 bg-[#ccff00]/10 px-3.5 py-2 text-xs font-bold text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-all shadow-sm"
-          >
-            <ShieldCheck className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Admin Portal</span>
-            <span className="sm:hidden">Admin</span>
+          <Link href="/admin">
+            <Button variant="volt" size="sm" className="font-black tracking-wide">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Admin Portal</span>
+              <span className="sm:hidden">Admin</span>
+            </Button>
           </Link>
 
-          <Link
-            href="/member"
-            className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121724] px-3.5 py-2 text-xs font-bold text-zinc-200 hover:border-zinc-500 hover:text-white transition-all shadow-sm"
-          >
-            <UserCheck className="h-3.5 w-3.5 text-[#ccff00]" />
-            <span className="hidden sm:inline">Member Portal</span>
-            <span className="sm:hidden">Member</span>
+          <Link href="/member">
+            <Button variant="secondary" size="sm" className="font-semibold text-zinc-200">
+              <UserCheck className="h-3.5 w-3.5 text-[#ccff00]" />
+              <span className="hidden sm:inline">Member Portal</span>
+              <span className="sm:hidden">Member</span>
+            </Button>
           </Link>
 
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={onResetData}
             title="Reset Mock Seed Data"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#222738] bg-[#0e1219] text-zinc-400 hover:border-[#ccff00]/40 hover:text-[#ccff00] transition-colors"
+            className="h-8 w-8 text-zinc-400 hover:text-[#ccff00]"
           >
-            <RefreshCw className="h-4 w-4" />
-          </button>
+            <RefreshCw className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
     </header>

@@ -16,6 +16,8 @@ import {
   Utensils,
   Award
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -205,42 +207,50 @@ export function ClubShowcase({
                 transition={{ delay: 0.3 }}
                 className="flex flex-wrap items-center gap-4 pt-2"
               >
-                <button
+                <Button
+                  size="lg"
+                  variant="volt"
                   onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="group flex items-center gap-2 rounded-full bg-[#ccff00] px-7 py-3.5 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-black transition-all hover:bg-[#b5e600] hover:scale-105 shadow-md"
+                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider"
                 >
                   <span>Start Free Trial</span>
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </button>
+                  <ArrowUpRight className="h-4 w-4" />
+                </Button>
 
-                <button
+                <Button
+                  size="lg"
+                  variant="secondary"
                   onClick={() => {
                     const el = document.getElementById('programs-section');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="group flex items-center gap-2 rounded-full border border-zinc-700 bg-[#0e1219] px-7 py-3.5 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-zinc-200 hover:border-zinc-500 hover:bg-[#161c27] transition-all"
+                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider"
                 >
                   <span>Explore Programs</span>
-                  <ArrowUpRight className="h-4 w-4 text-zinc-400 group-hover:text-white" />
-                </button>
+                  <ArrowUpRight className="h-4 w-4 text-zinc-400" />
+                </Button>
 
-                <button
+                <Button
+                  size="lg"
+                  variant="outline"
                   onClick={() => onSwitchMode('operations')}
-                  className="group flex items-center gap-2 rounded-full border border-[#ccff00]/40 bg-[#ccff00]/10 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-all shadow-sm"
+                  className="rounded-full px-5 text-xs font-bold uppercase tracking-wider border-[#ccff00]/40 text-[#ccff00] hover:bg-[#ccff00] hover:text-black hover:border-[#ccff00]"
                 >
                   <ShieldCheck className="h-4 w-4" />
                   <span>Admin Portal</span>
-                  <span className="rounded bg-[#ccff00]/20 px-1.5 py-0.5 font-mono text-xs text-[#ccff00] group-hover:bg-black/20 group-hover:text-black">/admin</span>
-                </button>
+                  <Badge variant="default" className="text-[10px] py-0 px-1.5 font-mono">/admin</Badge>
+                </Button>
 
-                <button
+                <Button
+                  size="lg"
+                  variant="secondary"
                   onClick={() => onSwitchMode('member_portal')}
-                  className="group flex items-center gap-2 rounded-full border border-[#263147] bg-[#121724] px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-zinc-200 hover:border-zinc-500 hover:text-white transition-all shadow-sm"
+                  className="rounded-full px-5 text-xs font-bold uppercase tracking-wider"
                 >
                   <Users className="h-4 w-4 text-[#ccff00]" />
                   <span>Member Portal</span>
-                  <span className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-400 group-hover:text-zinc-200">/member</span>
-                </button>
+                  <Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-mono text-zinc-400">/member</Badge>
+                </Button>
               </motion.div>
 
               {/* Feature Checkpoints */}

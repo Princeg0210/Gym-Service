@@ -21,6 +21,11 @@ import {
 } from 'lucide-react';
 import { sounds } from '@/lib/audio';
 import { INITIAL_MEMBERS, INITIAL_DIET_PLANS } from '@/lib/mockData';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 interface MemberPortalProps {
   members: Member[];
@@ -213,47 +218,45 @@ export function MemberPortal({
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 space-y-6">
       {/* Member Selector Strip & Membership Validity Card */}
-      <div className="rounded-2xl border border-[#222738] bg-[#0c0f16] p-4 sm:p-5 shadow-md">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Athlete Profile:</span>
-              <select
-                value={selectedMemberId}
-                onChange={(e) => setSelectedMemberId(e.target.value)}
-                className="rounded-xl border border-[#262c3e] bg-[#121622] px-3 py-1.5 text-xs font-bold text-white outline-none focus:border-[#ccff00] transition-colors"
-              >
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.fullName} (+91 {m.phone}) — {m.status.toUpperCase()}
-                  </option>
-                ))}
-              </select>
+      <Card className="border-[#222738] bg-[#0c0f16]">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Athlete Profile:</span>
+                <select
+                  value={selectedMemberId}
+                  onChange={(e) => setSelectedMemberId(e.target.value)}
+                  className="rounded-xl border border-[#262c3e] bg-[#121622] px-3 py-1.5 text-xs font-bold text-white outline-none focus:border-[#ccff00] transition-colors cursor-pointer"
+                >
+                  {members.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.fullName} (+91 {m.phone}) — {m.status.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p className="mt-2 text-xs text-zinc-400">
+                Active Tier: <strong className="text-white font-bold">{currentMember.planName}</strong> • Access Valid till{' '}
+                <span className="font-mono font-bold text-emerald-400">{currentMember.endDate}</span>
+              </p>
             </div>
-            <p className="mt-2 text-xs text-zinc-400">
-              Active Tier: <strong className="text-white font-bold">{currentMember.planName}</strong> • Access Valid till{' '}
-              <span className="font-mono font-bold text-emerald-400">{currentMember.endDate}</span>
-            </p>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider ${
-                currentMember.status === 'active'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
-              }`}
-            >
-              {currentMember.status} Pass
-            </span>
-            {currentMember.pendingDueInr > 0 && (
-              <span className="rounded-full bg-red-600 px-3 py-1 font-mono text-xs font-bold text-white shadow-sm">
-                ₹{currentMember.pendingDueInr.toLocaleString('en-IN')} Due
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              <Badge
+                variant={currentMember.status === 'active' ? 'success' : 'destructive'}
+              >
+                {currentMember.status} Pass
+              </Badge>
+              {currentMember.pendingDueInr > 0 && (
+                <Badge variant="destructive" className="font-mono font-bold">
+                  ₹{currentMember.pendingDueInr.toLocaleString('en-IN')} Due
+                </Badge>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Floating Rest Timer Bar if active */}
       {isTimerRunning && (
@@ -271,54 +274,58 @@ export function MemberPortal({
             <span className="font-mono text-2xl font-black tracking-widest tabular-nums text-[#ccff00]">
               00:{timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds}
             </span>
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setIsTimerRunning(false)}
-              className="rounded-xl border border-zinc-700 bg-[#161c27] px-3.5 py-1.5 text-xs font-bold text-zinc-200 hover:text-white hover:border-[#ccff00] transition-colors"
             >
               Skip
-            </button>
+            </Button>
           </div>
         </div>
       )}
 
       {/* Member Portal Nav Tabs */}
-      <div className="flex border-b border-[#222738] gap-4">
-        <button
+      <TabsList className="w-full sm:w-auto grid grid-cols-3 sm:flex h-auto p-1 bg-[#0b0e14] border-[#1e2330]">
+        <TabsTrigger
+          value="workout"
           onClick={() => setActivePortalTab('workout')}
-          className={`flex items-center gap-2 border-b-2 pb-3 text-xs font-black uppercase tracking-wider transition-all ${
-            activePortalTab === 'workout'
-              ? 'border-[#ccff00] text-[#ccff00]'
-              : 'border-transparent text-zinc-400 hover:text-white'
-          }`}
+          className={cn(
+            "flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-bold text-xs transition-all",
+            activePortalTab === 'workout' && "bg-[#121724] text-[#ccff00] border border-[#293246] shadow-xs"
+          )}
         >
           <Dumbbell className="h-4 w-4" />
-          <span>Today&apos;s Workout Routine</span>
-        </button>
+          <span className="hidden sm:inline">Today&apos;s Workout Routine</span>
+          <span className="sm:hidden">Workout</span>
+        </TabsTrigger>
 
-        <button
+        <TabsTrigger
+          value="diet"
           onClick={() => setActivePortalTab('diet')}
-          className={`flex items-center gap-2 border-b-2 pb-3 text-xs font-black uppercase tracking-wider transition-all ${
-            activePortalTab === 'diet'
-              ? 'border-[#ccff00] text-[#ccff00]'
-              : 'border-transparent text-zinc-400 hover:text-white'
-          }`}
+          className={cn(
+            "flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-bold text-xs transition-all",
+            activePortalTab === 'diet' && "bg-[#121724] text-[#ccff00] border border-[#293246] shadow-xs"
+          )}
         >
           <Apple className="h-4 w-4" />
-          <span>Indian Nutrition & Diet</span>
-        </button>
+          <span className="hidden sm:inline">Indian Nutrition & Diet</span>
+          <span className="sm:hidden">Diet</span>
+        </TabsTrigger>
 
-        <button
+        <TabsTrigger
+          value="pass"
           onClick={() => setActivePortalTab('pass')}
-          className={`flex items-center gap-2 border-b-2 pb-3 text-xs font-black uppercase tracking-wider transition-all ${
-            activePortalTab === 'pass'
-              ? 'border-[#ccff00] text-[#ccff00]'
-              : 'border-transparent text-zinc-400 hover:text-white'
-          }`}
+          className={cn(
+            "flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-bold text-xs transition-all",
+            activePortalTab === 'pass' && "bg-[#121724] text-[#ccff00] border border-[#293246] shadow-xs"
+          )}
         >
           <QrCode className="h-4 w-4" />
-          <span>Digital QR Gym Pass</span>
-        </button>
-      </div>
+          <span className="hidden sm:inline">Digital QR Gym Pass</span>
+          <span className="sm:hidden">Pass</span>
+        </TabsTrigger>
+      </TabsList>
 
       {/* TAB 1: WORKOUT LOGGER */}
       {activePortalTab === 'workout' && (

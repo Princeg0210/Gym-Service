@@ -13,6 +13,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { generateDuesReminderWhatsAppUrl } from '@/lib/whatsapp';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface MemberDetailsModalProps {
   member: Member | null;
@@ -58,17 +60,17 @@ export function MemberDetailsModal({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-black text-white">{member.fullName}</h3>
-                <span
-                  className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider ${
+                <Badge
+                  variant={
                     member.status === 'active'
-                      ? 'bg-emerald-950/80 border border-emerald-500/50 text-emerald-300'
+                      ? 'success'
                       : member.status === 'defaulter'
-                      ? 'bg-amber-950/80 border border-amber-500/50 text-amber-300'
-                      : 'bg-red-950/80 border border-red-500/50 text-red-300'
-                  }`}
+                      ? 'warning'
+                      : 'destructive'
+                  }
                 >
                   {member.status}
-                </span>
+                </Badge>
               </div>
               <p className="text-xs text-zinc-400 font-mono">
                 ID: {member.id} • Registered Member
@@ -76,12 +78,14 @@ export function MemberDetailsModal({
             </div>
           </div>
 
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#232b3d] bg-[#121724] text-zinc-400 hover:text-white transition-colors"
+            className="h-8 w-8 text-zinc-400 hover:text-white"
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
 
         {/* Tab Switcher */}
@@ -355,19 +359,21 @@ export function MemberDetailsModal({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="volt"
+              size="sm"
               onClick={() => onOpenPaymentModal(member)}
-              className="flex items-center gap-1.5 rounded-xl bg-[#ccff00] px-4 py-2 text-xs font-black text-black hover:bg-[#b5e600] transition-colors shadow-sm"
             >
               <IndianRupee className="h-3.5 w-3.5" />
               <span>Record Fee / Payment</span>
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="rounded-xl border border-[#232b3d] bg-[#161c2b] px-4 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
             >
               Close
-            </button>
+            </Button>
           </div>
         </div>
 

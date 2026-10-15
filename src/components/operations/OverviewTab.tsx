@@ -23,6 +23,10 @@ import {
   Zap
 } from 'lucide-react';
 import { SidebarTab } from '../OperationsDashboard';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 // Curated avatar mapping matching reference photos
 const AVATAR_MAP: Record<string, string> = {
@@ -173,55 +177,50 @@ export function OverviewTab({
         ════════════════════════════════════════════════════════ */}
         <div className="lg:col-span-8 space-y-6">
           {/* CARD 1: Quick Check-In Widget */}
-          <div className="rounded-2xl border border-[#1e2638] bg-[#0c1017] p-5 shadow-lg">
-            {/* Sub-tabs: Quick Check-in & Scan QR Pass */}
-            <div className="flex items-center gap-3 mb-4">
-              <button
-                onClick={() => setCheckInTab('quick')}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
-                  checkInTab === 'quick'
-                    ? 'border border-[#ccff00]/40 bg-[#161e12] text-[#ccff00]'
-                    : 'border border-transparent text-zinc-400 hover:text-white'
-                }`}
-              >
-                <Zap className="h-3.5 w-3.5 text-[#ccff00]" />
-                <span>Quick Check-in</span>
-              </button>
+          <Card className="border-[#1e2638] bg-[#0c1017]">
+            <CardContent className="p-5">
+              {/* Sub-tabs: Quick Check-in & Scan QR Pass */}
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  size="sm"
+                  variant={checkInTab === 'quick' ? 'volt' : 'secondary'}
+                  onClick={() => setCheckInTab('quick')}
+                >
+                  <Zap className="h-3.5 w-3.5" />
+                  <span>Quick Check-in</span>
+                </Button>
 
-              <button
-                onClick={() => {
-                  setCheckInTab('qr');
-                  setIsQRScannerOpen(true);
-                }}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
-                  checkInTab === 'qr'
-                    ? 'border border-[#ccff00]/40 bg-[#161e12] text-[#ccff00]'
-                    : 'border border-transparent text-zinc-400 hover:text-white'
-                }`}
-              >
-                <QrCode className="h-3.5 w-3.5" />
-                <span>Scan QR Pass</span>
-              </button>
-            </div>
-
-            {/* Input Box with '/' hotkey cue */}
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-              <input
-                id="dashboard-quick-checkin-input"
-                type="text"
-                value={checkInInput}
-                onChange={(e) => {
-                  setCheckInInput(e.target.value);
-                  setIsCheckInDropdownOpen(true);
-                }}
-                onFocus={() => setIsCheckInDropdownOpen(true)}
-                placeholder="Enter member name or last 4 digits of phone number..."
-                className="w-full rounded-xl border border-[#202738] bg-[#101522] py-3 pl-11 pr-12 text-xs font-medium text-white placeholder-zinc-400 outline-none focus:border-[#ccff00] transition-colors"
-              />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center h-6 w-6 rounded border border-[#262f44] bg-[#161c2d] font-mono text-xs font-bold text-[#ccff00]">
-                /
+                <Button
+                  size="sm"
+                  variant={checkInTab === 'qr' ? 'volt' : 'secondary'}
+                  onClick={() => {
+                    setCheckInTab('qr');
+                    setIsQRScannerOpen(true);
+                  }}
+                >
+                  <QrCode className="h-3.5 w-3.5" />
+                  <span>Scan QR Pass</span>
+                </Button>
               </div>
+
+              {/* Input Box with '/' hotkey cue */}
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                <Input
+                  id="dashboard-quick-checkin-input"
+                  type="text"
+                  value={checkInInput}
+                  onChange={(e) => {
+                    setCheckInInput(e.target.value);
+                    setIsCheckInDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsCheckInDropdownOpen(true)}
+                  placeholder="Enter member name or last 4 digits of phone number..."
+                  className="pl-10 pr-12 h-11"
+                />
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center h-6 w-6 rounded border border-[#262f44] bg-[#161c2d] font-mono text-xs font-bold text-[#ccff00]">
+                  /
+                </div>
 
               {/* Dropdown results */}
               {isCheckInDropdownOpen && quickFilteredMembers.length > 0 && (
@@ -251,7 +250,8 @@ export function OverviewTab({
                 </div>
               )}
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
           {/* CARD 2: Live Check-ins Today */}
           <div className="rounded-2xl border border-[#1e2638] bg-[#0c1017] p-5 shadow-lg">
@@ -353,10 +353,10 @@ export function OverviewTab({
                         </div>
                       </td>
                       <td className="py-3">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
+                        <Badge variant="success" className="text-[10px]">
                           <CheckCircle2 className="h-3 w-3" />
                           <span>Checked In</span>
-                        </span>
+                        </Badge>
                       </td>
                       <td className="py-3 text-right">
                         <button className="p-1 text-zinc-400 hover:text-white transition-colors">
