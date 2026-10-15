@@ -274,9 +274,8 @@ export function OperationsDashboard({
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-                            m.status === 'active' ? 'bg-emerald-950/80 text-emerald-300' : 'bg-red-950/80 text-red-300'
-                          }`}>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${m.status === 'active' ? 'bg-emerald-950/80 text-emerald-300' : 'bg-red-950/80 text-red-300'
+                            }`}>
                             {m.status}
                           </span>
                           <span className="text-xs font-bold text-[#ccff00]">View Dossier →</span>
@@ -348,7 +347,7 @@ export function OperationsDashboard({
               className="hidden lg:flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121724] px-3 py-1.5 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
             >
               <Home className="h-3.5 w-3.5 text-[#ccff00]" />
-              <span>Showcase (/)</span>
+              <span>Home Screen</span>
             </Link>
 
             <Link
@@ -383,11 +382,10 @@ export function OperationsDashboard({
           <nav className="space-y-1">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'dashboard'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'dashboard'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <LayoutDashboard className="h-4 w-4 shrink-0" />
               <span>Dashboard</span>
@@ -395,11 +393,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('members')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'members'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'members'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Users className="h-4 w-4 shrink-0" />
               <span>Members</span>
@@ -407,11 +404,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('attendance')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'attendance'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'attendance'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <CalendarDays className="h-4 w-4 shrink-0" />
               <span>Attendance</span>
@@ -419,11 +415,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('dues')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'dues'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'dues'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <CreditCard className="h-4 w-4 shrink-0" />
               <span>Payments & Dues</span>
@@ -431,11 +426,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('plans')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'plans'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'plans'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Layers className="h-4 w-4 shrink-0" />
               <span>Plans & Memberships</span>
@@ -443,11 +437,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('leads')}
-              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'leads'
+              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'leads'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <PhoneCall className="h-4 w-4 shrink-0" />
@@ -460,11 +453,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('workouts')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'workouts'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'workouts'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Dumbbell className="h-4 w-4 shrink-0" />
               <span>Workouts & Plans</span>
@@ -472,11 +464,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('diet')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'diet'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'diet'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Utensils className="h-4 w-4 shrink-0" />
               <span>Diet & Nutrition</span>
@@ -484,11 +475,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('equipment')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'equipment'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'equipment'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Wrench className="h-4 w-4 shrink-0" />
               <span>Equipment</span>
@@ -496,11 +486,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('reports')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'reports'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'reports'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <BarChart3 className="h-4 w-4 shrink-0" />
               <span>Reports</span>
@@ -508,11 +497,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('staff')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'staff'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'staff'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <UserCheck className="h-4 w-4 shrink-0" />
               <span>Staff & Trainers</span>
@@ -520,11 +508,10 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'settings'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'settings'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
+                }`}
             >
               <Settings className="h-4 w-4 shrink-0" />
               <span>Settings</span>
@@ -577,7 +564,7 @@ export function OperationsDashboard({
               <Link
                 href="/"
                 className="flex items-center justify-center rounded-xl border border-[#232b3d] bg-[#0c1018] p-2 text-zinc-300 hover:text-white transition-colors"
-                title="Club Showcase"
+                title="Home Screen"
               >
                 <Home className="h-3.5 w-3.5" />
               </Link>

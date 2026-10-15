@@ -137,7 +137,7 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
                 className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors"
               >
                 <Home className="h-3.5 w-3.5" />
-                <span>Return to Club Showcase</span>
+                <span>Return to Home Screen</span>
               </Link>
             </div>
           </CardContent>
