@@ -4,39 +4,31 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Dumbbell,
   ArrowUpRight,
   ShieldCheck,
-  Flame,
   Users,
   Zap,
   CheckCircle2,
   Star,
   Play,
-  Calendar,
   X,
-  MessageCircle,
   Clock,
-  Sparkles,
-  TrendingUp,
+  Utensils,
   Award
 } from 'lucide-react';
-import { Member } from '@/types';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
   onOpenAddMember?: () => void;
-  activeMembersCount: number;
+  activeMembersCount?: number;
   todayCheckInsCount: number;
-  unpaidDuesCount: number;
+  unpaidDuesCount?: number;
 }
 
 export function ClubShowcase({
   onSwitchMode,
   onOpenAddMember,
-  activeMembersCount,
-  todayCheckInsCount,
-  unpaidDuesCount
+  todayCheckInsCount
 }: ClubShowcaseProps) {
   // Interactive Why Train With Us active feature index
   const [activeFeatureIndex, setActiveFeatureIndex] = useState<number>(1); // Default to Modern Equipment (like IronPulse reference)
@@ -67,7 +59,7 @@ export function ClubShowcase({
     {
       title: 'Personalized Nutrition',
       desc: 'Custom high-protein Indian diets (Soya chunks, Paneer, Dal, Eggs) engineered for complete essential amino acid profiles.',
-      icon: Sparkles
+      icon: Utensils
     },
     {
       title: 'Motivating Community',

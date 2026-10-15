@@ -18,7 +18,7 @@ export function RecordPaymentModal({
 }: RecordPaymentModalProps) {
   const [amount, setAmount] = useState<number>(member.pendingDueInr || 1500);
   const [mode, setMode] = useState<'cash' | 'upi' | 'card'>('upi');
-  const [refId, setRefId] = useState<string>(`UPI-${Math.floor(100000 + Math.random() * 900000)}`);
+  const [refId, setRefId] = useState<string>(() => `UPI-${Math.floor(100000 + Math.random() * 900000)}`);
   const [completedPayment, setCompletedPayment] = useState<{
     payment: PaymentRecord;
     updatedMember: Member;
@@ -26,7 +26,7 @@ export function RecordPaymentModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount <= 0) return;
+    if (!amount || isNaN(amount) || amount <= 0) return;
 
     const newPayment: PaymentRecord = {
       id: `pay-${Date.now()}`,
@@ -38,13 +38,14 @@ export function RecordPaymentModal({
       timestamp: new Date().toISOString()
     };
 
+    // Consistent dues calculation (aligned with backend)
     const newPaidAmount = member.paidAmountInr + amount;
-    const newPendingDue = Math.max(0, member.totalFeeInr - newPaidAmount);
+    const newPendingDue = Math.max(0, member.pendingDueInr - amount);
     const updatedMember: Member = {
       ...member,
       paidAmountInr: newPaidAmount,
       pendingDueInr: newPendingDue,
-      status: newPendingDue === 0 ? 'active' : member.status
+      status: newPendingDue === 0 && member.status === 'defaulter' ? 'active' : member.status
     };
 
     onPaymentSuccess(newPayment, updatedMember);

@@ -6,8 +6,9 @@ export async function GET() {
   try {
     const records = await getAttendanceFromDb();
     return NextResponse.json({ success: true, data: records });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -27,7 +28,8 @@ export async function POST(req: NextRequest) {
 
     const saved = await logAttendanceInDb(newRecord);
     return NextResponse.json({ success: true, data: saved }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

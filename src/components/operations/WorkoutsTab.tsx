@@ -4,20 +4,16 @@ import React, { useState, useEffect } from 'react';
 import {
   Member,
   WorkoutRoutine,
-  Exercise,
-  WorkoutSet
+  Exercise
 } from '@/types';
 import {
   Dumbbell,
   Timer,
-  Sparkles,
+  Zap,
   ArrowRightLeft,
   CheckCircle2,
   Plus,
-  Minus,
-  RefreshCw,
-  Flame,
-  Award
+  Minus
 } from 'lucide-react';
 import { sounds } from '@/lib/audio';
 
@@ -37,13 +33,19 @@ export function WorkoutsTab({
   const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || 'mem-101');
   const [selectedRoutineIndex, setSelectedRoutineIndex] = useState<number>(0);
   const [activeRoutines, setActiveRoutines] = useState<WorkoutRoutine[]>(routines);
+  const [prevRoutines, setPrevRoutines] = useState<WorkoutRoutine[]>(routines);
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number>(0);
+
+  if (routines !== prevRoutines) {
+    setPrevRoutines(routines);
+    setActiveRoutines(routines);
+  }
 
   // Rest Timer State
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
 
-  // AI Routine Generator State
+  // Smart Routine Generator State
   const [isGenModalOpen, setIsGenModalOpen] = useState(false);
   const [genGoal, setGenGoal] = useState<'muscle_gain' | 'fat_loss' | 'general_fitness'>('muscle_gain');
   const [genLevel, setGenLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
@@ -51,10 +53,6 @@ export function WorkoutsTab({
   const currentMember = members.find((m) => m.id === selectedMemberId) || members[0];
   const currentRoutine = activeRoutines[selectedRoutineIndex] || activeRoutines[0];
   const currentExerciseItem = currentRoutine?.exercises[selectedExerciseIndex] || currentRoutine?.exercises[0];
-
-  useEffect(() => {
-    setActiveRoutines(routines);
-  }, [routines]);
 
   // Timer countdown
   useEffect(() => {
@@ -246,7 +244,7 @@ export function WorkoutsTab({
             onClick={() => setIsGenModalOpen(true)}
             className="flex items-center gap-1.5 rounded-xl border border-[#ccff00]/40 bg-[#ccff00]/10 px-3 py-1.5 text-xs font-bold text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-colors"
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <Zap className="h-3.5 w-3.5" />
             <span>Generate Plan</span>
           </button>
         </div>

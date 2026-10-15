@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Member } from '@/types';
-import { QrCode, X, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
+import { QrCode, X, CheckCircle2, Video, Check } from 'lucide-react';
 import { sounds } from '@/lib/audio';
 
 interface QRScanModalProps {
@@ -14,14 +14,20 @@ interface QRScanModalProps {
 export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
   const [isScanning, setIsScanning] = useState(true);
   const [scannedMember, setScannedMember] = useState<Member | null>(null);
+  const [selectedSimMemberId, setSelectedSimMemberId] = useState<string>('');
 
   useEffect(() => {
-    // Simulate camera scanning delay then auto-detect member QR pass
+    // Front-desk scanner demo simulation
     const timer = setTimeout(() => {
-      const activeMembers = members.filter((m) => m.status === 'active');
-      const target = activeMembers.length > 0
-        ? activeMembers[Math.floor(Math.random() * activeMembers.length)]
-        : members[0];
+      let target: Member;
+      if (selectedSimMemberId) {
+        target = members.find((m) => m.id === selectedSimMemberId) || members[0];
+      } else {
+        const activeMembers = members.filter((m) => m.status === 'active');
+        target = activeMembers.length > 0
+          ? activeMembers[Math.floor(Math.random() * activeMembers.length)]
+          : members[0];
+      }
 
       setScannedMember(target);
       setIsScanning(false);
@@ -35,7 +41,12 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
     }, 1800);
 
     return () => clearTimeout(timer);
-  }, [members, onCheckIn]);
+  }, [members, onCheckIn, selectedSimMemberId]);
+
+  const handleRescan = () => {
+    setScannedMember(null);
+    setIsScanning(true);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
@@ -47,8 +58,13 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
               <QrCode className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Scan Member QR Pass</h3>
-              <p className="text-xs text-zinc-400">Front Desk Optical Scanner</p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-white">Scan Member QR Pass</h3>
+                <span className="rounded-md border border-[#232b3d] bg-[#121724] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">
+                  Demo Feed
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400">Optical Camera & Barcode Reader</p>
             </div>
           </div>
           <button
@@ -59,8 +75,20 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
           </button>
         </div>
 
+        {/* Demo Simulation Notice Banner */}
+        <div className="mt-4 rounded-xl border border-[#232b3d] bg-[#07090d] p-2.5 text-xs text-zinc-400 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <Video className="h-3.5 w-3.5 text-[#ccff00]" />
+            <span className="text-[11px]">Hardware Camera / Simulation Feed</span>
+          </div>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+            READY
+          </span>
+        </div>
+
         {/* Scanner Viewport */}
-        <div className="my-6">
+        <div className="my-5">
           <div className="relative mx-auto flex h-64 w-64 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-[#ccff00]/40 bg-[#07090e]">
             {isScanning ? (
               <>
@@ -75,7 +103,7 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
                     Position GymPRO QR pass in viewfinder...
                   </p>
                   <span className="rounded-full bg-[#161d2c] px-3 py-1 text-xs font-mono text-zinc-400">
-                    Optical Feed Active • 60 FPS
+                    Scanner Live • 60 FPS
                   </span>
                 </div>
               </>
@@ -98,24 +126,53 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
           </div>
         </div>
 
+        {/* Choose Target Member to Simulate Check-in */}
+        {isScanning && (
+          <div className="mb-4">
+            <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+              Simulate Scan For Member:
+            </label>
+            <select
+              value={selectedSimMemberId}
+              onChange={(e) => setSelectedSimMemberId(e.target.value)}
+              className="w-full rounded-xl border border-[#232b3d] bg-[#121724] px-3 py-1.5 text-xs text-zinc-200 focus:border-[#ccff00] focus:outline-hidden"
+            >
+              <option value="">Auto-Detect Active Member (Default)</option>
+              {members.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.fullName} ({m.status.toUpperCase()} • ₹{m.pendingDueInr} due)
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Status Message & Actions */}
         <div className="border-t border-[#1f2637] pt-4">
           {isScanning ? (
             <p className="text-center text-xs text-zinc-500">
-              Hold device steady or type phone number manually in search.
+              Hold device steady or select member above for turnstile simulation.
             </p>
           ) : (
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Attendance Logged Successfully</span>
+                <Check className="h-4 w-4" />
+                <span>Attendance Logged</span>
               </span>
-              <button
-                onClick={onClose}
-                className="rounded-xl bg-[#ccff00] px-4 py-2 text-xs font-black text-black hover:bg-[#b5e600] transition-colors"
-              >
-                Done
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleRescan}
+                  className="rounded-xl border border-[#232b3d] bg-[#121724] px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+                >
+                  Scan Another
+                </button>
+                <button
+                  onClick={onClose}
+                  className="rounded-xl bg-[#ccff00] px-4 py-1.5 text-xs font-black text-black hover:bg-[#b5e600] transition-colors"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           )}
         </div>

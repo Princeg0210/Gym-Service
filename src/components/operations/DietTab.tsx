@@ -4,13 +4,9 @@ import React, { useState } from 'react';
 import { Member, DietPlan } from '@/types';
 import {
   Utensils,
-  Flame,
   Droplets,
   Plus,
-  Apple,
-  Info,
-  Sparkles,
-  CheckCircle2
+  Info
 } from 'lucide-react';
 import { INITIAL_DIET_PLANS } from '@/lib/mockData';
 import { sounds } from '@/lib/audio';

@@ -74,6 +74,17 @@ create table if not exists leads (
 );
 
 -- ============================================================
+-- PERFORMANCE INDEXES (Optimized for 100,000+ member scale)
+-- ============================================================
+create index if not exists idx_members_phone on members(phone);
+create index if not exists idx_members_status on members(status);
+create index if not exists idx_members_created_at on members(created_at desc);
+create index if not exists idx_attendance_member_id on attendance(member_id);
+create index if not exists idx_attendance_check_in_time on attendance(check_in_time desc);
+create index if not exists idx_payments_member_id on payments(member_id);
+create index if not exists idx_payments_timestamp on payments(timestamp desc);
+
+-- ============================================================
 -- SEED DATA (initial records — same as what was in Neon)
 -- ============================================================
 
@@ -117,10 +128,34 @@ insert into leads (id, full_name, phone, interest, status, created_at, follow_up
 on conflict (id) do nothing;
 
 -- ============================================================
--- DISABLE Row Level Security for dev (enable it in production!)
+-- Row Level Security (RLS) Configuration
+-- Enabled with explicit policies to prevent table tampering or deletions
 -- ============================================================
-alter table members    disable row level security;
-alter table attendance disable row level security;
-alter table payments   disable row level security;
-alter table equipment  disable row level security;
-alter table leads      disable row level security;
+alter table members    enable row level security;
+alter table attendance enable row level security;
+alter table payments   enable row level security;
+alter table equipment  enable row level security;
+alter table leads      enable row level security;
+
+-- 1. Members Policies
+create policy "Allow select on members" on members for select using (true);
+create policy "Allow insert on members" on members for insert with check (length(full_name) > 0 and length(phone) >= 10);
+create policy "Allow update on members" on members for update using (true) with check (total_fee_inr >= 0 and pending_due_inr >= 0);
+
+-- 2. Attendance Policies
+create policy "Allow select on attendance" on attendance for select using (true);
+create policy "Allow insert on attendance" on attendance for insert with check (length(member_id) > 0);
+
+-- 3. Payments Policies (Prevents negative amounts and unauthorized tampering)
+create policy "Allow select on payments" on payments for select using (true);
+create policy "Allow insert on payments" on payments for insert with check (amount_inr > 0 and length(member_id) > 0);
+
+-- 4. Equipment Policies
+create policy "Allow select on equipment" on equipment for select using (true);
+create policy "Allow update on equipment" on equipment for update using (true);
+
+-- 5. Leads Policies
+create policy "Allow select on leads" on leads for select using (true);
+create policy "Allow insert on leads" on leads for insert with check (length(full_name) > 0);
+create policy "Allow update on leads" on leads for update using (true);
+

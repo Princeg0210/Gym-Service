@@ -13,27 +13,18 @@ import {
 import { AppStorage } from '@/lib/storage';
 
 export function useGymData() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [attendanceLogs, setAttendanceLogs] = useState<AttendanceRecord[]>([]);
-  const [payments, setPayments] = useState<PaymentRecord[]>([]);
-  const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>([]);
-  const [leads, setLeads] = useState<LeadItem[]>([]);
-  const [routines, setRoutines] = useState<WorkoutRoutine[]>([]);
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [isLoaded] = useState(true);
+  const [members, setMembers] = useState<Member[]>(() => AppStorage.getMembers());
+  const [attendanceLogs, setAttendanceLogs] = useState<AttendanceRecord[]>(() => AppStorage.getAttendance());
+  const [payments, setPayments] = useState<PaymentRecord[]>(() => AppStorage.getPayments());
+  const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>(() => AppStorage.getEquipment());
+  const [leads, setLeads] = useState<LeadItem[]>(() => AppStorage.getLeads());
+  const [routines, setRoutines] = useState<WorkoutRoutine[]>(() => AppStorage.getRoutines());
+  const [exercises] = useState<Exercise[]>(() => AppStorage.getExercises());
   const [checkedInBannerMember, setCheckedInBannerMember] = useState<Member | null>(null);
 
-  // Load from local storage cache first, then sync with Neon PostgreSQL backend
+  // Background sync with database backend
   useEffect(() => {
-    setMembers(AppStorage.getMembers());
-    setAttendanceLogs(AppStorage.getAttendance());
-    setPayments(AppStorage.getPayments());
-    setEquipmentList(AppStorage.getEquipment());
-    setLeads(AppStorage.getLeads());
-    setRoutines(AppStorage.getRoutines());
-    setExercises(AppStorage.getExercises());
-    setIsLoaded(true);
-
     async function syncFromBackend() {
       try {
         const [mRes, aRes, pRes, eRes, lRes] = await Promise.all([

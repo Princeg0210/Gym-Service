@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { OperationsDashboard } from '@/components/OperationsDashboard';
+import { AdminAuthGuard } from '@/components/AdminAuthGuard';
 import { useGymData } from '@/lib/useGymData';
 
 export default function AdminPage() {
@@ -37,23 +38,25 @@ export default function AdminPage() {
   }
 
   return (
-    <OperationsDashboard
-      members={members}
-      attendanceLogs={attendanceLogs}
-      payments={payments}
-      equipmentList={equipmentList}
-      leads={leads}
-      routines={routines}
-      exercises={exercises}
-      onCheckInMember={handleCheckInMember}
-      onPaymentSuccess={handlePaymentSuccess}
-      onMemberCreated={handleMemberCreated}
-      onToggleEquipmentStatus={handleToggleEquipmentStatus}
-      onUpdateRoutines={handleUpdateRoutines}
-      checkedInBannerMember={checkedInBannerMember}
-      onDismissBanner={() => setCheckedInBannerMember(null)}
-      onSwitchToShowcase={() => router.push('/')}
-      onSwitchToMemberPortal={() => router.push('/member')}
-    />
+    <AdminAuthGuard>
+      <OperationsDashboard
+        members={members}
+        attendanceLogs={attendanceLogs}
+        payments={payments}
+        equipmentList={equipmentList}
+        leads={leads}
+        routines={routines}
+        exercises={exercises}
+        onCheckInMember={handleCheckInMember}
+        onPaymentSuccess={handlePaymentSuccess}
+        onMemberCreated={handleMemberCreated}
+        onToggleEquipmentStatus={handleToggleEquipmentStatus}
+        onUpdateRoutines={handleUpdateRoutines}
+        checkedInBannerMember={checkedInBannerMember}
+        onDismissBanner={() => setCheckedInBannerMember(null)}
+        onSwitchToShowcase={() => router.push('/')}
+        onSwitchToMemberPortal={() => router.push('/member')}
+      />
+    </AdminAuthGuard>
   );
 }

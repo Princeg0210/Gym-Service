@@ -8,7 +8,7 @@ interface HeaderProps {
   onResetData: () => void;
 }
 
-export function Header({ currentMode = 'showcase', onModeChange, onResetData }: HeaderProps) {
+export function Header({ onResetData }: HeaderProps) {
   const [timeStr, setTimeStr] = useState<string>('');
 
   useEffect(() => {

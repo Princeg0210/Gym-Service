@@ -1,5 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
-import { Member, AttendanceRecord, PaymentRecord, EquipmentItem, LeadItem } from '@/types';
+import {
+  Member,
+  AttendanceRecord,
+  PaymentRecord,
+  EquipmentItem,
+  EquipmentTier,
+  FitnessGoal,
+  DietaryPreference,
+  LeadItem
+} from '@/types';
 import { INITIAL_MEMBERS, INITIAL_ATTENDANCE, INITIAL_PAYMENTS, INITIAL_EQUIPMENT, INITIAL_LEADS } from './mockData';
 
 // ─────────────────────────────────────────────────────────────
@@ -13,10 +22,111 @@ const supabase = supabaseUrl && supabaseAnonKey
   : null;
 
 // ─────────────────────────────────────────────────────────────
-// Row → TypeScript type mappers
+// Row Interfaces & TypeScript type mappers
 // ─────────────────────────────────────────────────────────────
 
-function rowToMember(row: any): Member {
+interface MemberRow {
+  id: string;
+  full_name: string;
+  phone: string;
+  gender: 'male' | 'female' | 'other';
+  age: number | string;
+  plan_id: string;
+  plan_name: string;
+  start_date: string;
+  end_date: string;
+  total_fee_inr: number | string;
+  paid_amount_inr: number | string;
+  pending_due_inr: number | string;
+  status: 'active' | 'expired' | 'trial' | 'defaulter';
+  emergency_contact?: string | null;
+  fitness_goal?: string | null;
+  dietary_preference?: string | null;
+  avatar_seed?: string | null;
+  created_at?: string;
+}
+
+interface AttendanceRow {
+  id: string;
+  member_id: string;
+  member_name: string;
+  phone: string;
+  check_in_time: string;
+  check_in_method: 'qr_scan' | 'phone_search';
+  plan_status: 'active' | 'expired' | 'trial' | 'defaulter';
+  pending_due_inr: number | string;
+  created_at?: string;
+}
+
+interface PaymentRow {
+  id: string;
+  member_id: string;
+  member_name: string;
+  amount_inr: number | string;
+  payment_mode?: string | null;
+  transaction_ref?: string | null;
+  timestamp: string;
+  created_at?: string;
+}
+
+interface EquipmentRow {
+  id: string;
+  name: string;
+  category?: string | null;
+  tier?: string | null;
+  status: 'operational' | 'needs_service' | 'out_of_order';
+  last_serviced_date: string;
+  next_service_due_date: string;
+  notes?: string | null;
+}
+
+interface LeadRow {
+  id: string;
+  full_name: string;
+  phone: string;
+  goal?: string | null;
+  interest?: string | null;
+  inquiry_date?: string;
+  created_at?: string;
+  trial_status?: string;
+  status?: string;
+  next_follow_up_date?: string;
+  follow_up_date?: string;
+  notes?: string | null;
+}
+
+function normalizeFitnessGoal(goal?: string | null): FitnessGoal {
+  if (goal === 'muscle_gain' || goal === 'fat_loss' || goal === 'strength' || goal === 'general_fitness') {
+    return goal;
+  }
+  if (goal === 'weight_gain') return 'muscle_gain';
+  return 'general_fitness';
+}
+
+function normalizeDietaryPreference(pref?: string | null): DietaryPreference {
+  if (pref === 'vegetarian' || pref === 'eggetarian' || pref === 'non_veg') {
+    return pref;
+  }
+  if (pref === 'non_vegetarian') return 'non_veg';
+  if (pref === 'vegan') return 'vegetarian';
+  return 'vegetarian';
+}
+
+function normalizeEquipmentCategory(cat?: string | null): EquipmentItem['category'] {
+  if (cat === 'strength_machine' || cat === 'free_weights' || cat === 'cardio' || cat === 'cable_station') {
+    return cat;
+  }
+  return 'strength_machine';
+}
+
+function normalizeEquipmentTier(tier?: string | null): EquipmentTier {
+  if (tier === 'tier_a' || tier === 'tier_b' || tier === 'tier_c') {
+    return tier;
+  }
+  return 'tier_a';
+}
+
+function rowToMember(row: MemberRow): Member {
   return {
     id: row.id,
     fullName: row.full_name,
@@ -32,13 +142,13 @@ function rowToMember(row: any): Member {
     pendingDueInr: Number(row.pending_due_inr),
     status: row.status,
     emergencyContact: row.emergency_contact || undefined,
-    fitnessGoal: row.fitness_goal,
-    dietaryPreference: row.dietary_preference,
+    fitnessGoal: normalizeFitnessGoal(row.fitness_goal),
+    dietaryPreference: normalizeDietaryPreference(row.dietary_preference),
     avatarSeed: row.avatar_seed || row.full_name.split(' ')[0]
   };
 }
 
-function rowToAttendance(row: any): AttendanceRecord {
+function rowToAttendance(row: AttendanceRow): AttendanceRecord {
   return {
     id: row.id,
     memberId: row.member_id,
@@ -51,24 +161,24 @@ function rowToAttendance(row: any): AttendanceRecord {
   };
 }
 
-function rowToPayment(row: any): PaymentRecord {
+function rowToPayment(row: PaymentRow): PaymentRecord {
   return {
     id: row.id,
     memberId: row.member_id,
     memberName: row.member_name,
     amountInr: Number(row.amount_inr),
-    paymentMode: row.payment_mode,
-    transactionRef: row.transaction_ref,
+    paymentMode: (row.payment_mode as PaymentRecord['paymentMode']) || 'cash',
+    transactionRef: row.transaction_ref || row.id || `TXN-${row.id.slice(0, 8)}`,
     timestamp: row.timestamp
   };
 }
 
-function rowToEquipment(row: any): EquipmentItem {
+function rowToEquipment(row: EquipmentRow): EquipmentItem {
   return {
     id: row.id,
     name: row.name,
-    category: row.category,
-    tier: row.tier,
+    category: normalizeEquipmentCategory(row.category),
+    tier: normalizeEquipmentTier(row.tier),
     status: row.status,
     lastServicedDate: row.last_serviced_date,
     nextServiceDueDate: row.next_service_due_date,
@@ -76,12 +186,12 @@ function rowToEquipment(row: any): EquipmentItem {
   };
 }
 
-function rowToLead(row: any): LeadItem {
+function rowToLead(row: LeadRow): LeadItem {
   return {
     id: row.id,
     fullName: row.full_name,
     phone: row.phone,
-    goal: row.goal || row.interest || 'general_fitness',
+    goal: normalizeFitnessGoal(row.goal || row.interest),
     inquiryDate: row.inquiry_date || row.created_at || '2026-10-12',
     trialStatus: (row.trial_status || row.status || 'trial_booked') as LeadItem['trialStatus'],
     nextFollowUpDate: row.next_follow_up_date || row.follow_up_date || '2026-10-15',
@@ -102,10 +212,34 @@ export async function getMembersFromDb(): Promise<Member[]> {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || data.length === 0) return INITIAL_MEMBERS;
-    return data.map(rowToMember);
+    return (data as unknown as MemberRow[]).map(rowToMember);
   } catch (error) {
     console.error('Supabase fetch error (members):', error);
     return INITIAL_MEMBERS;
+  }
+}
+
+export async function getMemberByIdFromDb(id: string): Promise<Member | null> {
+  if (!supabase) {
+    const found = INITIAL_MEMBERS.find((m) => m.id === id);
+    return found || null;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('members')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
+      const found = INITIAL_MEMBERS.find((m) => m.id === id);
+      return found || null;
+    }
+    return rowToMember(data as unknown as MemberRow);
+  } catch (error) {
+    console.error(`Supabase fetch error (member ${id}):`, error);
+    const found = INITIAL_MEMBERS.find((m) => m.id === id);
+    return found || null;
   }
 }
 
@@ -136,7 +270,7 @@ export async function createMemberInDb(member: Member): Promise<Member> {
       .select()
       .single();
     if (error) throw error;
-    return rowToMember(data);
+    return rowToMember(data as unknown as MemberRow);
   } catch (error) {
     console.error('Supabase insert error (member):', error);
     return member;
@@ -146,7 +280,7 @@ export async function createMemberInDb(member: Member): Promise<Member> {
 export async function updateMemberInDb(id: string, updates: Partial<Member>): Promise<Member | null> {
   if (!supabase) return null;
   try {
-    const patch: Record<string, any> = {};
+    const patch: Record<string, unknown> = {};
     if (updates.fullName !== undefined) patch.full_name = updates.fullName;
     if (updates.phone !== undefined) patch.phone = updates.phone;
     if (updates.gender !== undefined) patch.gender = updates.gender;
@@ -170,7 +304,7 @@ export async function updateMemberInDb(id: string, updates: Partial<Member>): Pr
       .select()
       .single();
     if (error) throw error;
-    return rowToMember(data);
+    return rowToMember(data as unknown as MemberRow);
   } catch (error) {
     console.error('Supabase update error (member):', error);
     return null;
@@ -202,7 +336,7 @@ export async function getAttendanceFromDb(): Promise<AttendanceRecord[]> {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || data.length === 0) return INITIAL_ATTENDANCE;
-    return data.map(rowToAttendance);
+    return (data as unknown as AttendanceRow[]).map(rowToAttendance);
   } catch (error) {
     console.error('Supabase fetch error (attendance):', error);
     return INITIAL_ATTENDANCE;
@@ -227,7 +361,7 @@ export async function logAttendanceInDb(rec: AttendanceRecord): Promise<Attendan
       .select()
       .single();
     if (error) throw error;
-    return rowToAttendance(data);
+    return rowToAttendance(data as unknown as AttendanceRow);
   } catch (error) {
     console.error('Supabase insert error (attendance):', error);
     return rec;
@@ -247,7 +381,7 @@ export async function getPaymentsFromDb(): Promise<PaymentRecord[]> {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || data.length === 0) return INITIAL_PAYMENTS;
-    return data.map(rowToPayment);
+    return (data as unknown as PaymentRow[]).map(rowToPayment);
   } catch (error) {
     console.error('Supabase fetch error (payments):', error);
     return INITIAL_PAYMENTS;
@@ -271,7 +405,7 @@ export async function recordPaymentInDb(pay: PaymentRecord): Promise<PaymentReco
       .select()
       .single();
     if (error) throw error;
-    return rowToPayment(data);
+    return rowToPayment(data as unknown as PaymentRow);
   } catch (error) {
     console.error('Supabase insert error (payment):', error);
     return pay;
@@ -291,7 +425,7 @@ export async function getEquipmentFromDb(): Promise<EquipmentItem[]> {
       .order('id', { ascending: true });
     if (error) throw error;
     if (!data || data.length === 0) return INITIAL_EQUIPMENT;
-    return data.map(rowToEquipment);
+    return (data as unknown as EquipmentRow[]).map(rowToEquipment);
   } catch (error) {
     console.error('Supabase fetch error (equipment):', error);
     return INITIAL_EQUIPMENT;
@@ -308,7 +442,7 @@ export async function updateEquipmentStatusInDb(id: string, status: EquipmentIte
       .select()
       .single();
     if (error) throw error;
-    return rowToEquipment(data);
+    return rowToEquipment(data as unknown as EquipmentRow);
   } catch (error) {
     console.error('Supabase update error (equipment):', error);
     return null;
@@ -328,7 +462,7 @@ export async function getLeadsFromDb(): Promise<LeadItem[]> {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || data.length === 0) return INITIAL_LEADS;
-    return data.map(rowToLead);
+    return (data as unknown as LeadRow[]).map(rowToLead);
   } catch (error) {
     console.error('Supabase fetch error (leads):', error);
     return INITIAL_LEADS;

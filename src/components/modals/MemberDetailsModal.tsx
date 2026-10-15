@@ -4,17 +4,12 @@ import React, { useState } from 'react';
 import { Member, AttendanceRecord, PaymentRecord } from '@/types';
 import {
   X,
-  Phone,
-  Calendar,
   AlertTriangle,
   CheckCircle2,
-  Clock,
   IndianRupee,
   QrCode,
   Dumbbell,
-  Utensils,
   User,
-  ShieldAlert,
   ArrowRight
 } from 'lucide-react';
 import { generateDuesReminderWhatsAppUrl } from '@/lib/whatsapp';
@@ -43,7 +38,6 @@ export function MemberDetailsModal({
   const memberAttendance = attendanceLogs.filter((a) => a.memberId === member.id);
   const memberPayments = payments.filter((p) => p.memberId === member.id);
 
-  const isExpired = member.status === 'expired';
   const hasDues = member.pendingDueInr > 0;
 
   // Calculate days left

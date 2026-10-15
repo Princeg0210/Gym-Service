@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { MemberPortal } from '@/components/MemberPortal';
 import { useGymData } from '@/lib/useGymData';
-import { Dumbbell, ShieldCheck, Home } from 'lucide-react';
+import { Dumbbell, Home } from 'lucide-react';
 
 export default function MemberPage() {
   const {
@@ -57,14 +57,6 @@ export default function MemberPage() {
             >
               <Home className="h-3.5 w-3.5" />
               <span>Showcase</span>
-            </Link>
-
-            <Link
-              href="/admin"
-              className="flex items-center gap-1.5 rounded-xl border border-[#ccff00]/40 bg-[#ccff00]/10 px-3.5 py-2 text-xs font-bold text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-all shadow-sm"
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Admin Portal</span>
             </Link>
           </div>
         </div>

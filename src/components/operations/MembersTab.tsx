@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Member, MemberStatus } from '@/types';
-import { Search, UserPlus, IndianRupee, Eye, Sparkles } from 'lucide-react';
+import { Search, UserPlus, IndianRupee, Eye } from 'lucide-react';
 
 interface MembersTabProps {
   members: Member[];

@@ -13,14 +13,14 @@ import {
   Apple,
   RefreshCw,
   Timer,
-  Sparkles,
-  ShieldCheck,
+  Sliders,
+  CheckCircle2,
   ChevronRight,
   Flame,
   Info
 } from 'lucide-react';
 import { sounds } from '@/lib/audio';
-import { INITIAL_DIET_PLANS } from '@/lib/mockData';
+import { INITIAL_MEMBERS, INITIAL_DIET_PLANS } from '@/lib/mockData';
 
 interface MemberPortalProps {
   members: Member[];
@@ -41,27 +41,31 @@ export function MemberPortal({
   // Workout Tracker State
   const [selectedRoutineIndex, setSelectedRoutineIndex] = useState<number>(0);
   const [activeRoutines, setActiveRoutines] = useState<WorkoutRoutine[]>(routines);
+  const [prevRoutines, setPrevRoutines] = useState<WorkoutRoutine[]>(routines);
+
+  if (routines !== prevRoutines) {
+    setPrevRoutines(routines);
+    setActiveRoutines(routines);
+  }
 
   // Rest Timer State
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
 
   // Diet Plan State
-  const currentMember = members.find((m) => m.id === selectedMemberId) || members[0];
+  const currentMember =
+    members.find((m) => m.id === selectedMemberId) ||
+    members[0] ||
+    INITIAL_MEMBERS[0];
   const [dietPref, setDietPref] = useState<'vegetarian' | 'eggetarian' | 'non_veg'>(
     currentMember?.dietaryPreference || 'vegetarian'
   );
 
-  // AI / Rule Generator Form
+  // Routine Generator Form
   const [genGoal, setGenGoal] = useState<'muscle_gain' | 'fat_loss' | 'general_fitness'>('muscle_gain');
   const [genLevel, setGenLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
   const [genTier, setGenTier] = useState<'tier_a' | 'tier_b'>('tier_a');
   const [generatedSuccessNotice, setGeneratedSuccessNotice] = useState<string | null>(null);
-
-  // Sync state if routines prop updates
-  useEffect(() => {
-    setActiveRoutines(routines);
-  }, [routines]);
 
   // Rest Timer Countdown Effect
   useEffect(() => {
@@ -479,16 +483,16 @@ export function MemberPortal({
             })}
           </div>
 
-          {/* AI / Rule-Engine Custom Routine Generator Section */}
+          {/* Adaptive Custom Routine Generator Section */}
           <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900">
-                  <Sparkles className="h-4 w-4" />
+                  <Sliders className="h-4 w-4" />
                 </div>
                 <div>
                   <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-                    AI & Deterministic Routine Generator
+                    Adaptive Routine Generator
                   </h4>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400">
                     Calculates volume and movement patterns based on your goals and gym equipment tier
@@ -497,8 +501,8 @@ export function MemberPortal({
               </div>
 
               <span className="flex items-center gap-1 rounded bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                100% Offline-Safe Fallback
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                Deterministic Engine
               </span>
             </div>
 
