@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { OperationsDashboard } from '@/components/OperationsDashboard';
 import { AdminAuthGuard } from '@/components/AdminAuthGuard';
 import { useGymData } from '@/lib/useGymData';
-import { usePortalLoading } from '@/components/PortalLoadingScreen';
+import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 
 export default function AdminPage() {
-  const { openPortal } = usePortalLoading();
+  const { openPortal, notifyPageReady } = usePortalLoading();
   const {
     isLoaded,
     members,
@@ -26,14 +26,20 @@ export default function AdminPage() {
     handleUpdateRoutines
   } = useGymData();
 
+  useEffect(() => {
+    if (isLoaded) {
+      notifyPageReady('/admin');
+    }
+  }, [isLoaded, notifyPageReady]);
+
   if (!isLoaded) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#060709]">
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#ccff00] border-t-transparent" />
-          <span>Loading GymPRO Admin Portal...</span>
-        </div>
-      </div>
+      <RouteLoadingScreen
+        title="Admin Operations Console"
+        badge="STAFF & MANAGEMENT"
+        subtitle="Connecting real-time reception desk, UPI dues & equipment monitors..."
+        icon="admin"
+      />
     );
   }
 

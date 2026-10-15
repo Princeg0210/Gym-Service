@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGymData } from '@/lib/useGymData';
 import { Header } from '@/components/Header';
 import { ClubShowcase } from '@/components/ClubShowcase';
 import { AddMemberModal } from '@/components/modals/AddMemberModal';
-import { usePortalLoading } from '@/components/PortalLoadingScreen';
+import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 
 export default function Home() {
-  const { openPortal } = usePortalLoading();
+  const { openPortal, notifyPageReady } = usePortalLoading();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
   const {
@@ -19,14 +19,20 @@ export default function Home() {
     handleResetData
   } = useGymData();
 
+  useEffect(() => {
+    if (isLoaded) {
+      notifyPageReady('/');
+    }
+  }, [isLoaded, notifyPageReady]);
+
   if (!isLoaded) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#060709]">
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#ccff00] border-t-transparent" />
-          <span>Loading GymPRO Systems...</span>
-        </div>
-      </div>
+      <RouteLoadingScreen
+        title="GymPRO Commercial Showcase"
+        badge="COMMERCIAL SHOWCASE"
+        subtitle="Loading interactive gym operating demo, metrics & reception scanner..."
+        icon="showcase"
+      />
     );
   }
 

@@ -1,6 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useTransition } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useTransition
+} from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Dumbbell, LayoutGrid, Loader2, CheckCircle2 } from 'lucide-react';
@@ -25,7 +33,7 @@ const PORTALS_CONFIG: Record<string, PortalInfo> = {
       'Verifying administrative credentials & session...',
       'Connecting to Supabase RLS database...',
       'Loading attendance ledger and member roster...',
-      'Opening Operations Console'
+      'Preparing Operations Desk interface...'
     ]
   },
   '/member': {
@@ -38,7 +46,7 @@ const PORTALS_CONFIG: Record<string, PortalInfo> = {
       'Authenticating athlete profile...',
       'Retrieving exercise database & progression tracking...',
       'Calculating macronutrient targets & nutrition plans...',
-      'Opening Member Portal'
+      'Preparing athlete workout arena...'
     ]
   },
   '/': {
@@ -50,7 +58,7 @@ const PORTALS_CONFIG: Record<string, PortalInfo> = {
     steps: [
       'Initializing GymPRO commercial ecosystem...',
       'Preparing live reception desk & WhatsApp simulator...',
-      'Opening Showcase'
+      'Mounting commercial club showcase...'
     ]
   }
 };
@@ -59,12 +67,14 @@ interface PortalLoadingContextType {
   isNavigating: boolean;
   targetPortal: PortalInfo | null;
   openPortal: (path: string, customOptions?: Partial<PortalInfo>) => void;
+  notifyPageReady: (pagePath?: string) => void;
 }
 
 const PortalLoadingContext = createContext<PortalLoadingContextType>({
   isNavigating: false,
   targetPortal: null,
-  openPortal: () => {}
+  openPortal: () => {},
+  notifyPageReady: () => {}
 });
 
 export function usePortalLoading() {
@@ -80,47 +90,98 @@ export function PortalLoadingProvider({ children }: { children: React.ReactNode 
   const [targetPortal, setTargetPortal] = useState<PortalInfo | null>(null);
   const [progress, setProgress] = useState(15);
   const [stepIndex, setStepIndex] = useState(0);
+  const [isFinishing, setIsFinishing] = useState(false);
+
+  const targetPathRef = useRef<string | null>(null);
+  const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const openPortal = useCallback(
     (path: string, customOptions?: Partial<PortalInfo>) => {
-      // Normalize target path
       const normalizedPath = path.split('?')[0].split('#')[0] || '/';
-      if (normalizedPath === pathname) return;
+      if (normalizedPath === pathname && !isNavigating) return;
 
       const portalConfig =
         PORTALS_CONFIG[normalizedPath] || {
           name: customOptions?.name || 'Loading Portal',
           badge: customOptions?.badge || 'GYMPRO SYSTEM',
           path: normalizedPath,
-          icon: (normalizedPath.includes('admin') ? 'admin' : normalizedPath.includes('member') ? 'member' : 'showcase') as PortalInfo['icon'],
+          icon: (normalizedPath.includes('admin')
+            ? 'admin'
+            : normalizedPath.includes('member')
+            ? 'member'
+            : 'showcase') as PortalInfo['icon'],
           subtitle: customOptions?.subtitle || 'Transitioning to requested portal...',
-          steps: ['Initializing portal environment...', 'Synchronizing data...', 'Opening view']
+          steps: ['Initializing portal environment...', 'Synchronizing data...', 'Opening view...']
         };
 
+      targetPathRef.current = normalizedPath;
       setTargetPortal({ ...portalConfig, ...customOptions });
       setIsNavigating(true);
-      setProgress(25);
+      setIsFinishing(false);
+      setProgress(20);
       setStepIndex(0);
 
-      // Start route navigation in React transition
+      // Start route push
       startTransition(() => {
         router.push(path);
       });
+
+      // Clear any prior safety timeout
+      if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
+      // Auto-fallback after 4.5s in case of unexpected network stall
+      safetyTimeoutRef.current = setTimeout(() => {
+        setIsFinishing(true);
+        setProgress(100);
+        setTimeout(() => {
+          setIsNavigating(false);
+          setTargetPortal(null);
+          setIsFinishing(false);
+          setProgress(15);
+          setStepIndex(0);
+          targetPathRef.current = null;
+        }, 350);
+      }, 4500);
     },
-    [pathname, router]
+    [pathname, router, isNavigating]
   );
 
-  // Progressive timer when navigating
+  const notifyPageReady = useCallback((pagePath?: string) => {
+    // If a specific path was passed and doesn't match our target, ignore
+    if (pagePath && targetPathRef.current && targetPathRef.current !== pagePath) {
+      return;
+    }
+
+    if (safetyTimeoutRef.current) {
+      clearTimeout(safetyTimeoutRef.current);
+      safetyTimeoutRef.current = null;
+    }
+
+    setIsFinishing(true);
+    setProgress(100);
+
+    // Keep screen visible momentarily at 100% so the user perceives completion, then fade out
+    setTimeout(() => {
+      setIsNavigating(false);
+      setTargetPortal(null);
+      setIsFinishing(false);
+      setProgress(15);
+      setStepIndex(0);
+      targetPathRef.current = null;
+    }, 400);
+  }, []);
+
+  // Progressive timer while waiting for the portal screen to finish loading
   useEffect(() => {
-    if (!isNavigating) return;
+    if (!isNavigating || isFinishing) return;
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 90) return prev;
-        const jump = Math.floor(Math.random() * 20) + 10;
-        return Math.min(prev + jump, 90);
+        // Hold at 88% until the destination page announces notifyPageReady
+        if (prev >= 88) return prev;
+        const jump = Math.floor(Math.random() * 12) + 6;
+        return Math.min(prev + jump, 88);
       });
-    }, 180);
+    }, 150);
 
     const stepInterval = setInterval(() => {
       setStepIndex((prev) => {
@@ -133,28 +194,18 @@ export function PortalLoadingProvider({ children }: { children: React.ReactNode 
       clearInterval(progressInterval);
       clearInterval(stepInterval);
     };
-  }, [isNavigating, targetPortal]);
+  }, [isNavigating, isFinishing, targetPortal]);
 
-  // When pathname changes to destination, complete progress and smoothly dismiss
+  // Fallback observer: if the route has switched to target path and 600ms elapse without explicit notifyPageReady, auto-complete
   useEffect(() => {
-    if (!isNavigating) return;
-
-    let closeTimeout: NodeJS.Timeout | undefined;
-    const finishTimeout = setTimeout(() => {
-      setProgress(100);
-      closeTimeout = setTimeout(() => {
-        setIsNavigating(false);
-        setTargetPortal(null);
-        setProgress(15);
-        setStepIndex(0);
-      }, 300);
-    }, 120);
-
-    return () => {
-      clearTimeout(finishTimeout);
-      if (closeTimeout) clearTimeout(closeTimeout);
-    };
-  }, [pathname, isNavigating]);
+    if (!isNavigating || isFinishing) return;
+    if (targetPathRef.current && pathname === targetPathRef.current) {
+      const fallbackTimer = setTimeout(() => {
+        notifyPageReady(targetPathRef.current || undefined);
+      }, 600);
+      return () => clearTimeout(fallbackTimer);
+    }
+  }, [pathname, isNavigating, isFinishing, notifyPageReady]);
 
   // Delegated click handler to intercept clicks on internal portal links
   useEffect(() => {
@@ -162,22 +213,18 @@ export function PortalLoadingProvider({ children }: { children: React.ReactNode 
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // Find closest anchor tag
       const anchor = target.closest('a') as HTMLAnchorElement | null;
       if (!anchor) return;
 
       const href = anchor.getAttribute('href');
       if (!href) return;
 
-      // Check if it's an internal portal link
       const isPortalRoute = href === '/admin' || href === '/member' || href === '/';
       if (!isPortalRoute) return;
 
-      // Only handle same-origin or root-relative paths
       const currentPath = window.location.pathname;
       if (href === currentPath) return;
 
-      // Don't intercept if ctrl/meta/shift key is pressed
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
       e.preventDefault();
@@ -191,11 +238,16 @@ export function PortalLoadingProvider({ children }: { children: React.ReactNode 
   }, [openPortal]);
 
   return (
-    <PortalLoadingContext.Provider value={{ isNavigating, targetPortal, openPortal }}>
+    <PortalLoadingContext.Provider value={{ isNavigating, targetPortal, openPortal, notifyPageReady }}>
       {children}
       <AnimatePresence>
         {isNavigating && targetPortal && (
-          <PortalLoadingOverlay portal={targetPortal} progress={progress} stepIndex={stepIndex} />
+          <PortalLoadingOverlay
+            portal={targetPortal}
+            progress={progress}
+            stepIndex={stepIndex}
+            isFinishing={isFinishing}
+          />
         )}
       </AnimatePresence>
     </PortalLoadingContext.Provider>
@@ -210,17 +262,25 @@ interface PortalLoadingOverlayProps {
   portal: PortalInfo;
   progress: number;
   stepIndex: number;
+  isFinishing?: boolean;
 }
 
-export function PortalLoadingOverlay({ portal, progress, stepIndex }: PortalLoadingOverlayProps) {
-  const currentStep = portal.steps[Math.min(stepIndex, portal.steps.length - 1)] || portal.steps[0];
+export function PortalLoadingOverlay({
+  portal,
+  progress,
+  stepIndex,
+  isFinishing
+}: PortalLoadingOverlayProps) {
+  const currentStep = isFinishing
+    ? 'Portal ready — Opening screen now...'
+    : portal.steps[Math.min(stepIndex, portal.steps.length - 1)] || portal.steps[0];
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.3 }}
       className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#060709]/96 backdrop-blur-xl px-4 text-center select-none"
     >
       {/* Dynamic Background Glow */}
@@ -230,7 +290,7 @@ export function PortalLoadingOverlay({ portal, progress, stepIndex }: PortalLoad
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Brand Pulsing Header */}
+        {/* Brand Header */}
         <div className="flex items-center gap-2 mb-6">
           <span className="font-black tracking-tight text-white text-xl">
             Gym<span className="text-[#ccff00]">PRO</span>
@@ -242,7 +302,6 @@ export function PortalLoadingOverlay({ portal, progress, stepIndex }: PortalLoad
 
         {/* Central Animated Portal Icon */}
         <div className="relative flex items-center justify-center mb-6">
-          {/* Animated Spinner Ring */}
           <div className="absolute -inset-3 rounded-3xl border-2 border-[#ccff00]/20 border-t-[#ccff00] animate-spin" />
           <div className="absolute -inset-5 rounded-3xl border border-[#ccff00]/10 animate-pulse" />
 
@@ -274,7 +333,7 @@ export function PortalLoadingOverlay({ portal, progress, stepIndex }: PortalLoad
         <div className="w-full mt-6 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-[#99cc00] via-[#ccff00] to-[#e6ff80] shadow-[0_0_12px_#ccff00]"
-            initial={{ width: '10%' }}
+            initial={{ width: '15%' }}
             animate={{ width: `${progress}%` }}
             transition={{ ease: 'easeOut', duration: 0.2 }}
           />
@@ -283,7 +342,11 @@ export function PortalLoadingOverlay({ portal, progress, stepIndex }: PortalLoad
         {/* Percentage & Step Status */}
         <div className="flex items-center justify-between w-full mt-2.5 text-xs">
           <div className="flex items-center gap-1.5 text-zinc-300 font-medium">
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-[#ccff00]" />
+            {isFinishing ? (
+              <CheckCircle2 className="h-3.5 w-3.5 text-[#ccff00]" />
+            ) : (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-[#ccff00]" />
+            )}
             <span className="font-mono text-zinc-300">{currentStep}</span>
           </div>
           <span className="font-mono font-bold text-[#ccff00]">{progress}%</span>

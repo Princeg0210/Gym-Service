@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { MemberPortal } from '@/components/MemberPortal';
 import { useGymData } from '@/lib/useGymData';
+import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 import { Dumbbell, Home } from 'lucide-react';
 
 export default function MemberPage() {
+  const { notifyPageReady } = usePortalLoading();
   const {
     isLoaded,
     members,
@@ -15,14 +17,20 @@ export default function MemberPage() {
     handleUpdateRoutines
   } = useGymData();
 
+  useEffect(() => {
+    if (isLoaded) {
+      notifyPageReady('/member');
+    }
+  }, [isLoaded, notifyPageReady]);
+
   if (!isLoaded) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#060709]">
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#ccff00] border-t-transparent" />
-          <span>Loading Member Portal...</span>
-        </div>
-      </div>
+      <RouteLoadingScreen
+        title="Athlete Member Portal"
+        badge="ATHLETE ARENA"
+        subtitle="Loading personalized workout routines, high-protein diet charts & digital pass..."
+        icon="member"
+      />
     );
   }
 
