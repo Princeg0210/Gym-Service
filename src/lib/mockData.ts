@@ -494,13 +494,23 @@ export const INITIAL_ATTENDANCE: AttendanceRecord[] = [
   },
   {
     id: 'att-3',
-    memberId: 'mem-107',
+    memberId: 'mem-103',
     memberName: 'Sneha Nair',
-    phone: '9940223344',
+    phone: '9823456789',
     checkInTime: '2026-10-13T07:55:00+05:30',
     checkInMethod: 'phone_search',
     planStatus: 'active',
     pendingDueInr: 0
+  },
+  {
+    id: 'att-4',
+    memberId: 'mem-108',
+    memberName: 'Neha Sharma',
+    phone: '9812543210',
+    checkInTime: '2026-10-13T08:30:00+05:30',
+    checkInMethod: 'phone_search',
+    planStatus: 'defaulter',
+    pendingDueInr: 6000
   }
 ];
 

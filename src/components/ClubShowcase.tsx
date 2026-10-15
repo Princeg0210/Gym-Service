@@ -333,7 +333,7 @@ export function ClubShowcase({
                     </div>
                     <div>
                       <span className="text-zinc-400">Today: </span>
-                      <span className="font-extrabold text-[#ccff00]">{todayCheckInsCount} In-Gym</span>
+                      <span suppressHydrationWarning className="font-extrabold text-[#ccff00]">{todayCheckInsCount} In-Gym</span>
                     </div>
                   </div>
                 </motion.div>
