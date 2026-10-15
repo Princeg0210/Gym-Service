@@ -14,15 +14,20 @@ import { INITIAL_MEMBERS, INITIAL_ATTENDANCE, INITIAL_PAYMENTS, INITIAL_EQUIPMEN
 // ─────────────────────────────────────────────────────────────
 // Supabase Client (replaces Neon PostgreSQL)
 // ─────────────────────────────────────────────────────────────
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 const isConfigured = Boolean(
   supabaseUrl &&
-  supabaseAnonKey &&
+  supabaseKey &&
   !supabaseUrl.includes('YOUR_PROJECT_ID') &&
-  !supabaseAnonKey.includes('YOUR_SUPABASE_ANON_KEY')
+  !supabaseKey.includes('YOUR_SUPABASE_ANON_KEY')
 );
 
 export const supabase = isConfigured
-  ? createClient(supabaseUrl!, supabaseAnonKey!)
+  ? createClient(supabaseUrl!, supabaseKey!)
   : null;
 
 // ─────────────────────────────────────────────────────────────
