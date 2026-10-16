@@ -33,8 +33,8 @@ export function Header({ onResetData, gymProfile }: HeaderProps) {
     return () => clearInterval(timer);
   }, []);
 
-  const adminHref = gymProfile ? `/admin?gym=${encodeURIComponent(gymProfile.slug)}` : '/admin';
-  const memberHref = gymProfile ? `/member?gym=${encodeURIComponent(gymProfile.slug)}` : '/member';
+  const adminLink = gymProfile ? `/admin?gym=${gymProfile.slug}` : '/admin';
+  const memberLink = gymProfile ? `/member?gym=${gymProfile.slug}` : '/member';
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#1e2330] bg-[#07090d]/95 backdrop-blur-md">
@@ -56,14 +56,12 @@ export function Header({ onResetData, gymProfile }: HeaderProps) {
                 {gymProfile ? (
                   gymProfile.gymName
                 ) : (
-                  <>Gym<span className="text-[#ccff00]">PRO</span></>
+                  <>
+                    Gym<span style={{ color: primaryColor }}>PRO</span>
+                  </>
                 )}
               </span>
-              <Badge
-                variant="default"
-                className="text-xs font-semibold py-0.5 px-2"
-                style={gymProfile ? { backgroundColor: `${primaryColor}20`, color: primaryColor, borderColor: `${primaryColor}50` } : {}}
-              >
+              <Badge variant="default" className="text-xs font-semibold py-0.5 px-2">
                 {gymProfile ? gymProfile.city.toUpperCase() : 'INDIA'}
               </Badge>
             </div>
@@ -89,12 +87,12 @@ export function Header({ onResetData, gymProfile }: HeaderProps) {
 
         {/* Dedicated Portals Links & Reset */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link href={adminHref}>
+          <Link href={adminLink}>
             <Button
               variant="volt"
               size="sm"
-              className="font-black tracking-wide"
-              style={gymProfile ? { backgroundColor: primaryColor, color: '#000' } : {}}
+              className="font-black tracking-wide text-black"
+              style={{ backgroundColor: primaryColor }}
             >
               <ShieldCheck className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Admin Portal</span>
@@ -102,7 +100,7 @@ export function Header({ onResetData, gymProfile }: HeaderProps) {
             </Button>
           </Link>
 
-          <Link href={memberHref}>
+          <Link href={memberLink}>
             <Button variant="secondary" size="sm" className="font-semibold text-zinc-200">
               <UserCheck className="h-3.5 w-3.5" style={{ color: primaryColor }} />
               <span className="hidden sm:inline">Member Portal</span>

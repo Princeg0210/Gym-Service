@@ -1,42 +1,34 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, use, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useGymData } from '@/lib/useGymData';
 import { Header } from '@/components/Header';
 import { ClubShowcase } from '@/components/ClubShowcase';
 import { AddMemberModal } from '@/components/modals/AddMemberModal';
-import { RouteLoadingScreen } from '@/components/PortalLoadingScreen';
+import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 import { GymProfile } from '@/types';
 import { gymApiClient } from '@/client/api/gymApiClient';
 import { INITIAL_GYM_PROFILES } from '@/lib/mockGyms';
-import {
-  Dumbbell,
-  Clock,
-  MapPin,
-  Phone,
-  MessageCircle,
-  ShieldAlert,
-  ArrowLeft,
-  ShieldCheck,
-  Globe
-} from 'lucide-react';
+import { Dumbbell, ArrowLeft, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface GymPageProps {
   params: Promise<{ slug: string }>;
 }
 
-function GymPageContent({ slug }: { slug: string }) {
-  const router = useRouter();
-  const [gymProfile, setGymProfile] = useState<GymProfile | null>(null);
-  const [gymLoading, setGymLoading] = useState<boolean>(true);
-  const [isNotFound, setIsNotFound] = useState<boolean>(false);
+function DynamicGymLandingContent({ params }: GymPageProps) {
+  const resolvedParams = use(params);
+  const slug = resolvedParams.slug;
+
+  const { openPortal, notifyPageReady } = usePortalLoading();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [gymProfile, setGymProfile] = useState<GymProfile | null>(null);
+  const [isLoadingGym, setIsLoadingGym] = useState(true);
+  const [gymNotFound, setGymNotFound] = useState(false);
 
   const {
-    isLoaded: isDataLoaded,
+    isLoaded,
     members,
     attendanceLogs,
     handleMemberCreated,
@@ -44,142 +36,162 @@ function GymPageContent({ slug }: { slug: string }) {
   } = useGymData();
 
   useEffect(() => {
-    async function loadGym() {
-      setGymLoading(true);
+    async function fetchProfile() {
+      setIsLoadingGym(true);
       try {
-        const fetched = await gymApiClient.getGymBySlug(slug);
-        if (fetched) {
-          setGymProfile(fetched);
-          setIsNotFound(false);
+        const profile = await gymApiClient.getGymBySlug(slug);
+        if (profile) {
+          setGymProfile(profile);
+          setGymNotFound(false);
         } else {
-          setIsNotFound(true);
+          // Check local seeds
+          const local = INITIAL_GYM_PROFILES.find((g) => g.slug === slug);
+          if (local) {
+            setGymProfile(local);
+            setGymNotFound(false);
+          } else {
+            setGymNotFound(true);
+          }
         }
       } catch (err) {
-        console.warn('API lookup failed, checking static seed profiles:', err);
-        const fallback = INITIAL_GYM_PROFILES.find(
-          (g) => g.slug.toLowerCase() === slug.toLowerCase() || g.id === slug
-        );
-        if (fallback) {
-          setGymProfile(fallback);
-          setIsNotFound(false);
+        console.warn(`Gym profile lookup for "${slug}" failed on API, checking initial seeds:`, err);
+        const local = INITIAL_GYM_PROFILES.find((g) => g.slug === slug);
+        if (local) {
+          setGymProfile(local);
+          setGymNotFound(false);
         } else {
-          setIsNotFound(true);
+          setGymNotFound(true);
         }
       } finally {
-        setGymLoading(false);
+        setIsLoadingGym(false);
       }
     }
-    loadGym();
+
+    if (slug) {
+      fetchProfile();
+    }
   }, [slug]);
 
-  if (gymLoading || !isDataLoaded) {
+  useEffect(() => {
+    if (isLoaded && !isLoadingGym) {
+      notifyPageReady(`/gym/${slug}`);
+    }
+  }, [isLoaded, isLoadingGym, notifyPageReady, slug]);
+
+  if (!isLoaded || isLoadingGym) {
     return (
       <RouteLoadingScreen
-        title={`GymPRO • ${slug.toUpperCase()}`}
-        badge="TENANT SHOWCASE"
-        subtitle="Loading customized gym branding, plans, biomechanics & front desk telemetry..."
+        title={`Loading ${slug.toUpperCase()}...`}
+        badge="GYM SHOWCASE"
+        subtitle="Loading custom brand palette, membership plans & biomechanical specs..."
         icon="showcase"
       />
     );
   }
 
-  // 404: Gym Profile Not Found
-  if (isNotFound || !gymProfile) {
+  // 404: Gym Not Found
+  if (gymNotFound || !gymProfile) {
     return (
       <div className="min-h-screen bg-[#060709] text-zinc-100 flex flex-col items-center justify-center p-6 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 mb-4">
-          <ShieldAlert className="h-8 w-8" />
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white">Gym Profile Not Found</h1>
-        <p className="mt-2 text-sm text-zinc-400 max-w-md">
-          The gym landing page for <span className="font-mono text-[#ccff00]">/gym/{slug}</span> does not exist or has been removed.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/">
-            <Button variant="volt" size="sm" className="font-bold">
-              <ArrowLeft className="h-4 w-4 mr-1.5" />
-              <span>Return to GymPRO Main</span>
-            </Button>
-          </Link>
-          <Link href="/admin">
-            <Button variant="secondary" size="sm" className="font-bold">
-              <ShieldCheck className="h-4 w-4 mr-1.5" />
-              <span>Open Admin CMS</span>
-            </Button>
-          </Link>
+        <div className="max-w-md space-y-5 rounded-2xl border border-[#1e2433] bg-[#0c1017] p-8 shadow-2xl">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-400 border border-red-500/20">
+            <AlertTriangle className="h-7 w-7" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black text-white">Gym Branch Not Found</h1>
+            <p className="text-xs text-zinc-400">
+              No registered gym landing page corresponds to <span className="font-mono text-[#ccff00]">/gym/{slug}</span>.
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col gap-2">
+            <Link href="/">
+              <Button variant="volt" className="w-full text-xs font-black">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Return to GymPRO Main Hub
+              </Button>
+            </Link>
+
+            <Link href="/admin">
+              <Button variant="outline" className="w-full text-xs font-bold border-[#202738]">
+                <ShieldCheck className="h-4 w-4 mr-1.5 text-[#ccff00]" />
+                Create Gym in CMS Admin
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Unpublished / Draft State (Notice for visitors)
+  // Draft / Unpublished Mode: Coming Soon
   if (!gymProfile.isPublished) {
     return (
       <div className="min-h-screen bg-[#060709] text-zinc-100 flex flex-col items-center justify-center p-6 text-center">
-        <div
-          className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-xl mb-4"
-          style={{ backgroundColor: gymProfile.primaryColor }}
-        >
-          <Dumbbell className="h-8 w-8 text-black" />
-        </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-xs font-bold text-yellow-400 mb-3">
-          <Clock className="h-3.5 w-3.5" />
-          <span>LAUNCHING SOON • CMS DRAFT MODE</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white">{gymProfile.gymName}</h1>
-        <p className="mt-2 text-sm text-zinc-300 max-w-lg">{gymProfile.tagline}</p>
-        
-        <div className="mt-6 rounded-2xl border border-[#1e2433] bg-[#0c1017] p-6 max-w-md w-full space-y-3 text-xs text-left">
-          <div className="flex items-start gap-2.5 text-zinc-300">
-            <MapPin className="h-4 w-4 shrink-0 text-[#ccff00] mt-0.5" />
-            <span>{gymProfile.address}, {gymProfile.city}, {gymProfile.state} - {gymProfile.pincode}</span>
+        <div className="max-w-lg space-y-6 rounded-3xl border border-[#1e2433] bg-[#0c1017] p-10 shadow-2xl">
+          <div
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-black shadow-lg"
+            style={{ backgroundColor: gymProfile.primaryColor }}
+          >
+            <Dumbbell className="h-8 w-8" />
           </div>
-          <div className="flex items-center gap-2.5 text-zinc-300">
-            <Phone className="h-4 w-4 shrink-0 text-[#ccff00]" />
-            <span>+{gymProfile.phone}</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-zinc-300">
-            <MessageCircle className="h-4 w-4 shrink-0 text-emerald-400" />
-            <span>WhatsApp: +{gymProfile.whatsappNumber}</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-zinc-300">
-            <Clock className="h-4 w-4 shrink-0 text-cyan-400" />
-            <span>{gymProfile.operatingHours}</span>
-          </div>
-        </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href={`/admin?gym=${encodeURIComponent(gymProfile.slug)}`}>
-            <Button
-              variant="volt"
-              size="sm"
-              className="font-bold text-black"
-              style={{ backgroundColor: gymProfile.primaryColor }}
+          <div className="space-y-2">
+            <span
+              className="text-[10px] font-mono font-black uppercase tracking-wider px-3 py-1 rounded-full"
+              style={{
+                backgroundColor: `${gymProfile.primaryColor}20`,
+                color: gymProfile.primaryColor
+              }}
             >
-              <Globe className="h-4 w-4 mr-1.5" />
-              <span>Admin Preview / Edit CMS</span>
-            </Button>
-          </Link>
-          <Link href="/">
-            <Button variant="outline" size="sm" className="font-bold border-[#202738]">
-              <ArrowLeft className="h-4 w-4 mr-1.5" />
-              <span>All Gyms</span>
-            </Button>
-          </Link>
+              LAUNCHING SOON • {gymProfile.city.toUpperCase()}
+            </span>
+            <h1 className="text-3xl font-black text-white uppercase tracking-tight">
+              {gymProfile.gymName}
+            </h1>
+            <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+              {gymProfile.tagline}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[#1e2433] bg-[#121724] p-4 text-xs text-zinc-300 space-y-1.5 text-left">
+            <p className="font-bold text-white">Facility Coordinates:</p>
+            <p className="text-zinc-400">{gymProfile.address}</p>
+            <p className="text-zinc-400">Front Desk: +{gymProfile.phone}</p>
+            <p className="text-zinc-400">WhatsApp: +{gymProfile.whatsappNumber}</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <Link href="/" className="w-full">
+              <Button variant="outline" className="w-full text-xs font-bold border-[#202738]">
+                GymPRO Hub
+              </Button>
+            </Link>
+            <Link href="/admin" className="w-full">
+              <Button
+                variant="volt"
+                className="w-full text-xs font-black text-black"
+                style={{ backgroundColor: gymProfile.primaryColor }}
+              >
+                Admin CMS Preview
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Active Live Published Gym Landing Page
-  const activeMembersCount = members.filter((m) => m.status === 'active').length;
-  const unpaidDuesCount = members.filter((m) => m.pendingDueInr > 0).length;
+  // Filter tenant-specific metrics if gymId matches, or overall fallback
+  const tenantMembers = members.filter((m) => !m.gymId || m.gymId === gymProfile.id);
+  const activeMembersCount = tenantMembers.filter((m) => m.status === 'active').length;
+  const unpaidDuesCount = tenantMembers.filter((m) => m.pendingDueInr > 0).length;
 
   const handleSwitchMode = (mode: 'showcase' | 'operations' | 'member_portal') => {
     if (mode === 'operations') {
-      router.push(`/admin?gym=${encodeURIComponent(gymProfile.slug)}`);
+      openPortal(`/admin?gym=${slug}`);
     } else if (mode === 'member_portal') {
-      router.push(`/member?gym=${encodeURIComponent(gymProfile.slug)}`);
+      openPortal(`/member?gym=${slug}`);
     }
   };
 
@@ -188,13 +200,12 @@ function GymPageContent({ slug }: { slug: string }) {
       className="min-h-screen bg-[#060709] text-zinc-100 antialiased selection:bg-[#ccff00] selection:text-black"
       style={
         {
-          '--gym-primary': gymProfile.primaryColor,
-          '--gym-accent': gymProfile.accentColor,
-          '--gym-secondary': gymProfile.secondaryColor
+          '--brand-primary': gymProfile.primaryColor,
+          '--brand-accent': gymProfile.accentColor
         } as React.CSSProperties
       }
     >
-      {/* Dynamic Header with Gym Name and Branding */}
+      {/* Universal Tenant Header with Gym Specific Name & Theme */}
       <Header
         currentMode="showcase"
         onModeChange={handleSwitchMode}
@@ -213,18 +224,16 @@ function GymPageContent({ slug }: { slug: string }) {
         />
       </main>
 
-      {/* Global Add Member Modal */}
+      {/* Global Add Member Modal (auto-associating with gymId) */}
       {isAddMemberOpen && (
         <AddMemberModal
           onClose={() => setIsAddMemberOpen(false)}
-          onMemberCreated={(newMember, initialPayment) => {
-            handleMemberCreated(
-              {
-                ...newMember,
-                gymId: gymProfile.id
-              },
-              initialPayment
-            );
+          onMemberCreated={(newMem, initPay) => {
+            const tenantMember = {
+              ...newMem,
+              gymId: gymProfile.id
+            };
+            handleMemberCreated(tenantMember, initPay);
           }}
         />
       )}
@@ -232,20 +241,19 @@ function GymPageContent({ slug }: { slug: string }) {
   );
 }
 
-export default function PersonalizedGymPage({ params }: GymPageProps) {
-  const unwrappedParams = React.use(params);
+export default function DynamicGymLandingPage(props: GymPageProps) {
   return (
     <Suspense
       fallback={
         <RouteLoadingScreen
-          title="GymPRO Commercial Showcase"
-          badge="TENANT SHOWCASE"
-          subtitle="Loading customized gym branding..."
+          title="Loading Gym Showcase..."
+          badge="GYM SHOWCASE"
+          subtitle="Loading custom brand palette, membership plans & biomechanical specs..."
           icon="showcase"
         />
       }
     >
-      <GymPageContent slug={unwrappedParams.slug} />
+      <DynamicGymLandingContent {...props} />
     </Suspense>
   );
 }

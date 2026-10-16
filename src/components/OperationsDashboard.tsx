@@ -558,8 +558,14 @@ export function OperationsDashboard({
                 <Globe className="h-4 w-4 shrink-0" />
                 <span>Gym Landing CMS</span>
               </div>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                TENANTS
+              <span
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                  activeTab === 'landing_cms'
+                    ? 'bg-black text-[#ccff00]'
+                    : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                }`}
+              >
+                BRAND
               </span>
             </button>
           </nav>

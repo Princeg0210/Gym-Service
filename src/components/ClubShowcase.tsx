@@ -653,17 +653,24 @@ export function ClubShowcase({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             {gymProfile?.membershipPlans && gymProfile.membershipPlans.length > 0 ? (
-              gymProfile.membershipPlans.map((plan) => {
-                const isPopular = Boolean(plan.isPopular);
+              gymProfile.membershipPlans.map((plan, idx) => {
+                const isPopular = Boolean(plan.isPopular || idx === 1);
                 return (
                   <div
-                    key={plan.id}
-                    className={`flex flex-col justify-between rounded-3xl p-7 transition-all ${
+                    key={plan.id || idx}
+                    className={`relative flex flex-col justify-between rounded-3xl p-7 transition-all ${
                       isPopular
-                        ? 'relative border-2 bg-[#0f141f] shadow-2xl transform lg:-translate-y-2'
+                        ? 'border-2 shadow-2xl transform lg:-translate-y-2'
                         : 'border border-[#222738] bg-[#0c0f16]'
                     }`}
-                    style={isPopular ? { borderColor: primaryColor } : {}}
+                    style={
+                      isPopular
+                        ? {
+                            borderColor: primaryColor,
+                            backgroundColor: '#0f141f'
+                          }
+                        : undefined
+                    }
                   >
                     {isPopular && (
                       <div
@@ -682,23 +689,23 @@ export function ClubShowcase({
                         {plan.name}
                       </span>
                       <div className="mt-2 flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-white">₹{plan.feeInr.toLocaleString('en-IN')}</span>
+                        <span className="text-4xl font-black text-white">
+                          ₹{plan.feeInr.toLocaleString('en-IN')}
+                        </span>
                         <span className="text-xs text-zinc-400 font-mono">
-                          /{plan.durationMonths} {plan.durationMonths === 1 ? 'month' : 'months'}
+                          /{plan.durationMonths === 1 ? 'month' : `${plan.durationMonths} months`}
                         </span>
                       </div>
                       <p className="mt-3 text-xs text-zinc-300">
-                        {plan.durationMonths === 1
-                          ? 'Flexible monthly pass with full equipment and locker access.'
-                          : `${plan.durationMonths}-Month high-intensity physical progression plan.`}
+                        Personalized commercial access with instant WhatsApp payment confirmation.
                       </p>
 
                       <ul className="mt-6 space-y-3 text-xs text-zinc-200">
-                        {plan.features.map((feat, idx) => (
-                          <li key={idx} className="flex items-center gap-2">
+                        {plan.features.map((feat, fIdx) => (
+                          <li key={fIdx} className="flex items-center gap-2">
                             <CheckCircle2
-                              className="h-4 w-4 shrink-0"
-                              style={{ color: isPopular ? primaryColor : '#34d399' }}
+                              className={`h-4 w-4 shrink-0 ${isPopular ? '' : 'text-emerald-400'}`}
+                              style={isPopular ? { color: primaryColor } : undefined}
                             />
                             <span>{feat}</span>
                           </li>
@@ -709,14 +716,10 @@ export function ClubShowcase({
                     <div className="mt-8 pt-4 border-t border-[#1f2434]">
                       <button
                         onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                        className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider transition-all shadow-md ${
-                          isPopular
-                            ? 'text-black hover:opacity-90'
-                            : 'border border-zinc-700 bg-[#161b26] text-white hover:border-zinc-500'
-                        }`}
-                        style={isPopular ? { backgroundColor: primaryColor } : {}}
+                        className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider transition-all shadow-md text-black"
+                        style={{ backgroundColor: primaryColor }}
                       >
-                        <span>Choose {plan.name}</span>
+                        <span>Join {plan.name}</span>
                         <ArrowUpRight className="h-4 w-4" />
                       </button>
                     </div>
@@ -768,21 +771,13 @@ export function ClubShowcase({
                 </div>
 
                 {/* Plan 2: Pro */}
-                <div
-                  className="relative flex flex-col justify-between rounded-3xl border-2 bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2"
-                  style={{ borderColor: primaryColor }}
-                >
-                  <div
-                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-black uppercase tracking-wider text-black"
-                    style={{ backgroundColor: primaryColor }}
-                  >
+                <div className="relative flex flex-col justify-between rounded-3xl border-2 border-[#ccff00] bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ccff00] px-4 py-1 text-xs font-black uppercase tracking-wider text-black">
                     Most Popular
                   </div>
 
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
-                      Pro Tier
-                    </span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">Pro Tier</span>
                     <div className="mt-2 flex items-baseline gap-1">
                       <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '3,999' : '36,000'}</span>
                       <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'quarter' : 'year'}</span>
@@ -793,23 +788,23 @@ export function ClubShowcase({
 
                     <ul className="mt-6 space-y-3 text-xs text-zinc-200">
                       <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
                         <span className="font-semibold text-white">Unlimited All-Branch Access</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
                         <span>1 Personal Trainer Session / mo</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
                         <span>Indian Macro Diet Consultation</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
                         <span>Instant WhatsApp Fee Receipts</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
                         <span>Peak-Hour Equipment Swap Engine</span>
                       </li>
                     </ul>
@@ -818,8 +813,7 @@ export function ClubShowcase({
                   <div className="mt-8 pt-4 border-t border-[#262c3e]">
                     <button
                       onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                      className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black hover:opacity-90 transition-all shadow-md"
-                      style={{ backgroundColor: primaryColor }}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#b5e600] transition-all shadow-md"
                     >
                       <span>Join Pro Now</span>
                       <ArrowUpRight className="h-4 w-4" />
@@ -1013,19 +1007,14 @@ export function ClubShowcase({
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
-                <div
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-black font-black text-xs"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  {gymName.substring(0, 2).toUpperCase()}
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black text-xs">
+                  GP
                 </div>
                 <div>
                   <h3 className="text-xs font-bold text-white leading-tight">
-                    {gymProfile ? `Welcome to ${gymName}` : "Let's power your next gym milestone."}
+                    Let&apos;s power your next gym milestone.
                   </h3>
-                  <p className="text-xs text-zinc-400 font-mono">
-                    {gymProfile ? `${gymProfile.city} Live Telemetry` : 'Sector 15 Live Telemetry'}
-                  </p>
+                  <p className="text-xs text-zinc-400 font-mono">Sector 15 Live Telemetry</p>
                 </div>
               </div>
 
@@ -1045,8 +1034,7 @@ export function ClubShowcase({
             <div className="mt-3 flex items-center justify-between border-t border-[#1f2434] pt-2.5">
               <button
                 onClick={() => onSwitchMode('operations')}
-                className="flex items-center gap-1.5 text-xs font-bold hover:underline"
-                style={{ color: primaryColor }}
+                className="flex items-center gap-1.5 text-xs font-bold text-[#ccff00] hover:underline"
               >
                 <span>Launch Admin Portal</span>
                 <ArrowUpRight className="h-3.5 w-3.5" />

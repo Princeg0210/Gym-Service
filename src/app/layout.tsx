@@ -13,8 +13,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
 import { PortalLoadingProvider } from '@/components/PortalLoadingScreen';
 
 export const metadata: Metadata = {
