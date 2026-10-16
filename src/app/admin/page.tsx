@@ -1,13 +1,17 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { OperationsDashboard } from '@/components/OperationsDashboard';
 import { AdminAuthGuard } from '@/components/AdminAuthGuard';
 import { useGymData } from '@/lib/useGymData';
 import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 
-export default function AdminPage() {
+function AdminPageContent() {
   const { openPortal, notifyPageReady } = usePortalLoading();
+  const searchParams = useSearchParams();
+  const gymSlug = searchParams.get('gym') || '';
+
   const {
     isLoaded,
     members,
@@ -43,6 +47,9 @@ export default function AdminPage() {
     );
   }
 
+  const showcaseUrl = gymSlug ? `/gym/${gymSlug}` : '/';
+  const memberPortalUrl = gymSlug ? `/member?gym=${gymSlug}` : '/member';
+
   return (
     <AdminAuthGuard>
       <OperationsDashboard
@@ -60,9 +67,27 @@ export default function AdminPage() {
         onUpdateRoutines={handleUpdateRoutines}
         checkedInBannerMember={checkedInBannerMember}
         onDismissBanner={() => setCheckedInBannerMember(null)}
-        onSwitchToShowcase={() => openPortal('/')}
-        onSwitchToMemberPortal={() => openPortal('/member')}
+        onSwitchToShowcase={() => openPortal(showcaseUrl)}
+        onSwitchToMemberPortal={() => openPortal(memberPortalUrl)}
+        initialGymSlug={gymSlug}
       />
     </AdminAuthGuard>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <RouteLoadingScreen
+          title="Admin Operations Console"
+          badge="STAFF & MANAGEMENT"
+          subtitle="Connecting real-time reception desk, UPI dues & equipment monitors..."
+          icon="admin"
+        />
+      }
+    >
+      <AdminPageContent />
+    </Suspense>
   );
 }

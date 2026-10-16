@@ -88,6 +88,7 @@ interface OperationsDashboardProps {
   onSwitchToShowcase?: () => void;
   onSwitchToMemberPortal?: () => void;
   onUpdateRoutines?: (routines: WorkoutRoutine[]) => void;
+  initialGymSlug?: string;
 }
 
 export function OperationsDashboard({
@@ -104,10 +105,34 @@ export function OperationsDashboard({
   onToggleEquipmentStatus,
   checkedInBannerMember,
   onDismissBanner,
-  onUpdateRoutines
+  onUpdateRoutines,
+  initialGymSlug
 }: OperationsDashboardProps) {
   // Navigation State
   const [activeTab, setActiveTab] = useState<SidebarTab>('dashboard');
+  const [currentGymName, setCurrentGymName] = useState<string>('Alpha Fitness Gym');
+  const [currentGymCity, setCurrentGymCity] = useState<string>('Bengaluru');
+
+  useEffect(() => {
+    if (initialGymSlug) {
+      import('@/client/api/gymApiClient').then(({ gymApiClient }) => {
+        gymApiClient.getGymBySlug(initialGymSlug).then((profile) => {
+          if (profile) {
+            setCurrentGymName(profile.gymName);
+            setCurrentGymCity(profile.city || 'Main Facility');
+          }
+        }).catch(() => {
+          import('@/lib/mockGyms').then(({ INITIAL_GYM_PROFILES }) => {
+            const found = INITIAL_GYM_PROFILES.find((g) => g.slug === initialGymSlug);
+            if (found) {
+              setCurrentGymName(found.gymName);
+              setCurrentGymCity(found.city || 'Main Facility');
+            }
+          });
+        });
+      });
+    }
+  }, [initialGymSlug]);
   const [timeframe, setTimeframe] = useState<'today' | 'this_week' | 'this_month'>('today');
   const [checkInTab, setCheckInTab] = useState<'quick' | 'qr'>('quick');
 
@@ -229,7 +254,7 @@ export function OperationsDashboard({
                 </span>
               </div>
               <p className="text-xs text-zinc-400 font-medium leading-none">
-                Operations & Management Console • Alpha Fitness
+                Operations & Management Console • {currentGymName}
               </p>
             </div>
           </div>
@@ -578,15 +603,15 @@ export function OperationsDashboard({
                 <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-zinc-800">
                   <Image
                     src="/images/gym_equipment_modern.jpg"
-                    alt="Alpha Fitness Gym"
+                    alt={currentGymName}
                     fill
                     sizes="32px"
                     className="object-cover"
                   />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white leading-tight">Alpha Fitness Gym</p>
-                  <p className="text-xs text-zinc-400 leading-tight">Koramangala, Bengaluru</p>
+                  <p className="text-xs font-bold text-white leading-tight">{currentGymName}</p>
+                  <p className="text-xs text-zinc-400 leading-tight">{currentGymCity} • Active</p>
                 </div>
               </div>
               <ChevronRight className="h-4 w-4 text-zinc-400" />
@@ -877,8 +902,9 @@ export function OperationsDashboard({
                   <label className="text-xs font-bold text-zinc-400">Gym Branch Name</label>
                   <input
                     type="text"
-                    defaultValue="Alpha Fitness Gym"
-                    className="mt-1 w-full rounded-xl border border-[#202738] bg-[#101522] px-3.5 py-2 text-xs font-bold text-white outline-none"
+                    value={currentGymName}
+                    onChange={(e) => setCurrentGymName(e.target.value)}
+                    className="mt-1 w-full rounded-xl border border-[#202738] bg-[#101522] px-3.5 py-2 text-xs font-bold text-white outline-none focus:border-[#ccff00]"
                   />
                 </div>
                 <div>

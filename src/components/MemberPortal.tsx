@@ -32,13 +32,15 @@ interface MemberPortalProps {
   routines: WorkoutRoutine[];
   exercises: Exercise[];
   onUpdateRoutines: (routines: WorkoutRoutine[]) => void;
+  gymName?: string;
 }
 
 export function MemberPortal({
   members,
   routines,
   exercises,
-  onUpdateRoutines
+  onUpdateRoutines,
+  gymName
 }: MemberPortalProps) {
   const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || 'mem-101');
   const [activePortalTab, setActivePortalTab] = useState<'workout' | 'diet' | 'pass'>('workout');
@@ -702,7 +704,7 @@ export function MemberPortal({
           <div className="w-full max-w-sm rounded-3xl border border-[#262c3e] bg-[#0c0f16] p-7 shadow-2xl text-center">
             <div className="mb-4">
               <span className="text-xs font-black uppercase tracking-widest text-[#ccff00]">
-                GymPRO Access Pass
+                {gymName ? `${gymName} Access Pass` : 'GymPRO Access Pass'}
               </span>
               <h3 className="text-2xl font-black text-white mt-1">
                 {currentMember.fullName}
