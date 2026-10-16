@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getMembersFromDb } from '@/lib/db';
-import { generateMembersAccountingCsv } from '@/lib/analytics';
+import { accountingExportService } from '@/server';
 
 export async function GET() {
   try {
-    const members = await getMembersFromDb();
-    const csvContent = generateMembersAccountingCsv(members);
-
-    const dateStr = new Date().toISOString().split('T')[0];
-    const filename = `gympro-accounts-report-${dateStr}.csv`;
+    const { csvContent, filename } = await accountingExportService.exportMembersCsv();
 
     return new NextResponse(csvContent, {
       status: 200,

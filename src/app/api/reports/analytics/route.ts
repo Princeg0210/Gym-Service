@@ -1,15 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getMembersFromDb, getPaymentsFromDb } from '@/lib/db';
-import { computeFinancialAnalytics } from '@/lib/analytics';
+import { analyticsService } from '@/server';
 
 export async function GET() {
   try {
-    const [members, payments] = await Promise.all([
-      getMembersFromDb(),
-      getPaymentsFromDb()
-    ]);
-
-    const analytics = computeFinancialAnalytics(members, payments);
+    const analytics = await analyticsService.getFinancialAnalytics();
 
     return NextResponse.json({
       success: true,
