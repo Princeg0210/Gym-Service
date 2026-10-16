@@ -299,6 +299,7 @@ export function ClubShowcase({
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
+                    unoptimized={heroImg.startsWith('http')}
                     className="object-cover object-center filter brightness-95"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-80" />
