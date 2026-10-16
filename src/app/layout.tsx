@@ -14,6 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { PortalLoadingProvider } from '@/components/PortalLoadingScreen';
 
 export const metadata: Metadata = {
@@ -33,9 +34,11 @@ export default function RootLayout({
       className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#060709] text-zinc-100">
-        <PortalLoadingProvider>
-          {children}
-        </PortalLoadingProvider>
+        <Suspense fallback={null}>
+          <PortalLoadingProvider>
+            {children}
+          </PortalLoadingProvider>
+        </Suspense>
       </body>
     </html>
   );

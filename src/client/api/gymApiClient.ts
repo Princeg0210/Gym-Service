@@ -5,7 +5,8 @@ import {
   EquipmentItem,
   LeadItem,
   ExpiringAlertItem,
-  FinancialAnalytics
+  FinancialAnalytics,
+  GymProfile
 } from '@/types';
 
 export interface ApiResponse<T> {
@@ -17,6 +18,52 @@ export interface ApiResponse<T> {
 }
 
 export const gymApiClient = {
+  // Gym CMS & Tenant Profiles
+  async getGyms(publishedOnly = false): Promise<GymProfile[]> {
+    const url = publishedOnly ? '/api/gyms?publishedOnly=true' : '/api/gyms';
+    const res = await fetch(url);
+    const json: ApiResponse<GymProfile[]> = await res.json();
+    if (!json.success || !Array.isArray(json.data)) throw new Error(json.error || 'Failed to fetch gyms');
+    return json.data;
+  },
+
+  async getGymBySlug(slug: string): Promise<GymProfile> {
+    const res = await fetch(`/api/gyms/${encodeURIComponent(slug)}`);
+    const json: ApiResponse<GymProfile> = await res.json();
+    if (!json.success || !json.data) throw new Error(json.error || `Gym not found: ${slug}`);
+    return json.data;
+  },
+
+  async createGym(gym: Partial<GymProfile>): Promise<GymProfile> {
+    const res = await fetch('/api/gyms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gym)
+    });
+    const json: ApiResponse<GymProfile> = await res.json();
+    if (!json.success || !json.data) throw new Error(json.error || 'Failed to create gym profile');
+    return json.data;
+  },
+
+  async updateGym(slugOrId: string, updates: Partial<GymProfile>): Promise<GymProfile> {
+    const res = await fetch(`/api/gyms/${encodeURIComponent(slugOrId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    });
+    const json: ApiResponse<GymProfile> = await res.json();
+    if (!json.success || !json.data) throw new Error(json.error || 'Failed to update gym profile');
+    return json.data;
+  },
+
+  async deleteGym(slugOrId: string): Promise<boolean> {
+    const res = await fetch(`/api/gyms/${encodeURIComponent(slugOrId)}`, {
+      method: 'DELETE'
+    });
+    const json: ApiResponse<{ deleted: boolean }> = await res.json();
+    return Boolean(json.success);
+  },
+
   // Members
   async getMembers(): Promise<Member[]> {
     const res = await fetch('/api/members');

@@ -17,6 +17,7 @@ import {
   Award
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { GymProfile } from '@/types';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -24,13 +25,22 @@ interface ClubShowcaseProps {
   activeMembersCount?: number;
   todayCheckInsCount: number;
   unpaidDuesCount?: number;
+  gymProfile?: GymProfile;
 }
 
 export function ClubShowcase({
   onSwitchMode,
   onOpenAddMember,
-  todayCheckInsCount
+  todayCheckInsCount,
+  gymProfile
 }: ClubShowcaseProps) {
+  const primaryColor = gymProfile?.primaryColor || '#ccff00';
+  const gymName = gymProfile?.gymName || 'IronPulse Performance';
+  const heroHeadline = gymProfile?.heroHeadline || 'NO EXCUSES.';
+  const heroHighlight = gymProfile?.heroHighlight || 'ONLY RESULTS.';
+  const heroSubtitle = gymProfile?.heroSubtitle || 'Join a results-driven fitness community with certified trainers, modern bio-mechanical equipment, and personalized nutrition designed to transform your physique and performance.';
+  const heroImg = gymProfile?.heroImageUrl || '/images/gym_hero_athlete.jpg';
+
   // Interactive Why Train With Us active feature index
   const [activeFeatureIndex, setActiveFeatureIndex] = useState<number>(1); // Default to Modern Equipment (like IronPulse reference)
 
@@ -183,9 +193,9 @@ export function ClubShowcase({
                 transition={{ delay: 0.1 }}
                 className="text-5xl font-black uppercase tracking-tight text-white sm:text-7xl lg:text-8xl leading-[0.95]"
               >
-                NO EXCUSES.{' '}
-                <span className="text-[#ccff00] block mt-1">
-                  ONLY RESULTS.
+                {heroHeadline}{' '}
+                <span className="block mt-1" style={{ color: primaryColor }}>
+                  {heroHighlight}
                 </span>
               </motion.h1>
 
@@ -196,7 +206,7 @@ export function ClubShowcase({
                 transition={{ delay: 0.2 }}
                 className="max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg font-normal"
               >
-                Join a results-driven fitness community with certified trainers, modern bio-mechanical equipment, and personalized nutrition designed to transform your physique and performance.
+                {heroSubtitle}
               </motion.p>
 
               {/* Interactive CTAs */}
@@ -209,8 +219,9 @@ export function ClubShowcase({
                 <Button
                   size="lg"
                   variant="volt"
+                  style={{ backgroundColor: primaryColor }}
                   onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider"
+                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-black"
                 >
                   <span>Start Free Trial</span>
                   <ArrowUpRight className="h-4 w-4" />
@@ -235,7 +246,7 @@ export function ClubShowcase({
                   onClick={() => onSwitchMode('operations')}
                   className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
                 >
-                  <ShieldCheck className="h-4 w-4 text-[#ccff00]" />
+                  <ShieldCheck className="h-4 w-4" style={{ color: primaryColor }} />
                   <span>Admin Portal</span>
                 </Button>
 
@@ -245,7 +256,7 @@ export function ClubShowcase({
                   onClick={() => onSwitchMode('member_portal')}
                   className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
                 >
-                  <Users className="h-4 w-4 text-[#ccff00]" />
+                  <Users className="h-4 w-4" style={{ color: primaryColor }} />
                   <span>Member Portal</span>
                 </Button>
               </motion.div>
@@ -258,15 +269,15 @@ export function ClubShowcase({
                 className="flex flex-wrap items-center gap-5 pt-4 text-xs font-medium text-zinc-400"
               >
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#ccff00]" />
+                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
                   1-Tap WhatsApp Receipts
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#ccff00]" />
+                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
                   Peak-Hour Machine Swap
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#ccff00]" />
+                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
                   High-Protein Indian Macro Plan
                 </span>
               </motion.div>
@@ -283,8 +294,8 @@ export function ClubShowcase({
                 {/* Hero Athlete Image Card */}
                 <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-[#262c3e] bg-[#0c0f16] shadow-2xl">
                   <Image
-                    src="/images/gym_hero_athlete.jpg"
-                    alt="Athlete training with dumbbells"
+                    src={heroImg}
+                    alt={`${gymName} athlete training`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
@@ -293,8 +304,15 @@ export function ClubShowcase({
                   <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-80" />
 
                   {/* Corner Badge */}
-                  <div className="absolute top-4 left-4 rounded-full border border-[#ccff00]/40 bg-[#060709]/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ccff00] backdrop-blur-md">
-                    IronPulse Performance
+                  <div
+                    className="absolute top-4 left-4 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider backdrop-blur-md"
+                    style={{
+                      borderColor: `${primaryColor}60`,
+                      backgroundColor: 'rgba(6,7,9,0.85)',
+                      color: primaryColor
+                    }}
+                  >
+                    {gymName}
                   </div>
                 </div>
 
@@ -634,142 +652,224 @@ export function ClubShowcase({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            
-            {/* Plan 1: Basic */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Basic Tier</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '1,499' : '14,999'}</span>
-                  <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+            {gymProfile?.membershipPlans && gymProfile.membershipPlans.length > 0 ? (
+              gymProfile.membershipPlans.map((plan) => {
+                const isPopular = Boolean(plan.isPopular);
+                return (
+                  <div
+                    key={plan.id}
+                    className={`flex flex-col justify-between rounded-3xl p-7 transition-all ${
+                      isPopular
+                        ? 'relative border-2 bg-[#0f141f] shadow-2xl transform lg:-translate-y-2'
+                        : 'border border-[#222738] bg-[#0c0f16]'
+                    }`}
+                    style={isPopular ? { borderColor: primaryColor } : {}}
+                  >
+                    {isPopular && (
+                      <div
+                        className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-black uppercase tracking-wider text-black"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        Most Popular
+                      </div>
+                    )}
+
+                    <div>
+                      <span
+                        className="text-xs font-bold uppercase tracking-wider"
+                        style={{ color: isPopular ? primaryColor : '#a1a1aa' }}
+                      >
+                        {plan.name}
+                      </span>
+                      <div className="mt-2 flex items-baseline gap-1">
+                        <span className="text-4xl font-black text-white">₹{plan.feeInr.toLocaleString('en-IN')}</span>
+                        <span className="text-xs text-zinc-400 font-mono">
+                          /{plan.durationMonths} {plan.durationMonths === 1 ? 'month' : 'months'}
+                        </span>
+                      </div>
+                      <p className="mt-3 text-xs text-zinc-300">
+                        {plan.durationMonths === 1
+                          ? 'Flexible monthly pass with full equipment and locker access.'
+                          : `${plan.durationMonths}-Month high-intensity physical progression plan.`}
+                      </p>
+
+                      <ul className="mt-6 space-y-3 text-xs text-zinc-200">
+                        {plan.features.map((feat, idx) => (
+                          <li key={idx} className="flex items-center gap-2">
+                            <CheckCircle2
+                              className="h-4 w-4 shrink-0"
+                              style={{ color: isPopular ? primaryColor : '#34d399' }}
+                            />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-8 pt-4 border-t border-[#1f2434]">
+                      <button
+                        onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                        className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider transition-all shadow-md ${
+                          isPopular
+                            ? 'text-black hover:opacity-90'
+                            : 'border border-zinc-700 bg-[#161b26] text-white hover:border-zinc-500'
+                        }`}
+                        style={isPopular ? { backgroundColor: primaryColor } : {}}
+                      >
+                        <span>Choose {plan.name}</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <>
+                {/* Plan 1: Basic */}
+                <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Basic Tier</span>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '1,499' : '14,999'}</span>
+                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                    </div>
+                    <p className="mt-3 text-xs text-zinc-400">
+                      Ideal for self-directed athletes requiring standard gym access.
+                    </p>
+
+                    <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Gym Arena Access</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Full Equipment Access</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>2 Group Classes</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Standard Day Locker</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="mt-8 pt-4 border-t border-[#1f2434]">
+                    <button
+                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                      className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
+                    >
+                      Get Started
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs text-zinc-400">
-                  Ideal for self-directed athletes requiring standard gym access.
-                </p>
 
-                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Gym Arena Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Full Equipment Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>2 Group Classes</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Standard Day Locker</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
+                {/* Plan 2: Pro */}
+                <div
+                  className="relative flex flex-col justify-between rounded-3xl border-2 bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2"
+                  style={{ borderColor: primaryColor }}
                 >
-                  Get Started
-                </button>
-              </div>
-            </div>
+                  <div
+                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-black uppercase tracking-wider text-black"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    Most Popular
+                  </div>
 
-            {/* Plan 2: Pro (HIGHLIGHTED IN VOLT ACCENT LIKE IRONPULSE REFERENCE) */}
-            <div className="relative flex flex-col justify-between rounded-3xl border-2 border-[#ccff00] bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ccff00] px-4 py-1 text-xs font-black uppercase tracking-wider text-black">
-                Most Popular
-              </div>
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
+                      Pro Tier
+                    </span>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '3,999' : '36,000'}</span>
+                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'quarter' : 'year'}</span>
+                    </div>
+                    <p className="mt-3 text-xs text-zinc-300">
+                      Complete hybrid package with personalized guidance and WhatsApp invoices.
+                    </p>
 
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">Pro Tier</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '3,999' : '36,000'}</span>
-                  <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'quarter' : 'year'}</span>
+                    <ul className="mt-6 space-y-3 text-xs text-zinc-200">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <span className="font-semibold text-white">Unlimited All-Branch Access</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <span>1 Personal Trainer Session / mo</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <span>Indian Macro Diet Consultation</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <span>Instant WhatsApp Fee Receipts</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: primaryColor }} />
+                        <span>Peak-Hour Equipment Swap Engine</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="mt-8 pt-4 border-t border-[#262c3e]">
+                    <button
+                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black hover:opacity-90 transition-all shadow-md"
+                      style={{ backgroundColor: primaryColor }}
+                    >
+                      <span>Join Pro Now</span>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs text-zinc-300">
-                  Complete hybrid package with personalized guidance and WhatsApp invoices.
-                </p>
 
-                <ul className="mt-6 space-y-3 text-xs text-zinc-200">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span className="font-semibold text-white">Unlimited All-Branch Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>1 Personal Trainer Session / mo</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>Indian Macro Diet Consultation</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>Instant WhatsApp Fee Receipts</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>Peak-Hour Equipment Swap Engine</span>
-                  </li>
-                </ul>
-              </div>
+                {/* Plan 3: Elite */}
+                <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Elite Tier</span>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '9,999' : '99,000'}</span>
+                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? '6-mo' : 'year'}</span>
+                    </div>
+                    <p className="mt-3 text-xs text-zinc-400">
+                      Full concierge VIP experience with dedicated master coaching.
+                    </p>
 
-              <div className="mt-8 pt-4 border-t border-[#262c3e]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#b5e600] transition-all shadow-md"
-                >
-                  <span>Join Pro Now</span>
-                  <ArrowUpRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+                    <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Everything in Pro</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>8 Personal Training Sessions</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Custom Vegetarian / Non-Veg Macros</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Priority Support & Dedicated Locker</span>
+                      </li>
+                    </ul>
+                  </div>
 
-            {/* Plan 3: Elite */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Elite Tier</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '9,999' : '99,000'}</span>
-                  <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? '6-mo' : 'year'}</span>
+                  <div className="mt-8 pt-4 border-t border-[#1f2434]">
+                    <button
+                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                      className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
+                    >
+                      Contact Concierge
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs text-zinc-400">
-                  Full concierge VIP experience with dedicated master coaching.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Everything in Pro</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>8 Personal Training Sessions</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Custom Vegetarian / Non-Veg Macros</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Priority Support & Dedicated Locker</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
-                >
-                  Contact Concierge
-                </button>
-              </div>
-            </div>
-
+              </>
+            )}
           </div>
 
         </div>
@@ -913,14 +1013,19 @@ export function ClubShowcase({
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black text-xs">
-                  GP
+                <div
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-black font-black text-xs"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {gymName.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
                   <h3 className="text-xs font-bold text-white leading-tight">
-                    Let&apos;s power your next gym milestone.
+                    {gymProfile ? `Welcome to ${gymName}` : "Let's power your next gym milestone."}
                   </h3>
-                  <p className="text-xs text-zinc-400 font-mono">Sector 15 Live Telemetry</p>
+                  <p className="text-xs text-zinc-400 font-mono">
+                    {gymProfile ? `${gymProfile.city} Live Telemetry` : 'Sector 15 Live Telemetry'}
+                  </p>
                 </div>
               </div>
 
@@ -940,7 +1045,8 @@ export function ClubShowcase({
             <div className="mt-3 flex items-center justify-between border-t border-[#1f2434] pt-2.5">
               <button
                 onClick={() => onSwitchMode('operations')}
-                className="flex items-center gap-1.5 text-xs font-bold text-[#ccff00] hover:underline"
+                className="flex items-center gap-1.5 text-xs font-bold hover:underline"
+                style={{ color: primaryColor }}
               >
                 <span>Launch Admin Portal</span>
                 <ArrowUpRight className="h-3.5 w-3.5" />

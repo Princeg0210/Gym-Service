@@ -12,4 +12,6 @@ export * from './controllers/memberController';
 export * from './middlewares/authMiddleware';
 export * from './middlewares/errorMiddleware';
 export * from './validators/memberValidator';
+export * from './repositories/gymRepository';
+export * from './controllers/gymController';
 export * from './validators/paymentValidator';

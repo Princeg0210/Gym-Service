@@ -159,3 +159,47 @@ create policy "Allow select on leads" on leads for select using (true);
 create policy "Allow insert on leads" on leads for insert with check (length(full_name) > 0);
 create policy "Allow update on leads" on leads for update using (true);
 
+-- ============================================================
+-- 6. GYM_PROFILES TABLE (Centralized CMS & Multi-Tenant Landing Pages)
+-- ============================================================
+create table if not exists gym_profiles (
+  id                  varchar primary key,
+  slug                varchar unique not null,
+  gym_name            varchar not null,
+  tagline             text,
+  hero_headline       varchar not null default 'NO EXCUSES.',
+  hero_highlight      varchar not null default 'ONLY RESULTS.',
+  hero_subtitle       text,
+  hero_image_url      text,
+  logo_url            text,
+  primary_color       varchar not null default '#ccff00',
+  accent_color        varchar not null default '#b8e600',
+  secondary_color     varchar not null default '#121724',
+  phone               varchar not null,
+  email               varchar,
+  whatsapp_number     varchar not null,
+  upi_vpa             varchar not null,
+  address             text,
+  city                varchar not null,
+  state               varchar not null,
+  pincode             varchar,
+  operating_hours     text,
+  features            jsonb default '[]'::jsonb,
+  programs            jsonb default '[]'::jsonb,
+  membership_plans    jsonb default '[]'::jsonb,
+  trainers            jsonb default '[]'::jsonb,
+  transformations     jsonb default '[]'::jsonb,
+  is_published        boolean not null default true,
+  created_at          timestamptz default now(),
+  updated_at          timestamptz default now()
+);
+
+create index if not exists idx_gym_profiles_slug on gym_profiles(slug);
+create index if not exists idx_gym_profiles_published on gym_profiles(is_published);
+
+alter table gym_profiles enable row level security;
+create policy "Allow select on gym_profiles" on gym_profiles for select using (true);
+create policy "Allow insert on gym_profiles" on gym_profiles for insert with check (length(gym_name) > 0 and length(slug) > 0);
+create policy "Allow update on gym_profiles" on gym_profiles for update using (true);
+create policy "Allow delete on gym_profiles" on gym_profiles for delete using (true);
+

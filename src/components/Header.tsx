@@ -3,15 +3,18 @@ import Link from 'next/link';
 import { Dumbbell, RefreshCw, Clock, ShieldCheck, UserCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GymProfile } from '@/types';
 
 interface HeaderProps {
   currentMode?: 'showcase' | 'operations' | 'member_portal';
   onModeChange?: (mode: 'showcase' | 'operations' | 'member_portal') => void;
   onResetData: () => void;
+  gymProfile?: GymProfile;
 }
 
-export function Header({ onResetData }: HeaderProps) {
+export function Header({ onResetData, gymProfile }: HeaderProps) {
   const [timeStr, setTimeStr] = useState<string>('');
+  const primaryColor = gymProfile?.primaryColor || '#ccff00';
 
   useEffect(() => {
     const updateTime = () => {
@@ -30,28 +33,42 @@ export function Header({ onResetData }: HeaderProps) {
     return () => clearInterval(timer);
   }, []);
 
+  const adminHref = gymProfile ? `/admin?gym=${encodeURIComponent(gymProfile.slug)}` : '/admin';
+  const memberHref = gymProfile ? `/member?gym=${encodeURIComponent(gymProfile.slug)}` : '/member';
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#1e2330] bg-[#07090d]/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Brand & Branch */}
         <Link
-          href="/"
+          href={gymProfile ? `/gym/${gymProfile.slug}` : '/'}
           className="flex items-center gap-3 text-left group focus:outline-none"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ccff00] text-black shadow-md transition-transform group-hover:scale-105">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-black shadow-md transition-transform group-hover:scale-105"
+            style={{ backgroundColor: primaryColor }}
+          >
             <Dumbbell className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-black tracking-tight text-white text-lg">
-                Gym<span className="text-[#ccff00]">PRO</span>
+                {gymProfile ? (
+                  gymProfile.gymName
+                ) : (
+                  <>Gym<span className="text-[#ccff00]">PRO</span></>
+                )}
               </span>
-              <Badge variant="default" className="text-xs font-semibold py-0.5 px-2">
-                INDIA
+              <Badge
+                variant="default"
+                className="text-xs font-semibold py-0.5 px-2"
+                style={gymProfile ? { backgroundColor: `${primaryColor}20`, color: primaryColor, borderColor: `${primaryColor}50` } : {}}
+              >
+                {gymProfile ? gymProfile.city.toUpperCase() : 'INDIA'}
               </Badge>
             </div>
             <p className="text-xs text-zinc-400 font-medium leading-none">
-              Commercial Gym Operating Engine
+              {gymProfile ? gymProfile.tagline : 'Commercial Gym Operating Engine'}
             </p>
           </div>
         </Link>
@@ -72,17 +89,22 @@ export function Header({ onResetData }: HeaderProps) {
 
         {/* Dedicated Portals Links & Reset */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link href="/admin">
-            <Button variant="volt" size="sm" className="font-black tracking-wide">
+          <Link href={adminHref}>
+            <Button
+              variant="volt"
+              size="sm"
+              className="font-black tracking-wide"
+              style={gymProfile ? { backgroundColor: primaryColor, color: '#000' } : {}}
+            >
               <ShieldCheck className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Admin Portal</span>
               <span className="sm:hidden">Admin</span>
             </Button>
           </Link>
 
-          <Link href="/member">
+          <Link href={memberHref}>
             <Button variant="secondary" size="sm" className="font-semibold text-zinc-200">
-              <UserCheck className="h-3.5 w-3.5 text-[#ccff00]" />
+              <UserCheck className="h-3.5 w-3.5" style={{ color: primaryColor }} />
               <span className="hidden sm:inline">Member Portal</span>
               <span className="sm:hidden">Member</span>
             </Button>

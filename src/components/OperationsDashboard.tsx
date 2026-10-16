@@ -33,7 +33,8 @@ import {
   QrCode,
   UserPlus,
   Home,
-  MessageSquare
+  MessageSquare,
+  Globe
 } from 'lucide-react';
 import { AttendanceTab } from './operations/AttendanceTab';
 import { DuesTab } from './operations/DuesTab';
@@ -43,6 +44,7 @@ import { LeadsTab } from './operations/LeadsTab';
 import { WorkoutsTab } from './operations/WorkoutsTab';
 import { DietTab } from './operations/DietTab';
 import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
+import { GymCmsManager } from './operations/GymCmsManager';
 import { CheckInBanner } from './CheckInBanner';
 import { ExpiringAlertsCenter } from './ExpiringAlertsCenter';
 import { BusinessIntelligenceReports } from './BusinessIntelligenceReports';
@@ -66,7 +68,8 @@ export type SidebarTab =
   | 'equipment'
   | 'reports'
   | 'staff'
-  | 'settings';
+  | 'settings'
+  | 'landing_cms';
 
 interface OperationsDashboardProps {
   members: Member[];
@@ -543,6 +546,22 @@ export function OperationsDashboard({
               <Settings className="h-4 w-4 shrink-0" />
               <span>Settings</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('landing_cms')}
+              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'landing_cms'
+                  ? 'bg-[#ccff00] text-black shadow-md'
+                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <Globe className="h-4 w-4 shrink-0" />
+                <span>Gym Landing CMS</span>
+              </div>
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                TENANTS
+              </span>
+            </button>
           </nav>
 
           {/* Bottom Sidebar Cards: Branch & User */}
@@ -885,6 +904,10 @@ export function OperationsDashboard({
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'landing_cms' && (
+            <GymCmsManager />
           )}
         </main>
       </div>
