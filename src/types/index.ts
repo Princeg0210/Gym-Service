@@ -6,6 +6,14 @@ export type DietaryPreference = 'vegetarian' | 'eggetarian' | 'non_veg';
 
 export type MemberStatus = 'active' | 'expired' | 'defaulter' | 'trial';
 
+export interface MembershipPlan {
+  id: string;
+  name: string;
+  durationMonths: number;
+  feeInr: number;
+  features: string[];
+}
+
 export interface Member {
   id: string;
   fullName: string;

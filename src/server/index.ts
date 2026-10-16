@@ -1,3 +1,4 @@
+export * from './config/env';
 export * from './db/supabase';
 export * from './repositories/memberRepository';
 export * from './repositories/attendanceRepository';
@@ -7,3 +8,8 @@ export * from './repositories/leadRepository';
 export * from './services/renewalAlertService';
 export * from './services/analyticsService';
 export * from './services/accountingExportService';
+export * from './controllers/memberController';
+export * from './middlewares/authMiddleware';
+export * from './middlewares/errorMiddleware';
+export * from './validators/memberValidator';
+export * from './validators/paymentValidator';
