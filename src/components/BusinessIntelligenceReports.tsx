@@ -92,7 +92,7 @@ export function BusinessIntelligenceReports({ members, payments }: BusinessIntel
             size="sm"
             onClick={handleDownloadCsv}
             disabled={isExporting}
-            className="bg-[#ccff00] text-black font-bold hover:bg-[#b8e600] gap-1.5 shadow-[0_2px_10px_rgba(204,255,0,0.2)]"
+            className="bg-[#ccff00] text-black font-bold hover:bg-[#b8e600] gap-1.5 shadow-sm"
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
             <span>Export to Excel (CSV)</span>

@@ -162,7 +162,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
             <AlertTriangle className="h-3.5 w-3.5 text-red-400" />
           </div>
           <p className="mt-2 text-2xl font-black text-red-400 font-mono">{counts.today}</p>
-          <p className="text-[10px] text-zinc-500 mt-0.5">Critical renewal</p>
+          <p className="text-xs text-zinc-500 mt-0.5">Critical renewal</p>
         </button>
 
         <button
@@ -174,11 +174,11 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-400">Next 1–3 Days</span>
+            <span className="text-xs font-semibold text-zinc-400">Next 1–3 Days</span>
             <Clock className="h-3.5 w-3.5 text-amber-400" />
           </div>
           <p className="mt-2 text-2xl font-black text-amber-400 font-mono">{counts.urgent}</p>
-          <p className="text-[10px] text-zinc-500 mt-0.5">Urgent reminder</p>
+          <p className="text-xs text-zinc-500 mt-0.5">Urgent reminder</p>
         </button>
 
         <button
@@ -190,11 +190,11 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-400">Next 4–7 Days</span>
+            <span className="text-xs font-semibold text-zinc-400">Next 4–7 Days</span>
             <Calendar className="h-3.5 w-3.5 text-[#ccff00]" />
           </div>
           <p className="mt-2 text-2xl font-black text-[#ccff00] font-mono">{counts.upcoming}</p>
-          <p className="text-[10px] text-zinc-500 mt-0.5">Friendly notice</p>
+          <p className="text-xs text-zinc-500 mt-0.5">Friendly notice</p>
         </button>
 
         <button
@@ -206,11 +206,11 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-400">Expired / Dues</span>
+            <span className="text-xs font-semibold text-zinc-400">Expired / Dues</span>
             <BellRing className="h-3.5 w-3.5 text-zinc-400" />
           </div>
           <p className="mt-2 text-2xl font-black text-zinc-300 font-mono">{counts.expired}</p>
-          <p className="text-[10px] text-zinc-500 mt-0.5">Comeback offer</p>
+          <p className="text-xs text-zinc-500 mt-0.5">Comeback offer</p>
         </button>
       </div>
 
@@ -275,7 +275,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
                       <h4 className="text-sm font-bold text-white">{alert.member.fullName}</h4>
                       {getUrgencyBadge(alert.urgency, alert.daysRemaining)}
                       {isSent && (
-                        <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-950/40 text-[10px] py-0">
+                        <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-950/40 text-xs py-0">
                           Sent today ({sentTime})
                         </Badge>
                       )}
@@ -294,7 +294,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
                 <div className="flex items-center gap-2 self-end lg:self-auto shrink-0">
                   {alert.member.pendingDueInr > 0 && (
                     <div className="text-right mr-2 hidden sm:block">
-                      <p className="text-[10px] text-zinc-400 uppercase font-semibold">Pending Due</p>
+                      <p className="text-xs text-zinc-400 uppercase font-semibold">Pending Due</p>
                       <p className="text-xs font-mono font-bold text-red-400">
                         ₹{alert.member.pendingDueInr.toLocaleString('en-IN')}
                       </p>
@@ -313,7 +313,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
                   <Button
                     size="sm"
                     onClick={() => handleSendWhatsApp(alert.member.id, alert.whatsappUrl)}
-                    className="h-8 bg-[#25d366] text-black font-bold hover:bg-[#20b858] gap-1.5 shadow-[0_2px_10px_rgba(37,211,102,0.25)]"
+                    className="h-8 bg-[#25d366] text-black font-bold hover:bg-[#20b858] gap-1.5 shadow-sm"
                   >
                     <Send className="h-3 w-3" />
                     <span>Send WhatsApp</span>

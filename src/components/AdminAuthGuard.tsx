@@ -88,7 +88,7 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
                 <span className="font-black text-xl text-white">
                   Gym<span className="text-[#ccff00]">PRO</span>
                 </span>
-                <Badge variant="secondary" className="text-[10px]">
+                <Badge variant="secondary" className="text-xs">
                   Staff Only
                 </Badge>
               </div>

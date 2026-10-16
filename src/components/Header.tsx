@@ -46,7 +46,7 @@ export function Header({ onResetData }: HeaderProps) {
               <span className="font-black tracking-tight text-white text-lg">
                 Gym<span className="text-[#ccff00]">PRO</span>
               </span>
-              <Badge variant="default" className="text-[10px] py-0 px-2">
+              <Badge variant="default" className="text-xs font-semibold py-0.5 px-2">
                 INDIA
               </Badge>
             </div>

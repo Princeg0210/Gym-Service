@@ -60,7 +60,7 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-white">Scan Member QR Pass</h3>
-                <span className="rounded-md border border-[#232b3d] bg-[#121724] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">
+                <span className="rounded-md border border-[#232b3d] bg-[#121724] px-1.5 py-0.5 text-xs font-mono text-zinc-400">
                   Demo Feed
                 </span>
               </div>
@@ -79,9 +79,9 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
         <div className="mt-4 rounded-xl border border-[#232b3d] bg-[#07090d] p-2.5 text-xs text-zinc-400 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Video className="h-3.5 w-3.5 text-[#ccff00]" />
-            <span className="text-[11px]">Hardware Camera / Simulation Feed</span>
+            <span className="text-xs">Hardware Camera / Simulation Feed</span>
           </div>
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+          <span className="inline-flex items-center gap-1 text-xs font-mono text-emerald-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
             READY
           </span>
@@ -92,8 +92,8 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
           <div className="relative mx-auto flex h-64 w-64 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-[#ccff00]/40 bg-[#07090e]">
             {isScanning ? (
               <>
-                {/* Laser animation bar */}
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#ccff00] to-transparent shadow-[0_0_15px_#ccff00] animate-bounce" />
+                {/* Laser scan indicator bar */}
+                <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#ccff00] to-transparent animate-pulse" />
                 <div className="flex flex-col items-center gap-3 text-center p-4">
                   <div className="relative">
                     <QrCode className="h-24 w-24 text-zinc-600 animate-pulse" />

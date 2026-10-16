@@ -441,7 +441,7 @@ export function OperationsDashboard({
                 <span>Renewal Bot</span>
               </div>
               <span
-                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full ${
+                className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded-full ${
                   activeTab === 'renewal_bot'
                     ? 'bg-black text-[#ccff00]'
                     : 'bg-[#25d366]/20 text-[#25d366] border border-[#25d366]/30'

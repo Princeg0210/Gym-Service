@@ -305,7 +305,7 @@ export function PortalLoadingOverlay({
           <div className="absolute -inset-3 rounded-3xl border-2 border-[#ccff00]/20 border-t-[#ccff00] animate-spin" />
           <div className="absolute -inset-5 rounded-3xl border border-[#ccff00]/10 animate-pulse" />
 
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-[0_0_35px_rgba(204,255,0,0.2)]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-xl shadow-black/50">
             {portal.icon === 'admin' ? (
               <ShieldCheck className="h-10 w-10 text-[#ccff00]" />
             ) : portal.icon === 'member' ? (
@@ -332,7 +332,7 @@ export function PortalLoadingOverlay({
         {/* Dynamic Progress Bar */}
         <div className="w-full mt-6 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-[#99cc00] via-[#ccff00] to-[#e6ff80] shadow-[0_0_12px_#ccff00]"
+            className="h-full rounded-full bg-gradient-to-r from-[#99cc00] via-[#ccff00] to-[#e6ff80] shadow-sm"
             initial={{ width: '15%' }}
             animate={{ width: `${progress}%` }}
             transition={{ ease: 'easeOut', duration: 0.2 }}
@@ -397,7 +397,7 @@ export function RouteLoadingScreen({
         {/* Central Icon */}
         <div className="relative flex items-center justify-center mb-6">
           <div className="absolute -inset-3 rounded-3xl border-2 border-[#ccff00]/20 border-t-[#ccff00] animate-spin" />
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-[0_0_35px_rgba(204,255,0,0.2)]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-xl shadow-black/50">
             {icon === 'admin' ? (
               <ShieldCheck className="h-10 w-10 text-[#ccff00]" />
             ) : icon === 'member' ? (

@@ -353,7 +353,7 @@ export function OverviewTab({
                         </div>
                       </td>
                       <td className="py-3">
-                        <Badge variant="success" className="text-[10px]">
+                        <Badge variant="success" className="text-xs">
                           <CheckCircle2 className="h-3 w-3" />
                           <span>Checked In</span>
                         </Badge>
