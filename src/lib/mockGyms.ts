@@ -5,10 +5,10 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
     id: 'gym-ironpulse',
     slug: 'ironpulse',
     gymName: 'IronPulse Commercial Gym',
-    tagline: 'High-Performance Commercial Gym & Biomechanics Arena',
+    tagline: 'Premier Strength, Conditioning & Personal Training Club',
     heroHeadline: 'NO EXCUSES.',
     heroHighlight: 'ONLY RESULTS.',
-    heroSubtitle: 'Join a results-driven fitness community with certified trainers, modern bio-mechanical equipment, and personalized nutrition designed to transform your physique and performance.',
+    heroSubtitle: 'Join a results-driven fitness community with certified personal trainers, commercial free weights, modern machines, and personalized nutrition plans built for real transformations.',
     heroImageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80',
     logoUrl: '',
     primaryColor: '#ccff00',
@@ -27,31 +27,31 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
     features: [
       {
         title: 'Certified Trainers',
-        desc: 'Our expert coaches design science-backed programs tailored to your personal biomechanics and metabolic goals.',
+        desc: 'Our experienced personal coaches design workout programs tailored to your strength, fat loss, and fitness goals.',
         icon: 'Award'
       },
       {
-        title: 'Modern Equipment',
-        desc: 'Train with world-class bio-mechanical machines, dual-pulley towers, and advanced peak-hour load tracking.',
+        title: 'Free Weights & Machines',
+        desc: 'Train with Olympic power racks, dumbbells up to 60kg, dual cable towers, and plate-loaded machines.',
         icon: 'Zap'
       },
       {
         title: 'Personalized Nutrition',
-        desc: 'Custom high-protein Indian diets (Soya chunks, Paneer, Dal, Eggs) engineered for complete essential amino acid profiles.',
+        desc: 'Custom high-protein Indian diet plans (paneer, eggs, chicken, soya, dal) crafted to fuel your daily workouts.',
         icon: 'Utensils'
       },
       {
         title: 'Motivating Community',
-        desc: 'Surround yourself with disciplined athletes and coaches who push you to exceed your limits every single session.',
+        desc: 'Surround yourself with focused lifters and dedicated coaches who push you to hit personal records every week.',
         icon: 'Users'
       }
     ],
     programs: [
       {
         id: 'weight',
-        title: 'Weight Training',
+        title: 'Strength Training',
         category: 'strength',
-        desc: 'Build raw muscular power and dense hypertrophy with periodized barbell and dumbbell progressions.',
+        desc: 'Build raw strength and lean muscle with progressive barbell squats, bench press, deadlifts, and dumbbell work.',
         intensity: 'High Intensity',
         duration: '45-60 min'
       },
@@ -59,31 +59,31 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
         id: 'cardio',
         title: 'Cardio & Fat Loss',
         category: 'conditioning',
-        desc: 'Accelerate fat oxidation with interval sprints, rowing ladders, and metabolic functional circuits.',
+        desc: 'Burn fat and increase cardiovascular stamina with HIIT sprints, rower intervals, and kettlebell circuits.',
         intensity: 'Peak Heart Rate',
         duration: '35-45 min'
       },
       {
         id: 'coaching',
-        title: 'Personal Coaching',
+        title: 'Personal Training',
         category: 'personal',
-        desc: 'One-on-one kinematic analysis, form correction, and custom progressive overload architecture.',
+        desc: 'One-on-one personal coaching, lifting technique corrections, and structured weekly workout progressions.',
         intensity: 'Precision Focus',
         duration: '60 min'
       },
       {
         id: 'calisthenics',
-        title: 'Group Functional',
+        title: 'Functional Fitness',
         category: 'conditioning',
-        desc: 'Dynamic bodyweight mastery, plyometric bounding, and anaerobic stamina conditioning.',
+        desc: 'Total-body endurance with pull-ups, dips, box jumps, sled pushes, and battle ropes.',
         intensity: 'High Energy',
         duration: '50 min'
       },
       {
         id: 'yoga',
-        title: 'Yoga & Flexibility',
+        title: 'Mobility & Stretching',
         category: 'mobility',
-        desc: 'Joint longevity, hip and thoracic mobility, posterior chain decompression, and active recovery.',
+        desc: 'Improve hip mobility, shoulder range of motion, lower back health, and recovery between heavy workouts.',
         intensity: 'Restorative',
         duration: '45 min'
       }
@@ -137,21 +137,21 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
       {
         name: 'Vikram Singh',
         role: 'Head Strength Coach',
-        spec: 'Biomechanics & Powerlifting',
+        spec: 'Powerlifting & Barbell Training',
         exp: '6 Years Exp.',
         rating: '4.95'
       },
       {
         name: 'Rajesh Sharma',
         role: 'Senior Hypertrophy Coach',
-        spec: 'Bodybuilding & Injury Rehab',
+        spec: 'Muscle Building & Injury Prevention',
         exp: '8 Years Exp.',
         rating: '4.98'
       },
       {
         name: 'Priya Nair',
-        role: 'Functional & Dietetics Coach',
-        spec: 'Indian Macro Planning & Mobility',
+        role: 'Functional & Nutrition Coach',
+        spec: 'High-Protein Diet Plans & Mobility',
         exp: '5 Years Exp.',
         rating: '4.92'
       }
@@ -159,30 +159,30 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
     transformations: [
       {
         name: 'Rahul M.',
-        role: 'Software Architect • Bengaluru',
+        role: 'Software Engineer • Bengaluru',
         achievement: '-15 kg Body Fat',
-        quote: 'Joining transformed my routine. The high-protein Indian diet plan with soya & paneer fit seamlessly into my lifestyle. Lost 15kg in 6 months.',
+        quote: 'Joining transformed my fitness. The high-protein diet plan with soya and eggs fit easily into my office schedule. Dropped 15kg in 6 months.',
         startWeight: '88kg',
         endWeight: '73kg',
         metricLabel: 'Weight Progression'
       },
       {
         name: 'Ananya K.',
-        role: 'Management Consultant • Gurgaon',
+        role: 'Product Manager • Gurgaon',
         achievement: '+40kg Deadlift',
-        quote: 'Coach Vikram dialled in my posterior chain biomechanics. Deadlift shot from 45kg to 125kg without lower back pain.',
+        quote: 'Coach Vikram fixed my deadlift technique from day one. My lift improved from 45kg to 125kg safely without lower back strain.',
         startWeight: '45kg',
         endWeight: '125kg',
         metricLabel: 'Strength PR Curve'
       },
       {
         name: 'Kabir D.',
-        role: 'Fintech Founder • Indiranagar',
+        role: 'Startup Founder • Indiranagar',
         achievement: '18% → 10% Body Fat',
-        quote: 'Consistent 6 AM sessions with targeted compound lifts. The reception scan and WhatsApp progress tracking kept me 100% accountable.',
+        quote: 'Consistent 6 AM lifting sessions with heavy compound movements. The QR check-in and workout routines kept me on track every day.',
         startWeight: '18%',
         endWeight: '10.2%',
-        metricLabel: 'DEXA Body Fat Scan'
+        metricLabel: 'Body Fat Percentage'
       }
     ]
   },
@@ -244,16 +244,16 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
         id: 'olympic',
         title: 'Olympic Weightlifting',
         category: 'strength',
-        desc: 'Snatch and Clean & Jerk kinematics with high-speed video feedback.',
+        desc: 'Master the snatch and clean & jerk with certified barbell coaches.',
         intensity: 'Max Power',
         duration: '75 min'
       },
       {
         id: 'hiit',
-        title: 'Alpha Metabolic Circuit',
+        title: 'Alpha Conditioning Circuit',
         category: 'conditioning',
         desc: 'Sled pushes, battle ropes, assault bikes, and kettlebell intervals.',
-        intensity: 'Heart Rate Zone 5',
+        intensity: 'High Intensity',
         duration: '45 min'
       }
     ],
@@ -294,7 +294,7 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
           'All-Inclusive Unlimited Everything',
           'Unlimited MMA, Boxing & Lifting Coaching',
           'Private Locker with Keypad Lock',
-          'Monthly Athletic Bloodwork Analysis'
+          'Free Monthly Fitness Checkups'
         ],
         isPopular: false,
         badge: 'CHAMPIONSHIP TIER'
@@ -311,7 +311,7 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
       {
         name: 'Simran Walia',
         role: 'Olympic Strength Specialist',
-        spec: 'Snatch Kinematics & Power Cleans',
+        spec: 'Olympic Lifting & Explosive Strength',
         exp: '7 Years Exp.',
         rating: '4.94'
       }

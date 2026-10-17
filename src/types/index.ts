@@ -33,6 +33,21 @@ export interface Member {
   fitnessGoal: FitnessGoal;
   dietaryPreference: DietaryPreference;
   avatarSeed: string;
+  assignedTrainerId?: string;
+  assignedTrainerName?: string;
+}
+
+export interface StaffTrainer {
+  id: string;
+  name: string;
+  role: string;
+  spec: string;
+  exp: string;
+  rating: string;
+  phone: string;
+  email?: string;
+  status: 'active' | 'on_leave';
+  assignedMemberIds: string[];
 }
 
 export interface AttendanceRecord {

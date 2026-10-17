@@ -74,18 +74,20 @@ function rowToGymProfile(row: GymProfileRow): GymProfile {
 export const gymRepository = {
   async getAll(publishedOnly = false): Promise<GymProfile[]> {
     if (supabase) {
-      try {
-        let query = supabase.from('gym_profiles').select('*').order('created_at', { ascending: false });
-        if (publishedOnly) {
-          query = query.eq('is_published', true);
-        }
-        const { data, error } = await query;
-        if (!error && data && data.length > 0) {
-          return (data as unknown as GymProfileRow[]).map(rowToGymProfile);
-        }
-      } catch (err) {
-        console.warn('Supabase gym_profiles fetch skipped, using memory cache:', err);
+      let query = supabase.from('gym_profiles').select('*').order('created_at', { ascending: false });
+      if (publishedOnly) {
+        query = query.eq('is_published', true);
       }
+      const { data, error } = await query;
+      if (error) {
+        throw new Error(`Database error fetching gyms: ${error.message}`);
+      }
+      if (data && data.length > 0) {
+        return (data as unknown as GymProfileRow[]).map(rowToGymProfile);
+      }
+      return publishedOnly
+        ? INITIAL_GYM_PROFILES.filter((g) => g.isPublished)
+        : INITIAL_GYM_PROFILES;
     }
     return publishedOnly
       ? localGymProfiles.filter((g) => g.isPublished)
@@ -95,18 +97,19 @@ export const gymRepository = {
   async getBySlug(slug: string): Promise<GymProfile | null> {
     const cleanSlug = slug.toLowerCase().trim();
     if (supabase) {
-      try {
-        const { data, error } = await supabase
-          .from('gym_profiles')
-          .select('*')
-          .eq('slug', cleanSlug)
-          .maybeSingle();
-        if (!error && data) {
-          return rowToGymProfile(data as unknown as GymProfileRow);
-        }
-      } catch (err) {
-        console.warn(`Supabase getBySlug error (${cleanSlug}):`, err);
+      const { data, error } = await supabase
+        .from('gym_profiles')
+        .select('*')
+        .eq('slug', cleanSlug)
+        .maybeSingle();
+      if (error) {
+        throw new Error(`Database error fetching gym '${cleanSlug}': ${error.message}`);
       }
+      if (data) {
+        return rowToGymProfile(data as unknown as GymProfileRow);
+      }
+      const foundSeed = INITIAL_GYM_PROFILES.find((g) => g.slug.toLowerCase() === cleanSlug);
+      return foundSeed || null;
     }
     const found = localGymProfiles.find((g) => g.slug.toLowerCase() === cleanSlug);
     return found || null;
@@ -114,18 +117,19 @@ export const gymRepository = {
 
   async getById(id: string): Promise<GymProfile | null> {
     if (supabase) {
-      try {
-        const { data, error } = await supabase
-          .from('gym_profiles')
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
-        if (!error && data) {
-          return rowToGymProfile(data as unknown as GymProfileRow);
-        }
-      } catch (err) {
-        console.warn(`Supabase getById error (${id}):`, err);
+      const { data, error } = await supabase
+        .from('gym_profiles')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) {
+        throw new Error(`Database error fetching gym ID '${id}': ${error.message}`);
       }
+      if (data) {
+        return rowToGymProfile(data as unknown as GymProfileRow);
+      }
+      const foundSeed = INITIAL_GYM_PROFILES.find((g) => g.id === id);
+      return foundSeed || null;
     }
     const found = localGymProfiles.find((g) => g.id === id);
     return found || null;
@@ -140,53 +144,97 @@ export const gymRepository = {
       updatedAt: new Date().toISOString()
     };
 
-    localGymProfiles = [newProfile, ...localGymProfiles.filter((g) => g.id !== newProfile.id)];
-
     if (supabase) {
-      try {
-        const row: Partial<GymProfileRow> = {
-          id: newProfile.id,
-          slug: newProfile.slug,
-          gym_name: newProfile.gymName,
-          tagline: newProfile.tagline,
-          hero_headline: newProfile.heroHeadline,
-          hero_highlight: newProfile.heroHighlight,
-          hero_subtitle: newProfile.heroSubtitle,
-          hero_image_url: newProfile.heroImageUrl,
-          logo_url: newProfile.logoUrl || null,
-          primary_color: newProfile.primaryColor,
-          accent_color: newProfile.accentColor,
-          secondary_color: newProfile.secondaryColor,
-          phone: newProfile.phone,
-          email: newProfile.email,
-          whatsapp_number: newProfile.whatsappNumber,
-          upi_vpa: newProfile.upiVpa,
-          address: newProfile.address,
-          city: newProfile.city,
-          state: newProfile.state,
-          pincode: newProfile.pincode,
-          operating_hours: newProfile.operatingHours,
-          features: newProfile.features,
-          programs: newProfile.programs,
-          membership_plans: newProfile.membershipPlans,
-          trainers: newProfile.trainers,
-          transformations: newProfile.transformations,
-          is_published: newProfile.isPublished
-        };
+      const row: Partial<GymProfileRow> = {
+        id: newProfile.id,
+        slug: newProfile.slug,
+        gym_name: newProfile.gymName,
+        tagline: newProfile.tagline,
+        hero_headline: newProfile.heroHeadline,
+        hero_highlight: newProfile.heroHighlight,
+        hero_subtitle: newProfile.heroSubtitle,
+        hero_image_url: newProfile.heroImageUrl,
+        logo_url: newProfile.logoUrl || null,
+        primary_color: newProfile.primaryColor,
+        accent_color: newProfile.accentColor,
+        secondary_color: newProfile.secondaryColor,
+        phone: newProfile.phone,
+        email: newProfile.email,
+        whatsapp_number: newProfile.whatsappNumber,
+        upi_vpa: newProfile.upiVpa,
+        address: newProfile.address,
+        city: newProfile.city,
+        state: newProfile.state,
+        pincode: newProfile.pincode,
+        operating_hours: newProfile.operatingHours,
+        features: newProfile.features,
+        programs: newProfile.programs,
+        membership_plans: newProfile.membershipPlans,
+        trainers: newProfile.trainers,
+        transformations: newProfile.transformations,
+        is_published: newProfile.isPublished
+      };
 
-        const { data, error } = await supabase.from('gym_profiles').insert([row]).select().single();
-        if (!error && data) {
-          return rowToGymProfile(data as unknown as GymProfileRow);
-        }
-      } catch (err) {
-        console.warn('Supabase create gym_profile skipped, stored in memory:', err);
+      const { data, error } = await supabase.from('gym_profiles').insert([row]).select().single();
+      if (error) {
+        throw new Error(`Database error creating gym profile: ${error.message}`);
       }
+      if (!data) {
+        throw new Error('Database error creating gym profile: No data returned from insert');
+      }
+      return rowToGymProfile(data as unknown as GymProfileRow);
     }
 
+    localGymProfiles = [newProfile, ...localGymProfiles.filter((g) => g.id !== newProfile.id)];
     return newProfile;
   },
 
   async update(id: string, updates: Partial<GymProfile>): Promise<GymProfile | null> {
+    if (supabase) {
+      const rowUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+      if (updates.slug !== undefined) rowUpdates.slug = updates.slug.toLowerCase().trim();
+      if (updates.gymName !== undefined) rowUpdates.gym_name = updates.gymName;
+      if (updates.tagline !== undefined) rowUpdates.tagline = updates.tagline;
+      if (updates.heroHeadline !== undefined) rowUpdates.hero_headline = updates.heroHeadline;
+      if (updates.heroHighlight !== undefined) rowUpdates.hero_highlight = updates.heroHighlight;
+      if (updates.heroSubtitle !== undefined) rowUpdates.hero_subtitle = updates.heroSubtitle;
+      if (updates.heroImageUrl !== undefined) rowUpdates.hero_image_url = updates.heroImageUrl;
+      if (updates.logoUrl !== undefined) rowUpdates.logo_url = updates.logoUrl;
+      if (updates.primaryColor !== undefined) rowUpdates.primary_color = updates.primaryColor;
+      if (updates.accentColor !== undefined) rowUpdates.accent_color = updates.accentColor;
+      if (updates.secondaryColor !== undefined) rowUpdates.secondary_color = updates.secondaryColor;
+      if (updates.phone !== undefined) rowUpdates.phone = updates.phone;
+      if (updates.email !== undefined) rowUpdates.email = updates.email;
+      if (updates.whatsappNumber !== undefined) rowUpdates.whatsapp_number = updates.whatsappNumber;
+      if (updates.upiVpa !== undefined) rowUpdates.upi_vpa = updates.upiVpa;
+      if (updates.address !== undefined) rowUpdates.address = updates.address;
+      if (updates.city !== undefined) rowUpdates.city = updates.city;
+      if (updates.state !== undefined) rowUpdates.state = updates.state;
+      if (updates.pincode !== undefined) rowUpdates.pincode = updates.pincode;
+      if (updates.operatingHours !== undefined) rowUpdates.operating_hours = updates.operatingHours;
+      if (updates.features !== undefined) rowUpdates.features = updates.features;
+      if (updates.programs !== undefined) rowUpdates.programs = updates.programs;
+      if (updates.membershipPlans !== undefined) rowUpdates.membership_plans = updates.membershipPlans;
+      if (updates.trainers !== undefined) rowUpdates.trainers = updates.trainers;
+      if (updates.transformations !== undefined) rowUpdates.transformations = updates.transformations;
+      if (updates.isPublished !== undefined) rowUpdates.is_published = updates.isPublished;
+
+      const { data, error } = await supabase
+        .from('gym_profiles')
+        .update(rowUpdates)
+        .or(`id.eq.${id},slug.eq.${id}`)
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        throw new Error(`Database error updating gym '${id}': ${error.message}`);
+      }
+      if (!data) {
+        return null;
+      }
+      return rowToGymProfile(data as unknown as GymProfileRow);
+    }
+
     const existingIndex = localGymProfiles.findIndex((g) => g.id === id || g.slug === id);
     if (existingIndex >= 0) {
       localGymProfiles[existingIndex] = {
@@ -194,64 +242,20 @@ export const gymRepository = {
         ...updates,
         updatedAt: new Date().toISOString()
       };
+      return localGymProfiles[existingIndex];
     }
-
-    if (supabase) {
-      try {
-        const rowUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
-        if (updates.slug !== undefined) rowUpdates.slug = updates.slug.toLowerCase().trim();
-        if (updates.gymName !== undefined) rowUpdates.gym_name = updates.gymName;
-        if (updates.tagline !== undefined) rowUpdates.tagline = updates.tagline;
-        if (updates.heroHeadline !== undefined) rowUpdates.hero_headline = updates.heroHeadline;
-        if (updates.heroHighlight !== undefined) rowUpdates.hero_highlight = updates.heroHighlight;
-        if (updates.heroSubtitle !== undefined) rowUpdates.hero_subtitle = updates.heroSubtitle;
-        if (updates.heroImageUrl !== undefined) rowUpdates.hero_image_url = updates.heroImageUrl;
-        if (updates.logoUrl !== undefined) rowUpdates.logo_url = updates.logoUrl;
-        if (updates.primaryColor !== undefined) rowUpdates.primary_color = updates.primaryColor;
-        if (updates.accentColor !== undefined) rowUpdates.accent_color = updates.accentColor;
-        if (updates.secondaryColor !== undefined) rowUpdates.secondary_color = updates.secondaryColor;
-        if (updates.phone !== undefined) rowUpdates.phone = updates.phone;
-        if (updates.email !== undefined) rowUpdates.email = updates.email;
-        if (updates.whatsappNumber !== undefined) rowUpdates.whatsapp_number = updates.whatsappNumber;
-        if (updates.upiVpa !== undefined) rowUpdates.upi_vpa = updates.upiVpa;
-        if (updates.address !== undefined) rowUpdates.address = updates.address;
-        if (updates.city !== undefined) rowUpdates.city = updates.city;
-        if (updates.state !== undefined) rowUpdates.state = updates.state;
-        if (updates.pincode !== undefined) rowUpdates.pincode = updates.pincode;
-        if (updates.operatingHours !== undefined) rowUpdates.operating_hours = updates.operatingHours;
-        if (updates.features !== undefined) rowUpdates.features = updates.features;
-        if (updates.programs !== undefined) rowUpdates.programs = updates.programs;
-        if (updates.membershipPlans !== undefined) rowUpdates.membership_plans = updates.membershipPlans;
-        if (updates.trainers !== undefined) rowUpdates.trainers = updates.trainers;
-        if (updates.transformations !== undefined) rowUpdates.transformations = updates.transformations;
-        if (updates.isPublished !== undefined) rowUpdates.is_published = updates.isPublished;
-
-        const { data, error } = await supabase
-          .from('gym_profiles')
-          .update(rowUpdates)
-          .or(`id.eq.${id},slug.eq.${id}`)
-          .select()
-          .maybeSingle();
-        if (!error && data) {
-          return rowToGymProfile(data as unknown as GymProfileRow);
-        }
-      } catch (err) {
-        console.warn(`Supabase update gym_profile error (${id}):`, err);
-      }
-    }
-
-    return localGymProfiles[existingIndex] || null;
+    return null;
   },
 
   async delete(id: string): Promise<boolean> {
-    localGymProfiles = localGymProfiles.filter((g) => g.id !== id && g.slug !== id);
     if (supabase) {
-      try {
-        await supabase.from('gym_profiles').delete().or(`id.eq.${id},slug.eq.${id}`);
-      } catch (err) {
-        console.warn(`Supabase delete gym_profile error (${id}):`, err);
+      const { error } = await supabase.from('gym_profiles').delete().or(`id.eq.${id},slug.eq.${id}`);
+      if (error) {
+        throw new Error(`Database error deleting gym '${id}': ${error.message}`);
       }
+      return true;
     }
+    localGymProfiles = localGymProfiles.filter((g) => g.id !== id && g.slug !== id);
     return true;
   }
 };

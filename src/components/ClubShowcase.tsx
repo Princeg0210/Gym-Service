@@ -59,22 +59,22 @@ export function ClubShowcase({
   const features = [
     {
       title: 'Certified Trainers',
-      desc: 'Our expert coaches design science-backed programs tailored to your personal biomechanics and metabolic goals.',
+      desc: 'Our experienced personal coaches design workout programs tailored to your strength, fat loss, and fitness goals.',
       icon: Award
     },
     {
-      title: 'Modern Equipment',
-      desc: 'Train with world-class bio-mechanical machines, dual-pulley towers, and advanced peak-hour load tracking.',
+      title: 'Free Weights & Machines',
+      desc: 'Train with Olympic power racks, dumbbells up to 60kg, dual cable towers, and plate-loaded machines.',
       icon: Zap
     },
     {
       title: 'Personalized Nutrition',
-      desc: 'Custom high-protein Indian diets (Soya chunks, Paneer, Dal, Eggs) engineered for complete essential amino acid profiles.',
+      desc: 'Custom high-protein Indian diet plans (paneer, eggs, chicken, soya, dal) crafted to fuel your daily workouts.',
       icon: Utensils
     },
     {
       title: 'Motivating Community',
-      desc: 'Surround yourself with disciplined athletes and coaches who push you to exceed your limits every single session.',
+      desc: 'Surround yourself with focused lifters and dedicated coaches who push you to hit personal records every week.',
       icon: Users
     }
   ];
@@ -82,9 +82,9 @@ export function ClubShowcase({
   const programs = [
     {
       id: 'weight',
-      title: 'Weight Training',
+      title: 'Strength Training',
       category: 'strength',
-      desc: 'Build raw muscular power and dense hypertrophy with periodized barbell and dumbbell progressions.',
+      desc: 'Build raw strength and lean muscle with progressive barbell squats, bench press, deadlifts, and dumbbell work.',
       intensity: 'High Intensity',
       duration: '45-60 min'
     },
@@ -92,31 +92,31 @@ export function ClubShowcase({
       id: 'cardio',
       title: 'Cardio & Fat Loss',
       category: 'conditioning',
-      desc: 'Accelerate fat oxidation with interval sprints, rowing ladders, and metabolic functional circuits.',
+      desc: 'Burn fat and increase cardiovascular stamina with HIIT sprints, rower intervals, and kettlebell circuits.',
       intensity: 'Peak Heart Rate',
       duration: '35-45 min'
     },
     {
       id: 'coaching',
-      title: 'Personal Coaching',
+      title: 'Personal Training',
       category: 'personal',
-      desc: 'One-on-one kinematic analysis, form correction, and custom progressive overload architecture.',
+      desc: 'One-on-one personal coaching, lifting technique corrections, and structured weekly workout progressions.',
       intensity: 'Precision Focus',
       duration: '60 min'
     },
     {
       id: 'calisthenics',
-      title: 'Group Functional',
+      title: 'Functional Fitness',
       category: 'conditioning',
-      desc: 'Dynamic bodyweight mastery, plyometric bounding, and anaerobic stamina conditioning.',
+      desc: 'Total-body endurance with pull-ups, dips, box jumps, sled pushes, and battle ropes.',
       intensity: 'High Energy',
       duration: '50 min'
     },
     {
       id: 'yoga',
-      title: 'Yoga & Flexibility',
+      title: 'Mobility & Stretching',
       category: 'mobility',
-      desc: 'Joint longevity, hip and thoracic mobility, posterior chain decompression, and active recovery.',
+      desc: 'Improve hip mobility, shoulder range of motion, lower back health, and recovery between heavy workouts.',
       intensity: 'Restorative',
       duration: '45 min'
     }
@@ -126,21 +126,21 @@ export function ClubShowcase({
     {
       name: 'Vikram Singh',
       role: 'Head Strength Coach',
-      spec: 'Biomechanics & Powerlifting',
+      spec: 'Powerlifting & Barbell Training',
       exp: '6 Years Exp.',
       rating: '4.95'
     },
     {
       name: 'Rajesh Sharma',
       role: 'Senior Hypertrophy Coach',
-      spec: 'Bodybuilding & Injury Rehab',
+      spec: 'Muscle Building & Injury Prevention',
       exp: '8 Years Exp.',
       rating: '4.98'
     },
     {
       name: 'Priya Nair',
-      role: 'Functional & Dietetics Coach',
-      spec: 'Indian Macro Planning & Mobility',
+      role: 'Functional & Nutrition Coach',
+      spec: 'High-Protein Diet Plans & Mobility',
       exp: '5 Years Exp.',
       rating: '4.92'
     }
@@ -386,7 +386,7 @@ export function ClubShowcase({
               <div className="relative aspect-4/3 overflow-hidden rounded-3xl border border-[#262c3e] bg-[#0c0f16] shadow-xl">
                 <Image
                   src="/images/gym_equipment_modern.jpg"
-                  alt="Modern bio-mechanical fitness machines"
+                  alt="Modern commercial fitness machines"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover object-center filter brightness-95"
@@ -396,7 +396,7 @@ export function ClubShowcase({
                 <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-[#2a3246] bg-[#07090e]/90 p-3 backdrop-blur-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xs font-bold text-white">Bio-Mechanical Cable & Free-Weight Arena</h3>
+                      <h3 className="text-xs font-bold text-white">Commercial Free-Weight & Cable Arena</h3>
                       <p className="text-xs text-zinc-400">Main Facility • Sector 15 Branch</p>
                     </div>
                     <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
@@ -936,7 +936,7 @@ export function ClubShowcase({
               </div>
 
               <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;Coach Vikram dialled in my posterior chain biomechanics. Deadlift shot from 45kg to 125kg without lower back pain.&rdquo;
+                &ldquo;Coach Vikram fixed my deadlift technique from day one. My lift went from 45kg to 125kg safely without lower back strain.&rdquo;
               </p>
 
               <div className="mt-6 pt-4 border-t border-[#1f2434]">

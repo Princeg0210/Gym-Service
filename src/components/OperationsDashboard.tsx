@@ -17,14 +17,12 @@ import {
   Users,
   CalendarDays,
   CreditCard,
-  Layers,
   PhoneCall,
   Dumbbell,
   Utensils,
   Wrench,
   BarChart3,
   UserCheck,
-  Settings,
   Search,
   Bell,
   Clock,
@@ -44,6 +42,7 @@ import { LeadsTab } from './operations/LeadsTab';
 import { WorkoutsTab } from './operations/WorkoutsTab';
 import { DietTab } from './operations/DietTab';
 import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
+import { TrainersTab } from './operations/TrainersTab';
 import { GymCmsManager } from './operations/GymCmsManager';
 import { CheckInBanner } from './CheckInBanner';
 import { ExpiringAlertsCenter } from './ExpiringAlertsCenter';
@@ -61,14 +60,12 @@ export type SidebarTab =
   | 'attendance'
   | 'dues'
   | 'renewal_bot'
-  | 'plans'
   | 'leads'
   | 'workouts'
   | 'diet'
   | 'equipment'
   | 'reports'
   | 'staff'
-  | 'settings'
   | 'landing_cms';
 
 interface OperationsDashboardProps {
@@ -479,16 +476,6 @@ export function OperationsDashboard({
               </span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('plans')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'plans'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
-            >
-              <Layers className="h-4 w-4 shrink-0" />
-              <span>Plans & Memberships</span>
-            </button>
 
             <button
               onClick={() => setActiveTab('leads')}
@@ -561,16 +548,6 @@ export function OperationsDashboard({
               <span>Staff & Trainers</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'settings'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
-            >
-              <Settings className="h-4 w-4 shrink-0" />
-              <span>Settings</span>
-            </button>
 
             <button
               onClick={() => setActiveTab('landing_cms')}
@@ -815,32 +792,7 @@ export function OperationsDashboard({
             <DietTab members={members} />
           )}
 
-          {/* Fallback panels for other tabs */}
-          {activeTab === 'plans' && (
-            <div className="space-y-6">
-              <div className="border-b border-[#1b2333] pb-4">
-                <h2 className="text-xl font-black text-white">Membership Plans & Tiers</h2>
-                <p className="text-xs text-zinc-400">Commercial pricing, duration, and access privileges</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-6 space-y-4">
-                  <span className="rounded-full bg-[#161d2d] px-3 py-1 text-xs font-bold text-zinc-300">Starter</span>
-                  <h3 className="text-2xl font-black text-white">₹1,499<span className="text-xs text-zinc-400">/mo</span></h3>
-                  <p className="text-xs text-zinc-400">General floor gym access, locker, cardio arena.</p>
-                </div>
-                <div className="rounded-2xl border-2 border-[#ccff00] bg-[#0c1017] p-6 space-y-4 shadow-xl">
-                  <span className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-black text-black">Most Popular • Pro</span>
-                  <h3 className="text-2xl font-black text-white">₹1,999<span className="text-xs text-zinc-400">/mo</span></h3>
-                  <p className="text-xs text-zinc-400">Full facility access, bio-mechanical free weights, diet plan.</p>
-                </div>
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-6 space-y-4">
-                  <span className="rounded-full bg-[#161d2d] px-3 py-1 text-xs font-bold text-zinc-300">Annual VIP</span>
-                  <h3 className="text-2xl font-black text-white">₹14,000<span className="text-xs text-zinc-400">/yr</span></h3>
-                  <p className="text-xs text-zinc-400">Everything in Pro + 12 Personal training sessions & recovery zone.</p>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {activeTab === 'renewal_bot' && (
             <ExpiringAlertsCenter
@@ -857,85 +809,7 @@ export function OperationsDashboard({
           )}
 
           {activeTab === 'staff' && (
-            <div className="space-y-6">
-              <div className="border-b border-[#1b2333] pb-4">
-                <h2 className="text-xl font-black text-white">Staff & Coaching Roster</h2>
-                <p className="text-xs text-zinc-400">Certified strength coaches, physiotherapists, and floor trainers</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5 flex items-center gap-4">
-                  <MemberAvatar name="Vikram Sharma" className="w-12 h-12" />
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Vikram Singh</h3>
-                    <p className="text-xs text-[#ccff00]">Head Strength Coach</p>
-                    <p className="text-[11px] text-zinc-400 mt-1">Powerlifting • 6 Yrs Exp</p>
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5 flex items-center gap-4">
-                  <MemberAvatar name="Amit Singh" className="w-12 h-12" />
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Rajesh Sharma</h3>
-                    <p className="text-xs text-[#ccff00]">Senior Hypertrophy Coach</p>
-                    <p className="text-[11px] text-zinc-400 mt-1">Biomechanics • 8 Yrs Exp</p>
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-5 flex items-center gap-4">
-                  <MemberAvatar name="Sneha Nair" className="w-12 h-12" />
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Priya Nair</h3>
-                    <p className="text-xs text-[#ccff00]">Dietetics & Mobility</p>
-                    <p className="text-[11px] text-zinc-400 mt-1">Indian Macros • 5 Yrs Exp</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'settings' && (
-            <div className="space-y-6">
-              <div className="border-b border-[#1b2333] pb-4">
-                <h2 className="text-xl font-black text-white">Facility & Billing Settings</h2>
-                <p className="text-xs text-zinc-400">Branch address, tax GSTIN, UPI VPAs, and timings</p>
-              </div>
-              <div className="rounded-2xl border border-[#202738] bg-[#0c1017] p-6 space-y-4 max-w-2xl">
-                <div>
-                  <label className="text-xs font-bold text-zinc-400">Gym Branch Name</label>
-                  <input
-                    type="text"
-                    value={currentGymName}
-                    onChange={(e) => setCurrentGymName(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-[#202738] bg-[#101522] px-3.5 py-2 text-xs font-bold text-white outline-none focus:border-[#ccff00]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-zinc-400">Address</label>
-                  <input
-                    type="text"
-                    defaultValue="4th Block, 100ft Road, Koramangala, Bengaluru, Karnataka 560034"
-                    className="mt-1 w-full rounded-xl border border-[#202738] bg-[#101522] px-3.5 py-2 text-xs font-bold text-white outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-zinc-400">Business UPI VPA</label>
-                  <input
-                    type="text"
-                    defaultValue="alphafitness@okhdfcbank"
-                    className="mt-1 w-full rounded-xl border border-[#202738] bg-[#101522] px-3.5 py-2 text-xs font-mono font-bold text-[#ccff00] outline-none"
-                  />
-                </div>
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      sounds.playSuccess();
-                      alert('Settings saved successfully!');
-                    }}
-                    className="rounded-xl bg-[#ccff00] px-5 py-2.5 text-xs font-black text-black hover:bg-[#b5e600] transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
-            </div>
+            <TrainersTab members={members} />
           )}
 
           {activeTab === 'landing_cms' && (

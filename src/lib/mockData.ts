@@ -1,4 +1,4 @@
-import { Member, Exercise, WorkoutRoutine, DietPlan, EquipmentItem, LeadItem, AttendanceRecord, PaymentRecord } from '@/types';
+import { Member, Exercise, WorkoutRoutine, DietPlan, EquipmentItem, LeadItem, AttendanceRecord, PaymentRecord, StaffTrainer } from '@/types';
 
 export const INITIAL_EXERCISES: Exercise[] = [
   // Chest
@@ -928,3 +928,42 @@ export const INITIAL_DIET_PLANS: Record<string, DietPlan> = {
     ]
   }
 };
+
+export const INITIAL_TRAINERS: StaffTrainer[] = [
+  {
+    id: 'tr-1',
+    name: 'Vikram Singh',
+    role: 'Head Strength Coach',
+    spec: 'Powerlifting & Barbell Training',
+    exp: '6 Years Exp.',
+    rating: '4.95',
+    phone: '9810112233',
+    email: 'vikram.coach@ironpulse.in',
+    status: 'active',
+    assignedMemberIds: ['mem-101', 'mem-103', 'mem-106']
+  },
+  {
+    id: 'tr-2',
+    name: 'Rajesh Sharma',
+    role: 'Senior Hypertrophy Coach',
+    spec: 'Muscle Building & Injury Prevention',
+    exp: '8 Years Exp.',
+    rating: '4.98',
+    phone: '9820223344',
+    email: 'rajesh.sharma@ironpulse.in',
+    status: 'active',
+    assignedMemberIds: ['mem-104', 'mem-108']
+  },
+  {
+    id: 'tr-3',
+    name: 'Priya Nair',
+    role: 'Functional & Nutrition Coach',
+    spec: 'High-Protein Diet Plans & Mobility',
+    exp: '5 Years Exp.',
+    rating: '4.92',
+    phone: '9830334455',
+    email: 'priya.nair@ironpulse.in',
+    status: 'active',
+    assignedMemberIds: ['mem-102', 'mem-105', 'mem-107']
+  }
+];

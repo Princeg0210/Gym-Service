@@ -47,6 +47,9 @@ export function GymCmsManager() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
 
+  const [draftGymIds, setDraftGymIds] = useState<Set<string>>(new Set());
+  const [persistedGymIds, setPersistedGymIds] = useState<Set<string>>(new Set());
+
   // Load all gyms on mount
   useEffect(() => {
     async function loadGyms() {
@@ -57,17 +60,20 @@ export function GymCmsManager() {
           setGyms(fetched);
           setSelectedGymId(fetched[0].id);
           setCurrentGym(JSON.parse(JSON.stringify(fetched[0])));
+          setPersistedGymIds(new Set(fetched.map((g) => g.id)));
         } else {
           // Fallback to initial seeds
           setGyms(INITIAL_GYM_PROFILES);
           setSelectedGymId(INITIAL_GYM_PROFILES[0].id);
           setCurrentGym(JSON.parse(JSON.stringify(INITIAL_GYM_PROFILES[0])));
+          setPersistedGymIds(new Set(INITIAL_GYM_PROFILES.map((g) => g.id)));
         }
       } catch (err) {
         console.warn('Falling back to local mock gym profiles:', err);
         setGyms(INITIAL_GYM_PROFILES);
         setSelectedGymId(INITIAL_GYM_PROFILES[0].id);
         setCurrentGym(JSON.parse(JSON.stringify(INITIAL_GYM_PROFILES[0])));
+        setPersistedGymIds(new Set(INITIAL_GYM_PROFILES.map((g) => g.id)));
       } finally {
         setIsLoading(false);
       }
@@ -103,54 +109,55 @@ export function GymCmsManager() {
     const newId = `gym-${Date.now()}`;
     const newGym: GymProfile = {
       id: newId,
-      slug: `gym-branch-${gyms.length + 1}`,
-      gymName: `New Fitness Branch ${gyms.length + 1}`,
-      tagline: 'Modern Strength & Conditioning Club',
-      heroHeadline: 'UNLEASH YOUR',
-      heroHighlight: 'TRUE POTENTIAL.',
-      heroSubtitle: 'Step into a world-class training environment equipped with biomechanically aligned resistance machines and elite personal coaching.',
+      slug: `branch-${gyms.length + 1}`,
+      gymName: `Fitness Club ${gyms.length + 1}`,
+      tagline: 'Strength Training, Free Weights & Personal Coaching',
+      heroHeadline: 'NO EXCUSES.',
+      heroHighlight: 'ONLY RESULTS.',
+      heroSubtitle: 'Train with top-tier free weights, power racks, cardio equipment, and certified coaches focused on real transformations.',
       heroImageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1400&q=80',
       logoUrl: '',
       primaryColor: '#ccff00',
       accentColor: '#b8e600',
       secondaryColor: '#121724',
       phone: '9876543210',
-      email: 'hello@gympro.in',
+      email: 'info@gymclub.in',
       whatsappNumber: '919876543210',
       upiVpa: 'gymbranch@upi',
-      address: 'Near Tech Park, Main Road',
+      address: 'Main Commercial Hub, 1st Floor',
       city: 'Mumbai',
       state: 'Maharashtra',
       pincode: '400001',
-      operatingHours: 'Mon - Sat: 6:00 AM - 10:00 PM | Sun: 7:00 AM - 12:00 PM',
+      operatingHours: 'Mon - Sat: 6:00 AM - 10:00 PM | Sun: 7:00 AM - 1:00 PM',
       isPublished: true,
       features: [
-        { title: 'Certified Coaches', desc: 'Expert mentors for strength & posture alignment.' },
-        { title: 'Olympic Barbells', desc: 'Commercial calibrated plates and power racks.' },
-        { title: 'Custom Diet Support', desc: 'Personalized high-protein nutrition blueprints.' },
-        { title: 'Disciplined Culture', desc: 'Supportive athletes pushing daily PRs.' }
+        { title: 'Certified Trainers', desc: 'Expert coaches for personalized strength and fat loss workouts.' },
+        { title: 'Free Weights & Racks', desc: 'Olympic barbells, dumbbells up to 50kg, and cable stations.' },
+        { title: 'Custom Diet Support', desc: 'High-protein meal guidance tailored to Indian food habits.' },
+        { title: 'Supportive Community', desc: 'Friendly community of lifters focused on personal bests.' }
       ],
       programs: [
-        { id: 'prog-1', title: 'Strength Training', category: 'strength', desc: 'Hypertrophy & barbell mastery', intensity: 'High', duration: '60 min' }
+        { id: 'prog-1', title: 'Strength Training', category: 'strength', desc: 'Build muscle with compound barbell and dumbbell lifts.', intensity: 'High', duration: '60 min' }
       ],
       membershipPlans: [
-        { id: 'plan-1', name: 'Standard Monthly', durationMonths: 1, feeInr: 1999, features: ['Full Gym Access', 'Locker Room'] },
-        { id: 'plan-3', name: 'Quarterly Pro', durationMonths: 3, feeInr: 4999, isPopular: true, features: ['Full Gym Access', '1 Free Trainer Session', 'Diet Consultation'] },
-        { id: 'plan-12', name: 'Annual Elite', durationMonths: 12, feeInr: 14999, features: ['Full Year Access', 'All Amenities', 'Free Guest Passes'] }
+        { id: 'plan-1', name: 'Monthly Basic', durationMonths: 1, feeInr: 1999, features: ['Full Gym Floor Access', 'Locker Room'] },
+        { id: 'plan-3', name: 'Quarterly Pro', durationMonths: 3, feeInr: 4999, isPopular: true, features: ['Full Gym Access', '1 Free Trainer Session', 'Diet Plan'] },
+        { id: 'plan-12', name: 'Annual Pass', durationMonths: 12, feeInr: 14999, features: ['Full Year Access', 'All Amenities', 'Guest Passes'] }
       ],
       trainers: [
-        { name: 'Coach Dev', role: 'Head Trainer', spec: 'Powerlifting', exp: '5 Years', rating: '4.9' }
+        { name: 'Coach Dev', role: 'Head Trainer', spec: 'Strength & Conditioning', exp: '5 Years', rating: '4.9' }
       ],
       transformations: []
     };
 
     setGyms([...gyms, newGym]);
+    setDraftGymIds((prev) => new Set(prev).add(newGym.id));
     setSelectedGymId(newGym.id);
     setCurrentGym(newGym);
-    showToast(`Created draft for "${newGym.gymName}"! Complete details and save.`);
+    showToast(`Created draft for "${newGym.gymName}"! Enter your branding and click Save Changes.`);
   };
 
-  // Save changes
+  // Save changes (POST for new drafts, PUT for existing gyms)
   const handleSaveGym = async () => {
     if (!currentGym) return;
     setIsSaving(true);
@@ -163,18 +170,30 @@ export function GymCmsManager() {
         updatedAt: new Date().toISOString()
       };
 
-      await gymApiClient.updateGym(updatedGym.slug, updatedGym);
+      const isNew = draftGymIds.has(currentGym.id) || !persistedGymIds.has(currentGym.id);
+      let savedGym: GymProfile;
+
+      if (isNew) {
+        savedGym = await gymApiClient.createGym(updatedGym);
+        setDraftGymIds((prev) => {
+          const next = new Set(prev);
+          next.delete(currentGym.id);
+          return next;
+        });
+        setPersistedGymIds((prev) => new Set(prev).add(savedGym.id));
+      } else {
+        savedGym = await gymApiClient.updateGym(updatedGym.slug, updatedGym);
+      }
 
       // Update local state
-      setGyms(gyms.map((g) => (g.id === updatedGym.id ? updatedGym : g)));
-      setCurrentGym(updatedGym);
-      showToast(`✓ Landing page for "${updatedGym.gymName}" saved successfully!`);
+      setGyms(gyms.map((g) => (g.id === currentGym.id ? savedGym : g)));
+      setSelectedGymId(savedGym.id);
+      setCurrentGym(savedGym);
+      showToast(`✓ Landing page for "${savedGym.gymName}" ${isNew ? 'created' : 'updated'} successfully!`);
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : 'Error updating gym';
+      const errorMsg = err instanceof Error ? err.message : 'Error saving gym';
       console.error('Error saving gym:', err);
-      // Fallback save in local state
-      setGyms(gyms.map((g) => (g.id === currentGym.id ? currentGym : g)));
-      showToast(`Saved locally: ${errorMsg}`);
+      showToast(`Failed to save: ${errorMsg}`);
     } finally {
       setIsSaving(false);
     }

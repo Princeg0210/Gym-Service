@@ -83,7 +83,7 @@ function DynamicGymLandingContent({ params }: GymPageProps) {
       <RouteLoadingScreen
         title={`Loading ${slug.toUpperCase()}...`}
         badge="GYM SHOWCASE"
-        subtitle="Loading custom brand palette, membership plans & biomechanical specs..."
+        subtitle="Loading custom brand palette, membership plans & facility details..."
         icon="showcase"
       />
     );
@@ -248,7 +248,7 @@ export default function DynamicGymLandingPage(props: GymPageProps) {
         <RouteLoadingScreen
           title="Loading Gym Showcase..."
           badge="GYM SHOWCASE"
-          subtitle="Loading custom brand palette, membership plans & biomechanical specs..."
+          subtitle="Loading custom brand palette, membership plans & facility details..."
           icon="showcase"
         />
       }
