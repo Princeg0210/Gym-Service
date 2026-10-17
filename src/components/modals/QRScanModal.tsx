@@ -49,8 +49,8 @@ export function QRScanModal({ members, onClose, onCheckIn }: QRScanModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-[#222738] bg-[#0c1017] p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-[20px] backdrop-saturate-[180%]">
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 apple-glass-card p-6 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#1f2637] pb-4">
           <div className="flex items-center gap-2">

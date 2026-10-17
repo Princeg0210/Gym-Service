@@ -48,8 +48,8 @@ export function MemberDetailsModal({
   const daysDiff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-2xl rounded-2xl border border-[#232b3d] bg-[#0c1017] shadow-2xl text-zinc-100 flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-[20px] backdrop-saturate-[180%]">
+      <div className="relative w-full max-w-2xl rounded-2xl border border-white/10 apple-glass-card shadow-2xl text-zinc-100 flex flex-col max-h-[90vh] overflow-hidden">
         
         {/* Header Bar */}
         <div className="flex items-center justify-between border-b border-[#1b2333] px-6 py-4 bg-[#0e131d]">

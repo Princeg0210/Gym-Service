@@ -127,7 +127,7 @@ export function OverviewTab({
       {/* Dashboard Title & Timeframe Selector Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-baseline gap-3">
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight text-white">
+          <h1 className="text-2xl lg:text-3xl font-black apple-headline tracking-[-0.02em] text-white">
             Dashboard
           </h1>
           <span className="text-sm font-medium text-zinc-400">
@@ -136,12 +136,12 @@ export function OverviewTab({
         </div>
 
         {/* Filter Pills: Today / This Week / This Month */}
-        <div className="flex items-center rounded-xl border border-[#202738] bg-[#0c1017] p-1">
+        <div className="flex items-center rounded-xl border border-white/10 apple-glass p-1">
           <button
             onClick={() => setTimeframe('today')}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all apple-press ${
               timeframe === 'today'
-                ? 'bg-[#151c2c] border border-[#2b364e] text-white'
+                ? 'bg-[#151c2c] border border-white/15 text-white shadow-xs'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -149,9 +149,9 @@ export function OverviewTab({
           </button>
           <button
             onClick={() => setTimeframe('this_week')}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all apple-press ${
               timeframe === 'this_week'
-                ? 'bg-[#151c2c] border border-[#2b364e] text-white'
+                ? 'bg-[#151c2c] border border-white/15 text-white shadow-xs'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -159,9 +159,9 @@ export function OverviewTab({
           </button>
           <button
             onClick={() => setTimeframe('this_month')}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all apple-press ${
               timeframe === 'this_month'
-                ? 'bg-[#151c2c] border border-[#2b364e] text-white'
+                ? 'bg-[#151c2c] border border-white/15 text-white shadow-xs'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >

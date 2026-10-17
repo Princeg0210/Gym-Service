@@ -37,15 +37,15 @@ export function Header({ onResetData, gymProfile }: HeaderProps) {
   const memberLink = gymProfile ? `/member?gym=${gymProfile.slug}` : '/member';
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#1e2330] bg-[#07090d]/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#07090d]/80 backdrop-blur-[20px] backdrop-saturate-[180%]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Brand & Branch */}
         <Link
           href={gymProfile ? `/gym/${gymProfile.slug}` : '/'}
-          className="flex items-center gap-3 text-left group focus:outline-none"
+          className="flex items-center gap-3 text-left group focus:outline-none apple-press"
         >
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-black shadow-md transition-transform group-hover:scale-105"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-black shadow-md transition-transform group-hover:scale-105 active:scale-95"
             style={{ backgroundColor: primaryColor }}
           >
             <Dumbbell className="h-5 w-5" />

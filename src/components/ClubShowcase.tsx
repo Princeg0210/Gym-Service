@@ -162,10 +162,11 @@ export function ClubShowcase({
       <AnimatePresence>
         {bookingToast && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 right-6 z-50 flex items-center gap-2 rounded-xl border border-[#ccff00] bg-[#0c0f16] px-4 py-3 text-xs font-bold text-white shadow-xl"
+            initial={{ opacity: 0, y: -20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.97 }}
+            transition={{ type: "spring", damping: 22, stiffness: 320 }}
+            className="fixed top-20 right-6 z-50 flex items-center gap-2 rounded-xl apple-glass px-4 py-3 text-xs font-bold text-white shadow-2xl border-white/10"
           >
             <CheckCircle2 className="h-4 w-4 text-[#ccff00]" />
             <span>{bookingToast}</span>
@@ -186,12 +187,12 @@ export function ClubShowcase({
             
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
-              {/* Giant Bold Headline (IronPulse reference signature) */}
+              {/* Giant Bold Headline (Apple -0.02em tracking) */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-5xl font-black uppercase tracking-tight text-white sm:text-7xl lg:text-8xl leading-[0.95]"
+                transition={{ type: "spring", damping: 20, stiffness: 280, delay: 0.1 }}
+                className="text-5xl font-black uppercase tracking-[-0.02em] text-white sm:text-7xl lg:text-8xl leading-[0.95]"
               >
                 {heroHeadline}{' '}
                 <span className="block mt-1" style={{ color: primaryColor }}>
@@ -317,12 +318,12 @@ export function ClubShowcase({
                   </div>
                 </div>
 
-                {/* Floating Member Stat Badge (IronPulse reference signature element - flattened hierarchy) */}
+                {/* Floating Member Stat Badge (Apple Glass Material & Spring Transition) */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.45 }}
-                  className="absolute -bottom-6 -left-6 sm:left-4 rounded-2xl border border-[#2e374e] bg-[#0d111a]/95 p-4 shadow-2xl backdrop-blur-lg w-72"
+                  transition={{ type: "spring", damping: 20, stiffness: 280, delay: 0.35 }}
+                  className="absolute -bottom-6 -left-6 sm:left-4 rounded-2xl apple-glass-card p-4 shadow-2xl w-72"
                 >
                   <div className="flex items-center justify-between border-b border-[#222838] pb-2.5">
                     <div className="flex items-center gap-2">
@@ -1004,7 +1005,8 @@ export function ClubShowcase({
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-40 max-w-sm rounded-2xl border border-[#2a3144] bg-[#0e121bf0] p-4 shadow-2xl backdrop-blur-xl"
+            transition={{ type: "spring", damping: 22, stiffness: 300 }}
+            className="fixed bottom-6 right-6 z-40 max-w-sm rounded-2xl apple-glass-card p-4 shadow-2xl"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
@@ -1021,7 +1023,7 @@ export function ClubShowcase({
 
               <button
                 onClick={() => setIsAlfirzaCardDismissed(true)}
-                className="text-zinc-400 hover:text-white"
+                className="text-zinc-400 hover:text-white p-1 rounded-md apple-press"
                 title="Dismiss"
               >
                 <X className="h-4 w-4" />

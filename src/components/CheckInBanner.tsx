@@ -19,10 +19,10 @@ export function CheckInBanner({ member, onDismiss, onOpenPaymentModal }: CheckIn
 
   return (
     <div
-      className={`mx-auto mb-4 max-w-7xl rounded-lg border p-4 shadow-xs transition-all ${
+      className={`mx-auto mb-4 max-w-7xl rounded-2xl border p-4 shadow-xl transition-all ${
         hasDues || isExpired
-          ? 'border-red-300 bg-red-50 text-red-950 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100'
-          : 'border-emerald-300 bg-emerald-50 text-emerald-950 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-100'
+          ? 'border-red-500/40 bg-red-950/40 text-red-100 backdrop-blur-[20px] backdrop-saturate-[180%]'
+          : 'border-emerald-500/40 bg-emerald-950/40 text-emerald-100 backdrop-blur-[20px] backdrop-saturate-[180%]'
       }`}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -68,7 +68,7 @@ export function CheckInBanner({ member, onDismiss, onOpenPaymentModal }: CheckIn
                 href={generateDuesReminderWhatsAppUrl(member)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 rounded-md bg-[#25D366] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#20ba59] transition-colors shadow-xs"
+                className="flex items-center gap-1.5 rounded-xl bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#20ba59] transition-colors shadow-xs apple-press"
               >
                 <MessageSquare className="h-3.5 w-3.5" />
                 <span>WhatsApp Reminder</span>
@@ -76,7 +76,7 @@ export function CheckInBanner({ member, onDismiss, onOpenPaymentModal }: CheckIn
 
               <button
                 onClick={() => onOpenPaymentModal(member)}
-                className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 transition-colors shadow-xs"
+                className="flex items-center gap-1.5 rounded-xl bg-white text-black px-3.5 py-1.5 text-xs font-black hover:bg-zinc-200 transition-colors shadow-xs apple-press"
               >
                 <IndianRupee className="h-3.5 w-3.5" />
                 <span>Collect Due</span>
@@ -86,7 +86,7 @@ export function CheckInBanner({ member, onDismiss, onOpenPaymentModal }: CheckIn
 
           <button
             onClick={onDismiss}
-            className="rounded p-1 text-zinc-600 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white transition-colors apple-press"
           >
             <X className="h-4 w-4" />
           </button>

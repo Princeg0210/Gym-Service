@@ -262,7 +262,7 @@ export function MemberPortal({
 
       {/* Floating Rest Timer Bar if active */}
       {isTimerRunning && (
-        <div className="sticky top-20 z-30 flex items-center justify-between rounded-2xl border-2 border-[#ccff00] bg-[#0c0f16] px-5 py-3.5 text-white shadow-2xl backdrop-blur-md">
+        <div className="sticky top-20 z-30 flex items-center justify-between rounded-2xl apple-glass px-5 py-3.5 text-white shadow-2xl border-[#ccff00]/40 animate-pulse-border">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ccff00] text-black">
               <Timer className="h-5 w-5" />
@@ -280,6 +280,7 @@ export function MemberPortal({
               variant="outline"
               size="sm"
               onClick={() => setIsTimerRunning(false)}
+              className="apple-press"
             >
               Skip
             </Button>
@@ -701,12 +702,12 @@ export function MemberPortal({
       {/* TAB 3: DIGITAL QR GYM PASS */}
       {activePortalTab === 'pass' && (
         <div className="flex flex-col items-center justify-center py-6">
-          <div className="w-full max-w-sm rounded-3xl border border-[#262c3e] bg-[#0c0f16] p-7 shadow-2xl text-center">
+          <div className="w-full max-w-sm rounded-3xl apple-glass-card p-7 shadow-2xl text-center">
             <div className="mb-4">
               <span className="text-xs font-black uppercase tracking-widest text-[#ccff00]">
                 {gymName ? `${gymName} Access Pass` : 'GymPRO Access Pass'}
               </span>
-              <h3 className="text-2xl font-black text-white mt-1">
+              <h3 className="text-2xl font-black text-white mt-1 apple-headline tracking-[-0.02em]">
                 {currentMember.fullName}
               </h3>
               <p className="font-mono text-xs text-zinc-400">+91 {currentMember.phone}</p>
