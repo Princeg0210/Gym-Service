@@ -992,6 +992,8 @@ export function OperationsDashboard({
           ───────────────────────────────────────────────────────────── */}
           {activeTab === 'dashboard' && (
             <AdminInvoicesDesk
+              members={members}
+              payments={payments}
               onOpenPaymentModal={(m) => setPaymentModalMember(m || members[0])}
               onOpenAddMember={() => setIsAddMemberOpen(true)}
               onBackToOverview={() => setActiveTab('overview')}
@@ -1087,6 +1089,8 @@ export function OperationsDashboard({
           {activeTab === 'dues' && (
             <div className="space-y-4">
               <AdminInvoicesDesk
+                members={members}
+                payments={payments}
                 onOpenPaymentModal={(m) => setPaymentModalMember(m || members[0])}
                 onOpenAddMember={() => setIsAddMemberOpen(true)}
                 onBackToOverview={() => setActiveTab('overview')}
