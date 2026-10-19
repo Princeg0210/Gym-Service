@@ -1001,6 +1001,7 @@ export function OperationsDashboard({
               setPaymentModalMember={setPaymentModalMember}
               setWhatsAppMember={setWhatsAppMember}
               setSelectedMemberDossier={setSelectedMemberDossier}
+              onOpenAddMember={() => setIsAddMemberOpen(true)}
             />
           )}
 
