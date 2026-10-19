@@ -104,9 +104,19 @@ function MemberPageContent() {
           </Link>
 
           <div className="flex items-center gap-3">
+            <a
+              href="/opengym/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121724] px-3.5 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
+            >
+              <Dumbbell className="h-3.5 w-3.5" style={{ color: primaryColor }} />
+              <span>openGym App</span>
+            </a>
+
             <Link
               href={homeHref}
-              className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121724] px-3.5 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121622] px-3.5 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
             >
               <Home className="h-3.5 w-3.5" style={{ color: primaryColor }} />
               <span>Showcase</span>
