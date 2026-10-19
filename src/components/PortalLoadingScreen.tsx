@@ -11,7 +11,7 @@ import React, {
 } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Dumbbell, LayoutGrid, Loader2, CheckCircle2 } from 'lucide-react';
+import { Loader2, CheckCircle2 } from 'lucide-react';
 import MetalLapJoint from '@/components/originkit/metal-lap-joint';
 
 interface PortalInfo {
@@ -279,78 +279,49 @@ export function PortalLoadingOverlay({
     >
       {/* Dynamic Background Glow */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#ccff00]/10 blur-[120px]" />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-[#1e2738]/50 blur-[90px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full bg-[#ccff00]/12 blur-[130px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-[#1e2738]/50 blur-[90px]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Brand Header */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="font-black tracking-tight text-white text-xl">
-            Gym<span className="text-[#ccff00]">PRO</span>
-          </span>
-          <span className="rounded-full border border-[#ccff00]/40 bg-[#ccff00]/10 px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-[#ccff00]">
-            {portal.badge}
-          </span>
-        </div>
-
-        {/* OriginKit 3D Kinetic Dumbbell Lap Joint Loading Animation */}
-        <div className="relative flex items-center justify-center my-3 w-52 h-52 sm:w-60 sm:h-60">
-          <div className="absolute inset-0 rounded-full bg-[#ccff00]/10 blur-2xl pointer-events-none" />
+        {/* Large Prominent OriginKit 3D Kinetic Dumbbell Loading Animation */}
+        <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/15 blur-3xl pointer-events-none" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
               baseColor="#ccff00"
-              speed={52}
-              distance={25}
-              material={{ roughness: 42, reflect: 82 }}
+              speed={48}
+              distance={13}
+              material={{ roughness: 40, reflect: 85 }}
               motion={{ spin: 20, fold: 90, hold: 28 }}
-              camera={{ tilt: 30, sideTilt: 0 }}
+              camera={{ tilt: 28, sideTilt: 0 }}
               background="transparent"
             />
           </div>
         </div>
 
-        {/* Portal Title & Subtitle */}
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xl font-extrabold text-white tracking-tight"
-        >
-          {portal.name}
-        </motion.h3>
-
-        <p className="mt-1.5 text-xs text-zinc-400 font-medium px-4 leading-relaxed">
-          {portal.subtitle}
-        </p>
-
         {/* Dynamic Progress Bar */}
-        <div className="w-full mt-6 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
+        <div className="w-full max-w-sm mt-3 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-[#99cc00] via-[#ccff00] to-[#e6ff80] shadow-sm"
-            initial={{ width: '15%' }}
+            initial={{ width: '0%' }}
             animate={{ width: `${progress}%` }}
             transition={{ ease: 'easeOut', duration: 0.2 }}
           />
         </div>
 
         {/* Percentage & Step Status */}
-        <div className="flex items-center justify-between w-full mt-2.5 text-xs">
-          <div className="flex items-center gap-1.5 text-zinc-300 font-medium">
+        <div className="flex items-center justify-between w-full max-w-sm mt-2.5 text-xs">
+          <div className="flex items-center gap-1.5 text-zinc-300 font-medium truncate pr-2">
             {isFinishing ? (
-              <CheckCircle2 className="h-3.5 w-3.5 text-[#ccff00]" />
+              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-[#ccff00]" />
             ) : (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-[#ccff00]" />
+              <Loader2 className="h-3.5 w-3.5 flex-shrink-0 animate-spin text-[#ccff00]" />
             )}
-            <span className="font-mono text-zinc-300">{currentStep}</span>
+            <span className="font-mono text-zinc-300 truncate">{currentStep}</span>
           </div>
-          <span className="font-mono font-bold text-[#ccff00]">{progress}%</span>
-        </div>
-
-        {/* Security & Reliability Badge */}
-        <div className="mt-6 flex items-center gap-1.5 rounded-full border border-[#1e2638] bg-[#0c1017] px-3 py-1 text-xs text-zinc-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-[#ccff00]" />
-          <span>High-Velocity Offline-Resilient Engine</span>
+          <span className="font-mono font-bold text-[#ccff00] flex-shrink-0">{progress}%</span>
         </div>
       </div>
     </motion.div>
@@ -362,10 +333,6 @@ export function PortalLoadingOverlay({
 // ─────────────────────────────────────────────────────────────
 
 export function RouteLoadingScreen({
-  title = 'GymPRO Portal',
-  subtitle = 'Synchronizing real-time attendance, roster & biometric data...',
-  badge = 'LOADING PORTAL',
-  icon = 'showcase',
   duration = 4000
 }: {
   title?: string;
@@ -409,42 +376,30 @@ export function RouteLoadingScreen({
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#060709] px-4 text-center select-none">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#ccff00]/10 blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full bg-[#ccff00]/12 blur-[130px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-[#1e2738]/50 blur-[90px]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Brand */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="font-black tracking-tight text-white text-xl">
-            Gym<span className="text-[#ccff00]">PRO</span>
-          </span>
-          <span className="rounded-full border border-[#ccff00]/40 bg-[#ccff00]/10 px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-[#ccff00]">
-            {badge}
-          </span>
-        </div>
-
-        {/* OriginKit 3D Kinetic Dumbbell Lap Joint Loading Animation */}
-        <div className="relative flex items-center justify-center my-3 w-52 h-52 sm:w-60 sm:h-60">
-          <div className="absolute inset-0 rounded-full bg-[#ccff00]/10 blur-2xl pointer-events-none" />
+        {/* Large Prominent OriginKit 3D Kinetic Dumbbell Loading Animation */}
+        <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/15 blur-3xl pointer-events-none" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
               baseColor="#ccff00"
               speed={48}
-              distance={25}
-              material={{ roughness: 42, reflect: 82 }}
+              distance={13}
+              material={{ roughness: 40, reflect: 85 }}
               motion={{ spin: 20, fold: 90, hold: 28 }}
-              camera={{ tilt: 30, sideTilt: 0 }}
+              camera={{ tilt: 28, sideTilt: 0 }}
               background="transparent"
             />
           </div>
         </div>
 
-        <h3 className="text-xl font-extrabold text-white tracking-tight">{title}</h3>
-        <p className="mt-1.5 text-xs text-zinc-400 font-medium px-4 leading-relaxed">{subtitle}</p>
-
         {/* Dynamic Progress Bar */}
-        <div className="w-full mt-6 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
+        <div className="w-full max-w-sm mt-3 bg-[#121620] border border-[#1e2433] rounded-full h-2.5 p-0.5 overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-[#99cc00] via-[#ccff00] to-[#e6ff80] shadow-sm"
             initial={{ width: '0%' }}
@@ -454,22 +409,16 @@ export function RouteLoadingScreen({
         </div>
 
         {/* Percentage & Step Status */}
-        <div className="flex items-center justify-between w-full mt-2.5 text-xs">
-          <div className="flex items-center gap-1.5 text-zinc-300 font-medium">
+        <div className="flex items-center justify-between w-full max-w-sm mt-2.5 text-xs">
+          <div className="flex items-center gap-1.5 text-zinc-300 font-medium truncate pr-2">
             {progress >= 100 ? (
-              <CheckCircle2 className="h-3.5 w-3.5 text-[#ccff00]" />
+              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-[#ccff00]" />
             ) : (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-[#ccff00]" />
+              <Loader2 className="h-3.5 w-3.5 flex-shrink-0 animate-spin text-[#ccff00]" />
             )}
-            <span className="font-mono text-zinc-300">{currentStep}</span>
+            <span className="font-mono text-zinc-300 truncate">{currentStep}</span>
           </div>
-          <span className="font-mono font-bold text-[#ccff00]">{progress}%</span>
-        </div>
-
-        {/* Security & Reliability Badge */}
-        <div className="mt-6 flex items-center gap-1.5 rounded-full border border-[#1e2638] bg-[#0c1017] px-3 py-1 text-xs text-zinc-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-[#ccff00]" />
-          <span>High-Velocity Offline-Resilient Engine</span>
+          <span className="font-mono font-bold text-[#ccff00] flex-shrink-0">{progress}%</span>
         </div>
       </div>
     </div>
