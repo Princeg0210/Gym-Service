@@ -194,7 +194,7 @@ export function OverviewTab({
     // Today check-ins
     const todayDate = new Date().toISOString().slice(0, 10);
     const todayLogs = attendanceLogs.filter((a) => a.checkInTime.slice(0, 10) === todayDate);
-    const todayCheckInsCount = todayLogs.length > 0 ? todayLogs.length : attendanceLogs.slice(0, 5).length;
+    const todayCheckInsCount = todayLogs.length;
 
     // Total pending dues
     const pendingDuesTotal = members.reduce((sum, m) => sum + (m.pendingDueInr || 0), 0);
@@ -212,10 +212,7 @@ export function OverviewTab({
     // Monthly collections (sum of payments in current calendar month)
     const currentMonthPrefix = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
     const thisMonthPayments = payments.filter((p) => p.timestamp.slice(0, 7) === currentMonthPrefix);
-    const monthlyCollectionsTotal =
-      thisMonthPayments.length > 0
-        ? thisMonthPayments.reduce((sum, p) => sum + (p.amountInr || 0), 0)
-        : payments.reduce((sum, p) => sum + (p.amountInr || 0), 0);
+    const monthlyCollectionsTotal = thisMonthPayments.reduce((sum, p) => sum + (p.amountInr || 0), 0);
 
     return {
       todayCheckInsCount,
@@ -223,7 +220,7 @@ export function OverviewTab({
       membersWithDuesCount: membersWithDues.length,
       expiringCount: expiringMembers.length,
       monthlyCollectionsTotal,
-      monthlyTransactionsCount: thisMonthPayments.length || payments.length
+      monthlyTransactionsCount: thisMonthPayments.length
     };
   }, [attendanceLogs, members, payments]);
 

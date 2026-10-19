@@ -16,7 +16,7 @@ import {
   Flame,
   Info
 } from 'lucide-react';
-import { INITIAL_MEMBERS, INITIAL_DIET_PLANS } from '@/lib/mockData';
+import { INITIAL_DIET_PLANS } from '@/lib/mockData';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -35,14 +35,27 @@ export function MemberPortal({
   members,
   gymName
 }: MemberPortalProps) {
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || 'mem-101');
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || '');
   const [activePortalTab, setActivePortalTab] = useState<'training' | 'pass' | 'diet'>('training');
+
+  if (!members || members.length === 0) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-16 text-center space-y-4">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-[#222738] bg-[#0c0f16] text-[#ccff00]">
+          <Dumbbell className="h-8 w-8" />
+        </div>
+        <h2 className="text-xl font-bold text-white">No Athletes Enrolled Yet</h2>
+        <p className="text-sm text-zinc-400 max-w-md mx-auto">
+          No athlete profiles are active right now. Add a new member from the Operations Desk to generate their digital pass, training routine, and diet dossier.
+        </p>
+      </div>
+    );
+  }
 
   // Diet Plan State
   const currentMember =
     members.find((m) => m.id === selectedMemberId) ||
-    members[0] ||
-    INITIAL_MEMBERS[0];
+    members[0];
   const [dietPref, setDietPref] = useState<'vegetarian' | 'eggetarian' | 'non_veg'>(
     currentMember?.dietaryPreference || 'vegetarian'
   );

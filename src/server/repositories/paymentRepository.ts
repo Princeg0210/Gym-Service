@@ -1,6 +1,5 @@
 import { PaymentRecord } from '@/types';
 import { supabase } from '../db/supabase';
-import { INITIAL_PAYMENTS } from '@/lib/mockData';
 
 export interface PaymentRow {
   id: string;
@@ -27,18 +26,27 @@ export function rowToPayment(row: PaymentRow): PaymentRecord {
 
 export const paymentRepository = {
   async getAll(): Promise<PaymentRecord[]> {
-    if (!supabase) return INITIAL_PAYMENTS;
+    if (!supabase) return [];
     try {
+      const { data: activeMembers } = await supabase
+        .from('members')
+        .select('id')
+        .neq('status', 'deleted');
+
+      if (!activeMembers || activeMembers.length === 0) return [];
+      const memberIds = activeMembers.map((m) => m.id);
+
       const { data, error } = await supabase
         .from('payments')
         .select('*')
+        .in('member_id', memberIds)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) return INITIAL_PAYMENTS;
+      if (!data) return [];
       return (data as unknown as PaymentRow[]).map(rowToPayment);
     } catch (error) {
       console.error('Database fetch error (payments):', error);
-      return INITIAL_PAYMENTS;
+      return [];
     }
   },
 

@@ -1,6 +1,5 @@
 import { Member, FitnessGoal, DietaryPreference } from '@/types';
 import { supabase } from '../db/supabase';
-import { INITIAL_MEMBERS } from '@/lib/mockData';
 
 export interface MemberRow {
   id: string;
@@ -64,37 +63,37 @@ export function rowToMember(row: MemberRow): Member {
 
 export const memberRepository = {
   async getAll(): Promise<Member[]> {
-    if (!supabase) return INITIAL_MEMBERS;
+    if (!supabase) return [];
     try {
       const { data, error } = await supabase
         .from('members')
         .select('*')
+        .neq('status', 'deleted')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) return INITIAL_MEMBERS;
+      if (!data) return [];
       return (data as unknown as MemberRow[]).map(rowToMember);
     } catch (error) {
       console.error('Database fetch error (members):', error);
-      return INITIAL_MEMBERS;
+      return [];
     }
   },
 
   async getById(id: string): Promise<Member | null> {
-    if (!supabase) {
-      return INITIAL_MEMBERS.find((m) => m.id === id) || null;
-    }
+    if (!supabase) return null;
     try {
       const { data, error } = await supabase
         .from('members')
         .select('*')
         .eq('id', id)
+        .neq('status', 'deleted')
         .maybeSingle();
       if (error) throw error;
-      if (!data) return INITIAL_MEMBERS.find((m) => m.id === id) || null;
+      if (!data) return null;
       return rowToMember(data as unknown as MemberRow);
     } catch (error) {
       console.error(`Database fetch error (member ${id}):`, error);
-      return INITIAL_MEMBERS.find((m) => m.id === id) || null;
+      return null;
     }
   },
 
@@ -135,10 +134,7 @@ export const memberRepository = {
   },
 
   async update(id: string, updates: Partial<Member>): Promise<Member | null> {
-    if (!supabase) {
-      const found = INITIAL_MEMBERS.find((m) => m.id === id);
-      return found ? { ...found, ...updates } : null;
-    }
+    if (!supabase) return null;
     try {
       const rowUpdates: Record<string, unknown> = {};
       if (updates.fullName !== undefined) rowUpdates.full_name = updates.fullName;
@@ -176,7 +172,7 @@ export const memberRepository = {
   async delete(id: string): Promise<boolean> {
     if (!supabase) return true;
     try {
-      const { error } = await supabase.from('members').delete().eq('id', id);
+      const { error } = await supabase.from('members').update({ status: 'deleted' }).eq('id', id);
       if (error) throw error;
       return true;
     } catch (error) {

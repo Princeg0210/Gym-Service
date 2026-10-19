@@ -8,11 +8,7 @@ import {
   Exercise
 } from '@/types';
 import {
-  INITIAL_MEMBERS,
-  INITIAL_ATTENDANCE,
-  INITIAL_PAYMENTS,
   INITIAL_EQUIPMENT,
-  INITIAL_LEADS,
   INITIAL_ROUTINES,
   INITIAL_EXERCISES
 } from './mockData';
@@ -29,12 +25,12 @@ const KEYS = {
 
 export const AppStorage = {
   getMembers(): Member[] {
-    if (typeof window === 'undefined') return INITIAL_MEMBERS;
+    if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(KEYS.MEMBERS);
-      return data ? JSON.parse(data) : INITIAL_MEMBERS;
+      return data ? JSON.parse(data) : [];
     } catch {
-      return INITIAL_MEMBERS;
+      return [];
     }
   },
 
@@ -44,12 +40,12 @@ export const AppStorage = {
   },
 
   getAttendance(): AttendanceRecord[] {
-    if (typeof window === 'undefined') return INITIAL_ATTENDANCE;
+    if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(KEYS.ATTENDANCE);
-      return data ? JSON.parse(data) : INITIAL_ATTENDANCE;
+      return data ? JSON.parse(data) : [];
     } catch {
-      return INITIAL_ATTENDANCE;
+      return [];
     }
   },
 
@@ -59,12 +55,12 @@ export const AppStorage = {
   },
 
   getPayments(): PaymentRecord[] {
-    if (typeof window === 'undefined') return INITIAL_PAYMENTS;
+    if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(KEYS.PAYMENTS);
-      return data ? JSON.parse(data) : INITIAL_PAYMENTS;
+      return data ? JSON.parse(data) : [];
     } catch {
-      return INITIAL_PAYMENTS;
+      return [];
     }
   },
 
@@ -89,12 +85,12 @@ export const AppStorage = {
   },
 
   getLeads(): LeadItem[] {
-    if (typeof window === 'undefined') return INITIAL_LEADS;
+    if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(KEYS.LEADS);
-      return data ? JSON.parse(data) : INITIAL_LEADS;
+      return data ? JSON.parse(data) : [];
     } catch {
-      return INITIAL_LEADS;
+      return [];
     }
   },
 

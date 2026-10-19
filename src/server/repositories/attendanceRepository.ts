@@ -1,6 +1,5 @@
 import { AttendanceRecord } from '@/types';
 import { supabase } from '../db/supabase';
-import { INITIAL_ATTENDANCE } from '@/lib/mockData';
 
 export interface AttendanceRow {
   id: string;
@@ -29,18 +28,27 @@ export function rowToAttendance(row: AttendanceRow): AttendanceRecord {
 
 export const attendanceRepository = {
   async getAll(): Promise<AttendanceRecord[]> {
-    if (!supabase) return INITIAL_ATTENDANCE;
+    if (!supabase) return [];
     try {
+      const { data: activeMembers } = await supabase
+        .from('members')
+        .select('id')
+        .neq('status', 'deleted');
+
+      if (!activeMembers || activeMembers.length === 0) return [];
+      const memberIds = activeMembers.map((m) => m.id);
+
       const { data, error } = await supabase
         .from('attendance')
         .select('*')
+        .in('member_id', memberIds)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) return INITIAL_ATTENDANCE;
+      if (!data) return [];
       return (data as unknown as AttendanceRow[]).map(rowToAttendance);
     } catch (error) {
       console.error('Database fetch error (attendance):', error);
-      return INITIAL_ATTENDANCE;
+      return [];
     }
   },
 

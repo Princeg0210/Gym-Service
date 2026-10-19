@@ -1,6 +1,5 @@
 import { LeadItem, FitnessGoal } from '@/types';
 import { supabase } from '../db/supabase';
-import { INITIAL_LEADS } from '@/lib/mockData';
 
 export interface LeadRow {
   id: string;
@@ -40,18 +39,19 @@ export function rowToLead(row: LeadRow): LeadItem {
 
 export const leadRepository = {
   async getAll(): Promise<LeadItem[]> {
-    if (!supabase) return INITIAL_LEADS;
+    if (!supabase) return [];
     try {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
+        .neq('status', 'deleted')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) return INITIAL_LEADS;
+      if (!data || data.length === 0) return [];
       return (data as unknown as LeadRow[]).map(rowToLead);
     } catch (error) {
       console.error('Database fetch error (leads):', error);
-      return INITIAL_LEADS;
+      return [];
     }
   },
 
@@ -83,10 +83,7 @@ export const leadRepository = {
   },
 
   async update(id: string, updates: Partial<LeadItem>): Promise<LeadItem | null> {
-    if (!supabase) {
-      const found = INITIAL_LEADS.find((l) => l.id === id);
-      return found ? { ...found, ...updates } : null;
-    }
+    if (!supabase) return null;
     try {
       const rowUpdates: Record<string, unknown> = {};
       if (updates.fullName !== undefined) rowUpdates.full_name = updates.fullName;

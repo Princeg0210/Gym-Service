@@ -74,31 +74,7 @@ export function AdminInvoicesDesk({
     const todayStr = new Date().toISOString().split('T')[0];
 
     if (!members || members.length === 0) {
-      return [
-        {
-          id: 'inv-sample-1',
-          invoiceNo: 'INV-2026-001',
-          memberId: 'mem-sample-1',
-          memberName: 'Karan Malhotra',
-          memberPhone: '9823654321',
-          planName: 'Annual Executive Strength',
-          gymName: 'IronPulse Commercial Gym',
-          billingAddress: '402, High Street Arena, Lower Parel, Mumbai',
-          issueDate: '2026-01-10',
-          dueDate: '2026-02-10',
-          totalAmount: 25000,
-          paidAmount: 15000,
-          balanceDue: 10000,
-          status: 'overdue',
-          items: [
-            { title: 'Annual Executive Membership', description: 'Full floor & Olympic rig access', amount: 20000 },
-            { title: 'Dedicated Personal Trainer', description: 'Monthly coach review', amount: 5000 }
-          ],
-          paymentHistory: [
-            { id: 'p-1', amount: 15000, mode: 'UPI', ref: 'UPI-884920', date: '2026-01-10' }
-          ]
-        }
-      ];
+      return [];
     }
 
     return members.map((m, idx) => {

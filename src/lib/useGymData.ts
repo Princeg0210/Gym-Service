@@ -35,18 +35,51 @@ export function useGymData() {
           fetch('/api/leads').then((r) => r.json()).catch(() => null)
         ]);
 
-        if (mRes?.success && Array.isArray(mRes.data) && mRes.data.length > 0) {
-          setMembers(mRes.data);
-          AppStorage.saveMembers(mRes.data);
+        if (mRes?.success && Array.isArray(mRes.data)) {
+          const activeMembers = mRes.data as Member[];
+          const memberIdSet = new Set(activeMembers.map((m) => m.id));
+
+          setMembers(activeMembers);
+          AppStorage.saveMembers(activeMembers);
+
+          if (aRes?.success && Array.isArray(aRes.data)) {
+            const cleanAttendance = (aRes.data as AttendanceRecord[]).filter((a) =>
+              memberIdSet.has(a.memberId)
+            );
+            setAttendanceLogs(cleanAttendance);
+            AppStorage.saveAttendance(cleanAttendance);
+          } else {
+            setAttendanceLogs((prev) => {
+              const clean = prev.filter((a) => memberIdSet.has(a.memberId));
+              AppStorage.saveAttendance(clean);
+              return clean;
+            });
+          }
+
+          if (pRes?.success && Array.isArray(pRes.data)) {
+            const cleanPayments = (pRes.data as PaymentRecord[]).filter((p) =>
+              memberIdSet.has(p.memberId)
+            );
+            setPayments(cleanPayments);
+            AppStorage.savePayments(cleanPayments);
+          } else {
+            setPayments((prev) => {
+              const clean = prev.filter((p) => memberIdSet.has(p.memberId));
+              AppStorage.savePayments(clean);
+              return clean;
+            });
+          }
+        } else {
+          if (aRes?.success && Array.isArray(aRes.data)) {
+            setAttendanceLogs(aRes.data);
+            AppStorage.saveAttendance(aRes.data);
+          }
+          if (pRes?.success && Array.isArray(pRes.data)) {
+            setPayments(pRes.data);
+            AppStorage.savePayments(pRes.data);
+          }
         }
-        if (aRes?.success && Array.isArray(aRes.data)) {
-          setAttendanceLogs(aRes.data);
-          AppStorage.saveAttendance(aRes.data);
-        }
-        if (pRes?.success && Array.isArray(pRes.data)) {
-          setPayments(pRes.data);
-          AppStorage.savePayments(pRes.data);
-        }
+
         if (eRes?.success && Array.isArray(eRes.data)) {
           setEquipmentList(eRes.data);
           AppStorage.saveEquipment(eRes.data);
@@ -179,13 +212,13 @@ export function useGymData() {
   }, []);
 
   const handleResetData = useCallback(() => {
-    if (confirm('Reset all gym members, dues, and logs to initial sample data?')) {
+    if (confirm('Clear local storage and synchronize fresh data from database?')) {
       AppStorage.resetAll();
-      setMembers(AppStorage.getMembers());
-      setAttendanceLogs(AppStorage.getAttendance());
-      setPayments(AppStorage.getPayments());
+      setMembers([]);
+      setAttendanceLogs([]);
+      setPayments([]);
       setEquipmentList(AppStorage.getEquipment());
-      setLeads(AppStorage.getLeads());
+      setLeads([]);
       setRoutines(AppStorage.getRoutines());
       setCheckedInBannerMember(null);
     }
