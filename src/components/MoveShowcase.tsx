@@ -22,7 +22,6 @@ import {
   Activity,
   Users
 } from 'lucide-react';
-import { FacilityArchitectureDiagram } from './FacilityArchitectureDiagram';
 
 interface MoveShowcaseProps {
   onSwitchMode?: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -458,12 +457,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          EDITORIAL DIAGRAM-DESIGN: FACILITY ARCHITECTURE & ATHLETE FSM
-      ───────────────────────────────────────────────────────────── */}
-      <FacilityArchitectureDiagram />
-
-      {/* ─────────────────────────────────────────────────────────────
-          7. NEWSLETTER & VIP PASS REGISTRATION
+          6. NEWSLETTER & VIP PASS REGISTRATION
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-10 border-t border-white/5 bg-[#0a0a0c]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
