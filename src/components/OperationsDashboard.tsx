@@ -25,7 +25,6 @@ import {
   UserCheck,
   Search,
   Bell,
-  Clock,
   ChevronDown,
   ChevronRight,
   QrCode,
@@ -318,26 +317,11 @@ export function OperationsDashboard({
               </div>
             </Link>
 
-            {/* Salesforce Style Header Pills (Matching Image 2) */}
-            <nav className="hidden xl:flex items-center gap-1.5 ml-3 pl-3 border-l border-[#1f2738] bg-[#121620] rounded-full px-2.5 py-1 border border-white/5">
-              <button
-                onClick={() => setActiveTab('reports')}
-                className="p-1 text-zinc-400 hover:text-white transition-colors"
-                title="Reports Overview"
-              >
-                <LayoutDashboard className="h-3.5 w-3.5" />
-              </button>
-              <button
-                onClick={() => setActiveTab('dashboard')}
-                className="p-1 text-zinc-400 hover:text-white transition-colors"
-                title="Invoices Desk"
-              >
-                <CreditCard className="h-3.5 w-3.5" />
-              </button>
-
+            {/* Salesforce Style Header Pills */}
+            <nav className="hidden xl:flex items-center gap-1 bg-[#121620] rounded-full px-2 py-1 border border-white/5 shrink-0 ml-2">
               <button
                 onClick={() => setActiveTab('leads')}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                   activeTab === 'leads' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -346,7 +330,7 @@ export function OperationsDashboard({
 
               <button
                 onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold whitespace-nowrap transition-all ${
                   activeTab === 'dashboard' || activeTab === 'dues'
                     ? 'bg-[#ccff00] text-black shadow-sm'
                     : 'text-zinc-400 hover:text-white'
@@ -358,7 +342,7 @@ export function OperationsDashboard({
 
               <button
                 onClick={() => setActiveTab('dues')}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                   activeTab === 'dues' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -367,16 +351,16 @@ export function OperationsDashboard({
 
               <button
                 onClick={() => setActiveTab('members')}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                   activeTab === 'members' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
               >
-                Recurring Invoices
+                Recurring
               </button>
 
               <button
                 onClick={() => setActiveTab('attendance')}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                   activeTab === 'attendance' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -389,17 +373,17 @@ export function OperationsDashboard({
                     onSwitchToShowcase();
                   }
                 }}
-                className="flex items-center gap-1 ml-1 px-2 py-0.5 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
                 title="Public Showcase"
               >
-                <Home className="h-3 w-3 text-zinc-400" />
+                <Home className="h-3 w-3 text-zinc-400 shrink-0" />
                 <span>Store</span>
               </button>
             </nav>
           </div>
 
-          {/* Center: Clearly Labeled Global Member Search with "/" shortcut */}
-          <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg min-w-0 mx-1 sm:mx-2">
+          {/* Center: Full-width Global Member Search with "/" shortcut */}
+          <div className="flex-1 min-w-[200px] max-w-xs md:max-w-sm lg:max-w-md mx-2">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
               <input
@@ -408,14 +392,11 @@ export function OperationsDashboard({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search member name, phone or ID..."
-                className="w-full h-9 rounded-xl border border-[#202738] bg-[#101522] py-1.5 pl-9 pr-14 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-[#ccff00] transition-colors"
+                className="w-full h-9 rounded-xl border border-[#202738] bg-[#101522] py-1.5 pl-9 pr-9 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-[#ccff00] transition-colors"
               />
-              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                <kbd className="flex h-5 items-center justify-center rounded border border-[#262f44] bg-[#161c2d] px-1.5 font-mono text-[11px] font-bold text-zinc-400 shadow-sm">
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                <kbd className="flex h-5 w-5 items-center justify-center rounded border border-[#262f44] bg-[#161c2d] font-mono text-[11px] font-bold text-zinc-400 shadow-sm">
                   /
-                </kbd>
-                <kbd className="hidden xl:flex h-5 items-center justify-center rounded border border-[#262f44] bg-[#161c2d] px-1.5 font-mono text-[10px] font-bold text-zinc-400 shadow-sm">
-                  ⌘K
                 </kbd>
               </div>
 
@@ -469,11 +450,11 @@ export function OperationsDashboard({
             </div>
           </div>
 
-          {/* Right: Compact Status + Grouped Controls (consistent h-9 controls) */}
+          {/* Right: Grouped Controls (consistent h-9 controls) */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Compact Database Indicator */}
             <div
-              className="hidden lg:flex items-center gap-1.5 h-8 px-2 rounded-lg border border-emerald-500/30 bg-emerald-950/30 text-[11px] font-mono text-emerald-400"
+              className="hidden lg:flex items-center gap-1.5 h-9 px-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/30 text-[11px] font-mono text-emerald-400 shrink-0"
               title="Neon Database Connected & Live"
             >
               <span className="relative flex h-2 w-2">
@@ -481,14 +462,6 @@ export function OperationsDashboard({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span className="hidden xl:inline">DB Live</span>
-            </div>
-
-            {/* Simplified Time & Status */}
-            <div className="hidden xl:flex items-center gap-1.5 text-xs text-zinc-400 px-2 h-8">
-              <Clock className="h-3.5 w-3.5 text-zinc-500" />
-              <span className="font-mono text-zinc-200">{timeStr}</span>
-              <span className="text-zinc-600">•</span>
-              <span className="text-[#ccff00] font-semibold text-[11px]">Open</span>
             </div>
 
             {/* Notification Bell (Lead follow-up) */}
