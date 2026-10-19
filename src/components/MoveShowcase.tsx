@@ -202,7 +202,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       )}
 
       {/* ─────────────────────────────────────────────────────────────
-          2. HERO SECTION: "MOVE BETTER. LIVE BOLDER."
+          2. HERO SECTION: "SHIFT YOUR LIMITS. ELEVATE YOUR LIFE."
       ───────────────────────────────────────────────────────────── */}
       <section className="relative w-full min-h-[580px] sm:min-h-[640px] lg:min-h-[720px] flex items-center overflow-hidden border-b border-white/5">
         {/* Background Image: Running Duo in Urban Bridge Environment */}
@@ -220,13 +220,13 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
           <div className="max-w-xl">
             {/* Main Display Headline */}
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white leading-[0.92]">
-              MOVE
+              SHIFT
               <br />
-              BETTER.
+              YOUR LIMITS.
               <br />
-              LIVE
+              ELEVATE
               <br />
-              BOLDER.
+              YOUR LIFE.
             </h1>
 
             {/* Neon lime accent dash */}
