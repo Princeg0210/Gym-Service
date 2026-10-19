@@ -10,14 +10,23 @@ import {
   Zap,
   CheckCircle2,
   Star,
-  Play,
   X,
   Clock,
   Utensils,
-  Award
+  Award,
+  Sparkles,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Activity,
+  Flame,
+  Dumbbell,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GymProfile } from '@/types';
+import { sounds } from '@/lib/audio';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -35,570 +44,481 @@ export function ClubShowcase({
   gymProfile
 }: ClubShowcaseProps) {
   const primaryColor = gymProfile?.primaryColor || '#ccff00';
-  const gymName = gymProfile?.gymName || 'IronPulse Performance';
-  const heroHeadline = gymProfile?.heroHeadline || 'NO EXCUSES.';
+  const gymName = gymProfile?.gymName || 'IronPulse Commercial Gym';
+  const heroHeadline = gymProfile?.heroHeadline || 'NO SHORTCUTS.';
   const heroHighlight = gymProfile?.heroHighlight || 'ONLY RESULTS.';
-  const heroSubtitle = gymProfile?.heroSubtitle || 'Join a results-driven fitness community with certified trainers, modern bio-mechanical equipment, and personalized nutrition designed to transform your physique and performance.';
+  const heroSubtitle =
+    gymProfile?.heroSubtitle ||
+    'Train in an elite strength facility equipped with competition Olympic barbells, heavy dumbbells up to 50kg, certified coaches, and customized Indian nutrition plans built for real transformations.';
   const heroImg = gymProfile?.heroImageUrl || '/images/gym_hero_athlete.jpg';
 
-  // Interactive Why Train With Us active feature index
-  const [activeFeatureIndex, setActiveFeatureIndex] = useState<number>(1); // Default to Modern Equipment (like IronPulse reference)
-
-  // Program Filter
-  const [selectedProgramCategory, setSelectedProgramCategory] = useState<string>('all');
+  // Interactive 1-Day Trial Pass Modal State
+  const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
+  const [trialName, setTrialName] = useState('');
+  const [trialPhone, setTrialPhone] = useState('');
+  const [trialSlot, setTrialSlot] = useState('Morning (6:00 AM - 10:00 AM)');
+  const [trialGoal, setTrialGoal] = useState('Muscle Building & Hypertrophy');
+  const [isTrialClaimed, setIsTrialClaimed] = useState(false);
 
   // Billing Toggle (Monthly vs Yearly)
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
-  // Floating Alfirza Card state
-  const [isAlfirzaCardDismissed, setIsAlfirzaCardDismissed] = useState<boolean>(false);
+  // Program Filter State
+  const [selectedProgramCategory, setSelectedProgramCategory] = useState<string>('all');
 
-  // Booking / Lead success toast
-  const [bookingToast, setBookingToast] = useState<string | null>(null);
+  // FAQ Accordion State
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const features = [
-    {
-      title: 'Certified Trainers',
-      desc: 'Our experienced personal coaches design workout programs tailored to your strength, fat loss, and fitness goals.',
-      icon: Award
-    },
-    {
-      title: 'Free Weights & Machines',
-      desc: 'Train with Olympic power racks, dumbbells up to 60kg, dual cable towers, and plate-loaded machines.',
-      icon: Zap
-    },
-    {
-      title: 'Personalized Nutrition',
-      desc: 'Custom high-protein Indian diet plans (paneer, eggs, chicken, soya, dal) crafted to fuel your daily workouts.',
-      icon: Utensils
-    },
-    {
-      title: 'Motivating Community',
-      desc: 'Surround yourself with focused lifters and dedicated coaches who push you to hit personal records every week.',
-      icon: Users
+  // Floating notification dismiss
+  const [isFloatingDismissed, setIsFloatingDismissed] = useState(false);
+
+  // Handle Trial Pass Submission
+  const handleClaimTrial = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trialName.trim() || trialPhone.trim().length < 10) {
+      alert('Please enter a valid full name and 10-digit phone number.');
+      return;
     }
-  ];
+    sounds.playSuccess();
+    setIsTrialClaimed(true);
+  };
 
   const programs = [
     {
-      id: 'weight',
-      title: 'Strength Training',
+      id: 'strength',
+      title: 'Heavy Strength & Hypertrophy',
       category: 'strength',
-      desc: 'Build raw strength and lean muscle with progressive barbell squats, bench press, deadlifts, and dumbbell work.',
+      desc: 'Progressive barbell squats, deadlifts, bench press, and dumbbell volume designed to add lean contractile muscle.',
       intensity: 'High Intensity',
-      duration: '45-60 min'
+      duration: '60 min',
+      coach: 'Coach Vikram'
     },
     {
-      id: 'cardio',
-      title: 'Cardio & Fat Loss',
+      id: 'fatloss',
+      title: 'High-Output Cardio & Fat Loss',
       category: 'conditioning',
-      desc: 'Burn fat and increase cardiovascular stamina with HIIT sprints, rower intervals, and kettlebell circuits.',
+      desc: 'Targeted fat oxidation combining Concept2 rower sprints, air bike intervals, kettlebell complexes, and core circuits.',
       intensity: 'Peak Heart Rate',
-      duration: '35-45 min'
+      duration: '45 min',
+      coach: 'Coach Amit'
     },
     {
       id: 'coaching',
-      title: 'Personal Training',
-      category: 'personal',
-      desc: 'One-on-one personal coaching, lifting technique corrections, and structured weekly workout progressions.',
-      intensity: 'Precision Focus',
-      duration: '60 min'
+      title: '1-on-1 Personal Transformation',
+      category: 'coaching',
+      desc: 'Dedicated biomechanical form audits, progressive overload logs, and weekly body composition check-ins.',
+      intensity: 'Personalized',
+      duration: '60 min',
+      coach: 'Coach Rajesh'
     },
     {
-      id: 'calisthenics',
-      title: 'Functional Fitness',
-      category: 'conditioning',
-      desc: 'Total-body endurance with pull-ups, dips, box jumps, sled pushes, and battle ropes.',
-      intensity: 'High Energy',
-      duration: '50 min'
-    },
-    {
-      id: 'yoga',
-      title: 'Mobility & Stretching',
+      id: 'mobility',
+      title: 'Athletic Mobility & Core Rehab',
       category: 'mobility',
-      desc: 'Improve hip mobility, shoulder range of motion, lower back health, and recovery between heavy workouts.',
-      intensity: 'Restorative',
-      duration: '45 min'
+      desc: 'Hip opener sequences, thoracic spine mobility, shoulder cuff prep, and postural decompression to prevent injury.',
+      intensity: 'Active Recovery',
+      duration: '35 min',
+      coach: 'Coach Priya'
     }
   ];
 
-  const trainers = [
+  const filteredPrograms =
+    selectedProgramCategory === 'all'
+      ? programs
+      : programs.filter((p) => p.category === selectedProgramCategory);
+
+  const coaches = [
     {
       name: 'Vikram Singh',
       role: 'Head Strength Coach',
       spec: 'Powerlifting & Barbell Training',
       exp: '6 Years Exp.',
-      rating: '4.95'
+      rating: '4.95',
+      achievements: 'State Gold Medalist • IPF Certified',
+      bio: 'Specializes in safe compound barbell progression, fixing squat mechanics, and adding 30-50kg to client total lifts.'
     },
     {
       name: 'Rajesh Sharma',
       role: 'Senior Hypertrophy Coach',
-      spec: 'Muscle Building & Injury Prevention',
+      spec: 'Biomechanics & Body Recomp',
       exp: '8 Years Exp.',
-      rating: '4.98'
+      rating: '4.92',
+      achievements: 'K11 Master Trainer • 200+ Transformations',
+      bio: 'Expert in hypertrophy stimulus-to-fatigue ratios, cable mechanics, and structured progressive overload.'
     },
     {
       name: 'Priya Nair',
-      role: 'Functional & Nutrition Coach',
-      spec: 'High-Protein Diet Plans & Mobility',
+      role: 'Dietetics & Athletic Mobility',
+      spec: 'Indian High-Protein Nutrition',
       exp: '5 Years Exp.',
-      rating: '4.92'
+      rating: '4.98',
+      achievements: 'Registered Clinical Sports Dietitian',
+      bio: 'Creates delicious high-protein Indian meal plans (paneer, soya, eggs, chicken, lentils) that fit your daily schedule.'
+    },
+    {
+      name: 'Amit Verma',
+      role: 'Conditioning & MetCon Coach',
+      spec: 'HIIT & Fat Loss Circuits',
+      exp: '4 Years Exp.',
+      rating: '4.89',
+      achievements: 'CrossFit L2 • Endurance Athlete',
+      bio: 'Passionate about athletic stamina, metabolic conditioning, kettlebell circuits, and sustainable fat loss.'
     }
   ];
 
-  const filteredPrograms = selectedProgramCategory === 'all'
-    ? programs
-    : programs.filter((p) => p.category === selectedProgramCategory);
-
-  const handleBookTrainer = (name: string) => {
-    setBookingToast(`Trial session requested with Coach ${name}! Front desk notified.`);
-    setTimeout(() => setBookingToast(null), 4000);
-  };
+  const faqs = [
+    {
+      q: 'Can I freeze or pause my gym membership if I travel?',
+      a: 'Yes! All Quarterly Pro and Annual VIP memberships include up to 30 days of complimentary membership freeze per year with zero penalty. Simply inform the front desk or send a WhatsApp message.'
+    },
+    {
+      q: 'Are personal trainers included with my membership?',
+      a: 'Every new member receives a complimentary 1-on-1 fitness assessment and workout orientation. Quarterly Pro plans include 1 personal trainer session per month, and Annual VIP includes 8 dedicated sessions. Additional 1-on-1 personal coaching packages are also available.'
+    },
+    {
+      q: 'What are your peak hours and locker room amenities?',
+      a: 'Morning peak is 7:00 AM – 9:00 AM, and evening peak is 6:30 PM – 8:30 PM. Our facility includes secure electronic day lockers, hot showers, filtered drinking water stations, charging stations, and high-speed Wi-Fi.'
+    },
+    {
+      q: 'Do you provide vegetarian or Indian high-protein diet plans?',
+      a: 'Yes, absolutely. Coach Priya specializes in practical Indian nutrition plans built around paneer, soya chunks, Greek yogurt, lentils, sprouts, eggs, and whey protein so you hit your macro goals without forcing western diets.'
+    },
+    {
+      q: 'Can I bring a guest or workout partner with me?',
+      a: 'Quarterly Pro and Annual VIP members receive 2 guest passes each month. First-time visitors can also claim our 1-Day Free VIP Pass anytime using the button above!'
+    }
+  ];
 
   return (
-    <div className="relative overflow-hidden bg-[#060709] text-zinc-100">
-      
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {bookingToast && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.97 }}
-            transition={{ type: "spring", damping: 22, stiffness: 320 }}
-            className="fixed top-20 right-6 z-50 flex items-center gap-2 rounded-xl apple-glass px-4 py-3 text-xs font-bold text-white shadow-2xl border-white/10"
-          >
-            <CheckCircle2 className="h-4 w-4 text-[#ccff00]" />
-            <span>{bookingToast}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="relative text-zinc-100 selection:bg-[#ccff00] selection:text-black">
 
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 1: HERO (IRONPULSE STYLE WITH CUTOUT & STAT BADGE)
+          HERO SECTION (OLED DARK MODE + ATHLETIC ACCENTS)
           ───────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[85vh] border-b border-[#1c212e] py-12 lg:py-20 flex items-center">
-        {/* Ambient background lighting */}
-        <div className="pointer-events-none absolute top-10 left-1/4 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-10 right-1/4 h-[400px] w-[400px] rounded-full bg-[#ccff00]/5 blur-[100px]" />
+      <section className="relative min-h-[85vh] border-b border-[#1c212e] py-12 lg:py-20 flex items-center bg-[#060709] overflow-hidden">
+        {/* Subtle Ambient Radial Backlight Glow */}
+        <div
+          className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] rounded-full blur-[140px] pointer-events-none opacity-20"
+          style={{ backgroundColor: primaryColor }}
+        />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 w-full">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
-            {/* Left Content */}
+            {/* Left Column: Headlines & High-Converting CTAs */}
             <div className="lg:col-span-7 space-y-6">
-              {/* Giant Bold Headline (Apple -0.02em tracking) */}
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", damping: 20, stiffness: 280, delay: 0.1 }}
-                className="text-5xl font-black uppercase tracking-[-0.02em] text-white sm:text-7xl lg:text-8xl leading-[0.95]"
-              >
-                {heroHeadline}{' '}
-                <span className="block mt-1" style={{ color: primaryColor }}>
-                  {heroHighlight}
-                </span>
-              </motion.h1>
+              
+              {/* Social Proof Pill */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0e121a]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold shadow-lg">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <div className="flex items-center gap-1 text-amber-400 font-bold">
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  <span>4.95 / 5.0</span>
+                </div>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-300">850+ Active Athletes in {gymProfile?.city || 'Bengaluru'}</span>
+              </div>
+
+              {/* Headline */}
+              <div className="space-y-1">
+                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black uppercase tracking-[-0.03em] text-white leading-none">
+                  {heroHeadline}{' '}
+                  <span
+                    className="block mt-1 drop-shadow-sm"
+                    style={{ color: primaryColor }}
+                  >
+                    {heroHighlight}
+                  </span>
+                </h1>
+              </div>
 
               {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg font-normal"
-              >
+              <p className="text-sm sm:text-base text-zinc-300 max-w-xl leading-relaxed">
                 {heroSubtitle}
-              </motion.p>
+              </p>
 
-              {/* Interactive CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-wrap items-center gap-4 pt-2"
-              >
-                <Button
-                  size="lg"
-                  variant="volt"
+              {/* Action Buttons: Primary & Secondary */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+                <button
+                  onClick={() => setIsTrialModalOpen(true)}
+                  className="flex items-center justify-center gap-2 rounded-2xl px-7 py-4 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-xl transition-all hover:brightness-110 active:scale-95 apple-press"
                   style={{ backgroundColor: primaryColor }}
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-black"
                 >
-                  <span>Start Free Trial</span>
+                  <Sparkles className="h-4 w-4" />
+                  <span>Claim 1-Day Free Pass</span>
                   <ArrowUpRight className="h-4 w-4" />
-                </Button>
+                </button>
 
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  onClick={() => {
-                    const el = document.getElementById('programs-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="rounded-full px-7 text-xs sm:text-sm font-extrabold uppercase tracking-wider"
+                <a
+                  href="#pricing"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-[#22283a] bg-[#0d111a] px-6 py-4 text-xs sm:text-sm font-bold text-zinc-200 hover:border-zinc-500 hover:text-white transition-all apple-press"
                 >
-                  <span>Explore Programs</span>
-                  <ArrowUpRight className="h-4 w-4 text-zinc-400" />
-                </Button>
+                  <span>Explore Plans & Amenities</span>
+                </a>
+              </div>
 
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => onSwitchMode('operations')}
-                  className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
-                >
-                  <ShieldCheck className="h-4 w-4" style={{ color: primaryColor }} />
-                  <span>Admin Portal</span>
-                </Button>
+              {/* Live Metric Badges Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[#1a202e]">
+                <div className="rounded-xl border border-[#1b2333] bg-[#0c1017]/80 p-3">
+                  <span className="text-lg sm:text-xl font-black text-white block">50+</span>
+                  <span className="text-[10px] sm:text-xs text-zinc-400 font-medium">Barbell Stations</span>
+                </div>
+                <div className="rounded-xl border border-[#1b2333] bg-[#0c1017]/80 p-3">
+                  <span className="text-lg sm:text-xl font-black text-white block">2,400+</span>
+                  <span className="text-[10px] sm:text-xs text-zinc-400 font-medium">Monthly Workouts</span>
+                </div>
+                <div className="rounded-xl border border-[#1b2333] bg-[#0c1017]/80 p-3">
+                  <span className="text-lg sm:text-xl font-black text-white block">100%</span>
+                  <span className="text-[10px] sm:text-xs text-zinc-400 font-medium">Certified Coaches</span>
+                </div>
+                <div className="rounded-xl border border-[#1b2333] bg-[#0c1017]/80 p-3">
+                  <span className="text-lg sm:text-xl font-black text-[#ccff00] block">{todayCheckInsCount}</span>
+                  <span className="text-[10px] sm:text-xs text-zinc-400 font-medium">Today&apos;s Check-ins</span>
+                </div>
+              </div>
 
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  onClick={() => onSwitchMode('member_portal')}
-                  className="rounded-xl px-5 text-sm font-semibold text-zinc-200 hover:text-white hover:border-zinc-500"
-                >
-                  <Users className="h-4 w-4" style={{ color: primaryColor }} />
-                  <span>Member Portal</span>
-                </Button>
-              </motion.div>
-
-              {/* Feature Checkpoints */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="flex flex-wrap items-center gap-5 pt-4 text-xs font-medium text-zinc-400"
-              >
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
-                  1-Tap WhatsApp Receipts
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
-                  Peak-Hour Machine Swap
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" style={{ color: primaryColor }} />
-                  High-Protein Indian Macro Plan
-                </span>
-              </motion.div>
             </div>
 
-            {/* Right Showcase: Real Athlete Visual & Floating Stat Card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.25 }}
-              className="lg:col-span-5 relative"
-            >
-              <div className="relative mx-auto max-w-md lg:max-w-none">
-                {/* Hero Athlete Image Card */}
-                <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-[#262c3e] bg-[#0c0f16] shadow-2xl">
-                  <Image
-                    src={heroImg}
-                    alt={`${gymName} athlete training`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority
-                    unoptimized={heroImg.startsWith('http')}
-                    className="object-cover object-center filter brightness-95"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-80" />
-
-                  {/* Corner Badge */}
-                  <div
-                    className="absolute top-4 left-4 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider backdrop-blur-md"
-                    style={{
-                      borderColor: `${primaryColor}60`,
-                      backgroundColor: 'rgba(6,7,9,0.85)',
-                      color: primaryColor
-                    }}
-                  >
-                    {gymName}
-                  </div>
-                </div>
-
-                {/* Floating Member Stat Badge (Apple Glass Material & Spring Transition) */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", damping: 20, stiffness: 280, delay: 0.35 }}
-                  className="absolute -bottom-6 -left-6 sm:left-4 rounded-2xl apple-glass-card p-4 shadow-2xl w-72"
-                >
-                  <div className="flex items-center justify-between border-b border-[#222838] pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-2 overflow-hidden">
-                        <div className="inline-block h-7 w-7 rounded-full ring-2 ring-[#0c0f16] bg-[#ccff00] flex items-center justify-center text-xs font-black text-black">
-                          RS
-                        </div>
-                        <div className="inline-block h-7 w-7 rounded-full ring-2 ring-[#0c0f16] bg-emerald-400 flex items-center justify-center text-xs font-black text-black">
-                          AK
-                        </div>
-                        <div className="inline-block h-7 w-7 rounded-full ring-2 ring-[#0c0f16] bg-cyan-400 flex items-center justify-center text-xs font-black text-black">
-                          VN
-                        </div>
-                      </div>
-                      <span className="text-xs font-bold text-white">10,000+ Lifters</span>
-                    </div>
-                    <span className="flex items-center gap-1 text-xs font-bold text-[#ccff00]">
-                      <Star className="h-3.5 w-3.5 fill-[#ccff00]" />
-                      4.9
-                    </span>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between text-xs px-1">
-                    <div>
-                      <span className="text-zinc-400">Experience: </span>
-                      <span className="font-extrabold text-white">8+ Years</span>
-                    </div>
-                    <div>
-                      <span className="text-zinc-400">Today: </span>
-                      <span suppressHydrationWarning className="font-extrabold text-[#ccff00]">{todayCheckInsCount} In-Gym</span>
-                    </div>
-                  </div>
-                </motion.div>
-
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          SECTION 2: WHY TRAIN WITH US? (BENTO MACHINES & HIGHLIGHTED CARDS)
-          ───────────────────────────────────────────────────────────── */}
-      <section className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#090b10]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mb-10 text-center sm:text-left">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
-              The GymPRO Difference
-            </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-              Why Train With Us?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-            
-            {/* Left: Luxury Equipment Machinery Visual */}
-            <div className="lg:col-span-6">
-              <div className="relative aspect-4/3 overflow-hidden rounded-3xl border border-[#262c3e] bg-[#0c0f16] shadow-xl">
+            {/* Right Column: Hero High-Res Athlete Image Card */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-[#22283a] bg-[#0c0f16] shadow-2xl group">
                 <Image
-                  src="/images/gym_equipment_modern.jpg"
-                  alt="Modern commercial fitness machines"
+                  src={heroImg}
+                  alt={`${gymName} athlete training`}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-center filter brightness-95"
+                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-60" />
+                
+                {/* Dark Vignette Overlay for OLED Contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-90" />
 
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-[#2a3246] bg-[#07090e]/90 p-3 backdrop-blur-md">
+                {/* Floating Athlete Live Status Pill */}
+                <div className="absolute bottom-5 left-5 right-5 rounded-2xl apple-glass-card p-4 shadow-xl">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xs font-bold text-white">Commercial Free-Weight & Cable Arena</h3>
-                      <p className="text-xs text-zinc-400">Main Facility • Sector 15 Branch</p>
-                    </div>
-                    <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-                      Tier A Standard
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Bento Feature Stack (with Neon Volt active highlight like reference) */}
-            <div className="lg:col-span-6 space-y-3">
-              {features.map((feature, idx) => {
-                const isActive = activeFeatureIndex === idx;
-                const IconComponent = feature.icon;
-
-                return (
-                  <button
-                    key={feature.title}
-                    onClick={() => setActiveFeatureIndex(idx)}
-                    className={`w-full text-left rounded-2xl p-4 sm:p-5 transition-all duration-300 border ${
-                      isActive
-                        ? 'bg-[#ccff00] text-black border-[#ccff00] shadow-lg transform scale-[1.02]'
-                        : 'bg-[#0f131c] text-white border-[#222736] hover:border-zinc-600 hover:bg-[#141925]'
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold ${
-                          isActive
-                            ? 'bg-black text-[#ccff00]'
-                            : 'bg-[#1b2233] text-zinc-300'
-                        }`}
-                      >
-                        <IconComponent className="h-5 w-5" />
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-9 w-9 rounded-xl bg-[#ccff00] flex items-center justify-center text-black font-black text-xs">
+                        <Dumbbell className="h-5 w-5" />
                       </div>
                       <div>
-                        <h3 className={`text-base sm:text-lg font-black uppercase tracking-tight ${
-                          isActive ? 'text-black' : 'text-white'
-                        }`}>
-                          {feature.title}
-                        </h3>
-                        <p className={`mt-1 text-xs sm:text-sm font-medium leading-relaxed ${
-                          isActive ? 'text-zinc-900' : 'text-zinc-400'
-                        }`}>
-                          {feature.desc}
+                        <h4 className="text-xs font-black text-white leading-tight">
+                          {gymName}
+                        </h4>
+                        <p className="text-[11px] text-zinc-400">
+                          {gymProfile?.city || 'Bengaluru'} • Open 5:30 AM - 10:30 PM
                         </p>
                       </div>
                     </div>
-                  </button>
-                );
-              })}
+                    <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/30">
+                      LIVE ARENA
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
           </div>
         </div>
       </section>
 
+
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 3: OUR TRAINING PROGRAMS (INTERACTIVE BENTO GRID)
+          SECTION 2: BENTO GRID FACILITY & EQUIPMENT SHOWCASE
           ───────────────────────────────────────────────────────────── */}
-      <section id="programs-section" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
+      <section id="facilities" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
+              Facility & Equipment Showcase
+            </span>
+            <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
+              Built for Heavy Progress.
+            </h2>
+            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
+              No waiting in lines. No flimsy home-grade setups. Engineered for athletes who value their time and results.
+            </p>
+          </div>
+
+          {/* Bento Grid Architecture */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Bento Card 1 (Wide 2-Columns) */}
+            <div className="md:col-span-2 rounded-3xl border border-[#22283a] bg-[#0e121a] p-8 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors">
+              <div className="relative z-10 max-w-md space-y-3">
+                <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#ccff00] px-2.5 py-1 rounded bg-[#ccff00]/10 border border-[#ccff00]/20">
+                  FLAGSHIP ARENA
+                </span>
+                <h3 className="text-2xl font-black text-white">
+                  Heavy Free Weights & Power Cages
+                </h3>
+                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                  Calibrated steel plates, Texas & Eleiko power bars, deadlift lifting platforms, and commercial dumbbells up to 50kg. Chalk-friendly environment with zero anti-grunt policies.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <span className="rounded-lg bg-[#161d2d] px-2.5 py-1 text-xs font-semibold text-zinc-300">Dumbbells 2.5kg - 50kg</span>
+                  <span className="rounded-lg bg-[#161d2d] px-2.5 py-1 text-xs font-semibold text-zinc-300">4 Olympic Power Racks</span>
+                  <span className="rounded-lg bg-[#161d2d] px-2.5 py-1 text-xs font-semibold text-zinc-300">Drop Deadlift Mats</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 2: Dual Cable Crossover & Functional Rig */}
+            <div className="rounded-3xl border border-[#22283a] bg-[#0e121a] p-8 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-black text-white">
+                  Dual Cable Towers & Rigs
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Smooth dual 100kg weight stacks, multi-grip pull-up crossbars, resistance bands, and suspension rigs for complete isolation training.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-[#1b2333] flex items-center justify-between text-xs text-zinc-400">
+                <span>Stack Capacity</span>
+                <span className="font-mono font-bold text-white">100kg / Tower</span>
+              </div>
+            </div>
+
+            {/* Bento Card 3: Cardio Arena */}
+            <div className="rounded-3xl border border-[#22283a] bg-[#0e121a] p-8 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                  <Activity className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-black text-white">
+                  High-Output Cardio Arena
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Concept2 rowers, ski ergs, air assault bikes, and curved self-powered motorless treadmills that demand real leg drive.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-[#1b2333] flex items-center justify-between text-xs text-zinc-400">
+                <span>Machines</span>
+                <span className="font-mono font-bold text-white">Concept2 & AirBikes</span>
+              </div>
+            </div>
+
+            {/* Bento Card 4: Post-Workout Recovery Zone */}
+            <div className="rounded-3xl border border-[#22283a] bg-[#0e121a] p-8 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <Flame className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-black text-white">
+                  Mobility & Recovery Lounge
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Percussion therapy massage guns, high-density foam rollers, mobility bands, and dedicated warm-up/cool-down turf.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-[#1b2333] flex items-center justify-between text-xs text-zinc-400">
+                <span>Recovery</span>
+                <span className="font-mono font-bold text-emerald-400">Included in All Plans</span>
+              </div>
+            </div>
+
+            {/* Bento Card 5: Real-time Floor Telemetry */}
+            <div className="rounded-3xl border border-[#22283a] bg-[#0e121a] p-8 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-[#ccff00]/10 border border-[#ccff00]/20 text-[#ccff00] flex items-center justify-center">
+                  <Users className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-black text-white">
+                  Live Floor Availability
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Check live crowd telemetry from your phone before heading out. Never arrive to an overcrowded floor again.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-[#1b2333] flex items-center justify-between text-xs">
+                <span className="text-zinc-400">Current Load</span>
+                <span className="font-mono font-bold text-[#ccff00]">Optimal Flow • No Wait</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* ─────────────────────────────────────────────────────────────
+          SECTION 3: TRAINING PROGRAMS
+          ───────────────────────────────────────────────────────────── */}
+      <section id="programs" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
-                Curated Periodization
+                Curated Workouts
               </span>
-              <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-                Our Training Programs
+              <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
+                Training Programs
               </h2>
+              <p className="mt-2 text-xs sm:text-sm text-zinc-400 max-w-xl">
+                Structured regimens engineered for muscle growth, fat reduction, and athletic durability.
+              </p>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-2">
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap gap-2">
               {[
-                { id: 'all', label: 'All Programs' },
-                { id: 'strength', label: 'Weight Training' },
-                { id: 'conditioning', label: 'Cardio & Fat Loss' },
-                { id: 'personal', label: '1-on-1 Coaching' },
-                { id: 'mobility', label: 'Yoga & Recovery' }
-              ].map((tab) => (
+                { id: 'all', label: 'All Regimens' },
+                { id: 'strength', label: 'Strength' },
+                { id: 'conditioning', label: 'Fat Loss' },
+                { id: 'coaching', label: '1-on-1 PT' },
+                { id: 'mobility', label: 'Mobility' }
+              ].map((cat) => (
                 <button
-                  key={tab.id}
-                  onClick={() => setSelectedProgramCategory(tab.id)}
-                  className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                    selectedProgramCategory === tab.id
-                      ? 'bg-[#ccff00] text-black shadow-sm'
-                      : 'border border-[#262c3e] bg-[#0d1017] text-zinc-400 hover:text-white'
+                  key={cat.id}
+                  onClick={() => setSelectedProgramCategory(cat.id)}
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all apple-press ${
+                    selectedProgramCategory === cat.id
+                      ? 'bg-[#ccff00] text-black shadow-md'
+                      : 'bg-[#10141e] border border-[#22283a] text-zinc-400 hover:text-white'
                   }`}
                 >
-                  {tab.label}
+                  {cat.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Program Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPrograms.map((program) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredPrograms.map((prog) => (
               <div
-                key={program.id}
-                className="group relative overflow-hidden rounded-3xl border border-[#222738] bg-[#0c0f16] p-6 transition-all duration-300 hover:border-[#ccff00]/60 hover:bg-[#10141f]"
+                key={prog.id}
+                className="flex flex-col justify-between rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 hover:border-[#ccff00]/40 transition-colors"
               >
-                <div className="flex items-center justify-between border-b border-[#1f2434] pb-4">
-                  <span className="rounded-full bg-[#ccff00]/10 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-[#ccff00] border border-[#ccff00]/20">
-                    {program.intensity}
-                  </span>
-                  <span className="flex items-center gap-1 text-xs font-mono text-zinc-400">
-                    <Clock className="h-3.5 w-3.5" />
-                    {program.duration}
-                  </span>
-                </div>
-
-                <div className="mt-5">
-                  <h3 className="text-xl font-black uppercase tracking-tight text-white group-hover:text-[#ccff00] transition-colors">
-                    {program.title}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                    <span className="text-[#ccff00] font-bold">{prog.intensity}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {prog.duration}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-black text-white leading-tight">
+                    {prog.title}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
-                    {program.desc}
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {prog.desc}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#1f2434] flex items-center justify-between">
+                <div className="pt-4 mt-6 border-t border-[#1b2333] flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-zinc-400">Lead: {prog.coach}</span>
                   <button
-                    onClick={() => onSwitchMode('member_portal')}
-                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#ccff00] group-hover:underline"
+                    onClick={() => setIsTrialModalOpen(true)}
+                    className="text-xs font-bold text-[#ccff00] hover:underline flex items-center gap-1"
                   >
-                    <span>Launch in Member Arena</span>
-                    <ArrowUpRight className="h-4 w-4" />
-                  </button>
-
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1b2130] text-zinc-300 group-hover:bg-[#ccff00] group-hover:text-black transition-colors">
-                    <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          SECTION 4: MEET OUR EXPERT TRAINERS (COACHES + BOOKING)
-          ───────────────────────────────────────────────────────────── */}
-      <section className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#090b10]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
-                Master Coaches
-              </span>
-              <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-                Meet Our Expert Trainers
-              </h2>
-            </div>
-            
-            <p className="max-w-md text-xs sm:text-sm text-zinc-400">
-              Certified exercise physiologists and Indian nutrition specialists dedicated to your progressive overload.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {trainers.map((trainer) => (
-              <div
-                key={trainer.name}
-                className="rounded-3xl border border-[#222738] bg-[#0c0f16] p-6 transition-all hover:border-[#ccff00]/40"
-              >
-                <div className="flex items-center justify-between pb-4 border-b border-[#1e2332]">
-                  <div>
-                    <h3 className="text-lg font-black uppercase tracking-tight text-white">
-                      {trainer.name}
-                    </h3>
-                    <p className="text-xs text-[#ccff00] font-bold">{trainer.role}</p>
-                  </div>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-amber-400 border border-amber-500/20">
-                    <Star className="h-3 w-3 fill-amber-400" />
-                    {trainer.rating}
-                  </span>
-                </div>
-
-                <div className="mt-4 space-y-2 text-xs text-zinc-300">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-400">Specialty:</span>
-                    <span className="font-semibold">{trainer.spec}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-400">Experience:</span>
-                    <span className="font-mono font-semibold text-emerald-400">{trainer.exp}</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-[#1e2332]">
-                  <button
-                    onClick={() => handleBookTrainer(trainer.name)}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-2.5 text-xs font-extrabold uppercase tracking-wider text-black hover:bg-[#b5e600] transition-colors"
-                  >
-                    <span>Book A Session</span>
-                    <ArrowUpRight className="h-4 w-4" />
+                    <span>Try Class</span>
+                    <ArrowUpRight className="h-3 w-3" />
                   </button>
                 </div>
               </div>
@@ -608,314 +528,117 @@ export function ClubShowcase({
         </div>
       </section>
 
+
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 5: CHOOSE YOUR PLAN (PRICING WITH PRO HIGHLIGHT)
+          SECTION 4: CERTIFIED COACHES & TRAINERS ROSTER
           ───────────────────────────────────────────────────────────── */}
-      <section className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
+      <section id="trainers" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
-              Transparent Investment
+              Coaching & Mentorship
             </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-              Choose Your Plan
+            <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
+              Meet Your Floor Coaches
             </h2>
             <p className="mt-3 text-xs sm:text-sm text-zinc-400">
-              Clear fees with zero hidden charges. Instant UPI confirmation and direct WhatsApp receipts.
+              Our coaches don&apos;t sit on their phones. They assess your posture, refine your bar path, and keep you accountable every week.
             </p>
-
-            {/* Monthly / Yearly Toggle */}
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#222738] bg-[#0c0f16] p-1.5">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`rounded-full px-5 py-2 text-xs font-bold transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-[#ccff00] text-black shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-bold transition-all ${
-                  billingCycle === 'yearly'
-                    ? 'bg-[#ccff00] text-black shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span>Annual Elite</span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-                  -25%
-                </span>
-              </button>
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {gymProfile?.membershipPlans && gymProfile.membershipPlans.length > 0 ? (
-              gymProfile.membershipPlans.map((plan, idx) => {
-                const isPopular = Boolean(plan.isPopular || idx === 1);
-                return (
-                  <div
-                    key={plan.id || idx}
-                    className={`relative flex flex-col justify-between rounded-3xl p-7 transition-all ${
-                      isPopular
-                        ? 'border-2 shadow-2xl transform lg:-translate-y-2'
-                        : 'border border-[#222738] bg-[#0c0f16]'
-                    }`}
-                    style={
-                      isPopular
-                        ? {
-                            borderColor: primaryColor,
-                            backgroundColor: '#0f141f'
-                          }
-                        : undefined
-                    }
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {coaches.map((c, idx) => (
+              <div
+                key={idx}
+                className="rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 flex flex-col justify-between hover:border-zinc-500 transition-colors group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="h-12 w-12 rounded-2xl bg-[#141b29] border border-[#252f44] text-[#ccff00] flex items-center justify-center font-black text-sm">
+                      {c.name.split(' ').map((n) => n[0]).join('')}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs font-bold text-amber-400">
+                      <Star className="h-3.5 w-3.5 fill-current" />
+                      <span>{c.rating}</span>
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg font-black text-white">{c.name}</h3>
+                  <p className="text-xs font-bold text-[#ccff00] mt-0.5">{c.role}</p>
+                  
+                  <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-zinc-400">
+                    <span>{c.exp}</span>
+                    <span>•</span>
+                    <span className="truncate">{c.spec}</span>
+                  </div>
+
+                  <p className="mt-3 text-xs text-zinc-300 leading-relaxed">
+                    {c.bio}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-6 border-t border-[#1b2333]">
+                  <button
+                    onClick={() => setIsTrialModalOpen(true)}
+                    className="w-full rounded-xl border border-[#222738] bg-[#121724] py-2.5 text-xs font-bold text-zinc-200 hover:text-black hover:bg-[#ccff00] hover:border-[#ccff00] transition-all"
                   >
-                    {isPopular && (
-                      <div
-                        className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-black uppercase tracking-wider text-black"
-                        style={{ backgroundColor: primaryColor }}
-                      >
-                        Most Popular
-                      </div>
-                    )}
-
-                    <div>
-                      <span
-                        className="text-xs font-bold uppercase tracking-wider"
-                        style={{ color: isPopular ? primaryColor : '#a1a1aa' }}
-                      >
-                        {plan.name}
-                      </span>
-                      <div className="mt-2 flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-white">
-                          ₹{plan.feeInr.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-xs text-zinc-400 font-mono">
-                          /{plan.durationMonths === 1 ? 'month' : `${plan.durationMonths} months`}
-                        </span>
-                      </div>
-                      <p className="mt-3 text-xs text-zinc-300">
-                        Personalized commercial access with instant WhatsApp payment confirmation.
-                      </p>
-
-                      <ul className="mt-6 space-y-3 text-xs text-zinc-200">
-                        {plan.features.map((feat, fIdx) => (
-                          <li key={fIdx} className="flex items-center gap-2">
-                            <CheckCircle2
-                              className={`h-4 w-4 shrink-0 ${isPopular ? '' : 'text-emerald-400'}`}
-                              style={isPopular ? { color: primaryColor } : undefined}
-                            />
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                      <button
-                        onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                        className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider transition-all shadow-md text-black"
-                        style={{ backgroundColor: primaryColor }}
-                      >
-                        <span>Join {plan.name}</span>
-                        <ArrowUpRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <>
-                {/* Plan 1: Basic */}
-                <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Basic Tier</span>
-                    <div className="mt-2 flex items-baseline gap-1">
-                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '1,499' : '14,999'}</span>
-                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                    </div>
-                    <p className="mt-3 text-xs text-zinc-400">
-                      Ideal for self-directed athletes requiring standard gym access.
-                    </p>
-
-                    <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Gym Arena Access</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Full Equipment Access</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>2 Group Classes</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Standard Day Locker</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                    <button
-                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                      className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
-                    >
-                      Get Started
-                    </button>
-                  </div>
+                    Book Session
+                  </button>
                 </div>
-
-                {/* Plan 2: Pro */}
-                <div className="relative flex flex-col justify-between rounded-3xl border-2 border-[#ccff00] bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2">
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ccff00] px-4 py-1 text-xs font-black uppercase tracking-wider text-black">
-                    Most Popular
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">Pro Tier</span>
-                    <div className="mt-2 flex items-baseline gap-1">
-                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '3,999' : '36,000'}</span>
-                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? 'quarter' : 'year'}</span>
-                    </div>
-                    <p className="mt-3 text-xs text-zinc-300">
-                      Complete hybrid package with personalized guidance and WhatsApp invoices.
-                    </p>
-
-                    <ul className="mt-6 space-y-3 text-xs text-zinc-200">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                        <span className="font-semibold text-white">Unlimited All-Branch Access</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                        <span>1 Personal Trainer Session / mo</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                        <span>Indian Macro Diet Consultation</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                        <span>Instant WhatsApp Fee Receipts</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                        <span>Peak-Hour Equipment Swap Engine</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-[#262c3e]">
-                    <button
-                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#b5e600] transition-all shadow-md"
-                    >
-                      <span>Join Pro Now</span>
-                      <ArrowUpRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Plan 3: Elite */}
-                <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Elite Tier</span>
-                    <div className="mt-2 flex items-baseline gap-1">
-                      <span className="text-4xl font-black text-white">₹{billingCycle === 'monthly' ? '9,999' : '99,000'}</span>
-                      <span className="text-xs text-zinc-400 font-mono">/{billingCycle === 'monthly' ? '6-mo' : 'year'}</span>
-                    </div>
-                    <p className="mt-3 text-xs text-zinc-400">
-                      Full concierge VIP experience with dedicated master coaching.
-                    </p>
-
-                    <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Everything in Pro</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>8 Personal Training Sessions</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Custom Vegetarian / Non-Veg Macros</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                        <span>Priority Support & Dedicated Locker</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                    <button
-                      onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                      className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3 text-xs font-extrabold uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors"
-                    >
-                      Contact Concierge
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+              </div>
+            ))}
           </div>
 
         </div>
       </section>
 
+
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 6: REAL RESULTS. REAL PEOPLE. (TRANSFORMATIONS)
+          SECTION 5: REAL RESULTS. REAL PEOPLE. (TRANSFORMATIONS)
           ───────────────────────────────────────────────────────────── */}
-      <section className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#090b10]">
+      <section id="results" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           
-          <div className="mb-12">
+          <div className="mb-12 text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
               Proven Evidence
             </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
+            <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
               Real Results. Real People.
             </h2>
+            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
+              No sponsored models. Verified metrics and physical transformations from genuine members.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Transformation 1 with animated sparkline curve */}
-            <div className="rounded-3xl border border-[#222738] bg-[#0c0f16] p-6">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
-                <div>
-                  <h3 className="text-base font-black text-white">Rahul M.</h3>
-                  <p className="text-xs text-zinc-400">Software Architect • Bengaluru</p>
+            {/* Transformation 1 */}
+            <div className="rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
+                  <div>
+                    <h3 className="text-base font-black text-white">Rahul M.</h3>
+                    <p className="text-xs text-zinc-400">Software Architect • 31 Yrs</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">
+                    -15 kg Body Fat
+                  </span>
                 </div>
-                <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">
-                  -15 kg Body Fat
-                </span>
+
+                <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
+                  &ldquo;Coach Priya customized a high-protein Indian diet with paneer, sprouts, and soya that fit my 10-hour desk job. Dropped from 88kg to 73kg in 6 months.&rdquo;
+                </p>
               </div>
 
-              <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;Joining GymPRO transformed my routine. The high-protein Indian diet plan with soya & paneer fit seamlessly into my lifestyle. Lost 15kg in 6 months.&rdquo;
-              </p>
-
-              {/* Progress Sparkline SVG (IronPulse visual signature - flattened) */}
               <div className="mt-6 pt-4 border-t border-[#1f2434]">
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2 font-mono">
                   <span>Weight Progression</span>
-                  <span className="font-mono font-bold text-[#ccff00]">88kg → 73kg</span>
+                  <span className="font-bold text-[#ccff00]">88kg → 73kg</span>
                 </div>
-                <svg className="w-full h-16 stroke-[#ccff00]" viewBox="0 0 200 60" fill="none">
-                  <path
-                    d="M 10,15 Q 60,25 100,35 T 190,52"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
+                <svg className="w-full h-14 stroke-[#ccff00]" viewBox="0 0 200 60" fill="none">
+                  <path d="M 10,15 Q 60,25 100,35 T 190,52" strokeWidth="3" strokeLinecap="round" />
                   <circle cx="10" cy="15" r="4" fill="#ccff00" />
                   <circle cx="100" cy="35" r="4" fill="#ccff00" />
                   <circle cx="190" cy="52" r="4" fill="#ccff00" />
@@ -924,32 +647,30 @@ export function ClubShowcase({
             </div>
 
             {/* Transformation 2 */}
-            <div className="rounded-3xl border border-[#222738] bg-[#0c0f16] p-6">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
-                <div>
-                  <h3 className="text-base font-black text-white">Ananya K.</h3>
-                  <p className="text-xs text-zinc-400">Management Consultant • Gurgaon</p>
+            <div className="rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
+                  <div>
+                    <h3 className="text-base font-black text-white">Ananya K.</h3>
+                    <p className="text-xs text-zinc-400">Consultant • 27 Yrs</p>
+                  </div>
+                  <span className="rounded-full bg-[#ccff00]/10 px-2.5 py-1 text-xs font-bold text-[#ccff00] border border-[#ccff00]/20">
+                    +40kg Deadlift PR
+                  </span>
                 </div>
-                <span className="rounded-full bg-[#ccff00]/10 px-2.5 py-1 text-xs font-bold text-[#ccff00] border border-[#ccff00]/20">
-                  +40kg Deadlift
-                </span>
+
+                <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
+                  &ldquo;I was afraid of heavy deadlifts due to chronic back pain. Coach Vikram taught me proper bracing and lat engagement. Lifted 125kg completely pain-free.&rdquo;
+                </p>
               </div>
 
-              <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;Coach Vikram fixed my deadlift technique from day one. My lift went from 45kg to 125kg safely without lower back strain.&rdquo;
-              </p>
-
               <div className="mt-6 pt-4 border-t border-[#1f2434]">
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2 font-mono">
                   <span>Strength PR Curve</span>
-                  <span className="font-mono font-bold text-[#ccff00]">45kg → 125kg</span>
+                  <span className="font-bold text-[#ccff00]">45kg → 125kg</span>
                 </div>
-                <svg className="w-full h-16 stroke-[#ccff00]" viewBox="0 0 200 60" fill="none">
-                  <path
-                    d="M 10,50 Q 70,40 110,25 T 190,10"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
+                <svg className="w-full h-14 stroke-[#ccff00]" viewBox="0 0 200 60" fill="none">
+                  <path d="M 10,50 Q 70,40 110,25 T 190,10" strokeWidth="3" strokeLinecap="round" />
                   <circle cx="10" cy="50" r="4" fill="#ccff00" />
                   <circle cx="110" cy="25" r="4" fill="#ccff00" />
                   <circle cx="190" cy="10" r="4" fill="#ccff00" />
@@ -958,25 +679,27 @@ export function ClubShowcase({
             </div>
 
             {/* Transformation 3 */}
-            <div className="rounded-3xl border border-[#222738] bg-[#0c0f16] p-6">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
-                <div>
-                  <h3 className="text-base font-black text-white">Sameer D.</h3>
-                  <p className="text-xs text-zinc-400">Tech Founder • Delhi</p>
+            <div className="rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[#1f2434]">
+                  <div>
+                    <h3 className="text-base font-black text-white">Sameer D.</h3>
+                    <p className="text-xs text-zinc-400">Tech Founder • 35 Yrs</p>
+                  </div>
+                  <span className="rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-cyan-400 border border-cyan-500/20">
+                    22 Sessions / Mo
+                  </span>
                 </div>
-                <span className="rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-cyan-400 border border-cyan-500/20">
-                  Consistent Attendance
-                </span>
+
+                <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
+                  &ldquo;The QR scanner check-in and quick machine swap logic makes workouts effortless. Resting heart rate dropped from 78 to 58 bpm in 90 days.&rdquo;
+                </p>
               </div>
 
-              <p className="mt-4 text-xs sm:text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;The peak-hour machine swap button is a game-changer. When the bench press is occupied at 7:30 PM, it immediately swaps to heavy dumbbell press.&rdquo;
-              </p>
-
               <div className="mt-6 pt-4 border-t border-[#1f2434]">
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-                  <span>Monthly Sessions</span>
-                  <span className="font-mono font-bold text-cyan-400">22 Days / Mo</span>
+                <div className="flex items-center justify-between text-xs text-zinc-400 mb-2 font-mono">
+                  <span>Attendance Consistency</span>
+                  <span className="font-bold text-cyan-400">92% Streak</span>
                 </div>
                 <div className="flex items-center justify-between gap-1 pt-2">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
@@ -996,16 +719,472 @@ export function ClubShowcase({
         </div>
       </section>
 
+
       {/* ─────────────────────────────────────────────────────────────
-          FLOATING ALFIRZA-STYLE GLASS NOTIFICATION (REFERENCE IMAGE 1)
+          SECTION 6: TRANSPARENT PRICING PLANS
+          ───────────────────────────────────────────────────────────── */}
+      <section id="pricing" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
+              Transparent Pricing
+            </span>
+            <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
+              Choose Your Membership
+            </h2>
+            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
+              Clear Indian Rupee pricing with zero surprise charges. Instant UPI confirmation and direct WhatsApp invoice.
+            </p>
+
+            {/* Monthly / Yearly Toggle */}
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#222738] bg-[#0c0f16] p-1.5">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`rounded-full px-5 py-2 text-xs font-bold transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-[#ccff00] text-black shadow-sm'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                Monthly Plan
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-bold transition-all ${
+                  billingCycle === 'yearly'
+                    ? 'bg-[#ccff00] text-black shadow-sm'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                <span>Annual Pass</span>
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                  Save 25%
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            {/* Plan 1: Starter */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Starter Tier</span>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">
+                    ₹{billingCycle === 'monthly' ? '1,999' : '17,999'}
+                  </span>
+                  <span className="text-xs text-zinc-400 font-mono">
+                    /{billingCycle === 'monthly' ? 'month' : 'year'}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-zinc-400">
+                  Ideal for self-directed athletes requiring standard gym floor access.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Full Gym Arena Access</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Free Weights & Machine Arena</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Locker Room & Shower Access</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Mobile QR Check-in Pass</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-[#1f2434]">
+                <button
+                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors apple-press"
+                >
+                  Join Starter
+                </button>
+              </div>
+            </div>
+
+            {/* Plan 2: Quarterly Pro (Most Popular Highlight) */}
+            <div className="relative flex flex-col justify-between rounded-3xl border-2 border-[#ccff00] bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ccff00] px-4 py-1 text-xs font-black uppercase tracking-wider text-black shadow-md">
+                Most Popular • Pro
+              </div>
+
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">Quarterly Pro</span>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">
+                    ₹{billingCycle === 'monthly' ? '4,999' : '45,000'}
+                  </span>
+                  <span className="text-xs text-zinc-400 font-mono">
+                    /{billingCycle === 'monthly' ? 'quarter' : 'year'}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-zinc-300">
+                  Our most popular package with coach guidance, diet blueprint, and priority perks.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-xs text-zinc-200">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
+                    <span className="font-bold text-white">Unlimited All-Branch Access</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
+                    <span>1 Personal Trainer Session / Month</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
+                    <span>Custom High-Protein Indian Diet Plan</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
+                    <span>Instant WhatsApp Invoices & Receipts</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
+                    <span>30 Days Free Membership Freeze</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-[#262c3e]">
+                <button
+                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#b5e600] transition-all shadow-md apple-press"
+                >
+                  <span>Join Pro Package</span>
+                  <ArrowUpRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Plan 3: Annual VIP */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c1017] p-7 transition-all">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Annual VIP</span>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">
+                    ₹{billingCycle === 'monthly' ? '14,999' : '99,000'}
+                  </span>
+                  <span className="text-xs text-zinc-400 font-mono">
+                    /{billingCycle === 'monthly' ? 'year' : 'lifetime VIP'}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-zinc-400">
+                  Full concierge VIP experience with dedicated master coaching and recovery lounge.
+                </p>
+
+                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Everything in Pro Package</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>8 1-on-1 Personal Training Sessions</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>Dedicated VIP Locker & Laundry Support</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span>4 Free Guest Passes Every Month</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-[#1f2434]">
+                <button
+                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
+                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors apple-press"
+                >
+                  Join Annual VIP
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* ─────────────────────────────────────────────────────────────
+          SECTION 7: TRUST, LOCATION & EXPANDABLE FAQ ACCORDION
+          ───────────────────────────────────────────────────────────── */}
+      <section id="faq" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            {/* Left: Location & Contact Card */}
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
+                  Facility Coordinates
+                </span>
+                <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white">
+                  Visit {gymName}
+                </h2>
+                <p className="mt-2 text-xs sm:text-sm text-zinc-400">
+                  Centrally located with dedicated parking, bike stands, and direct elevator access.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-[#22283a] bg-[#0c1017] p-6 space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-[#ccff00] shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">Address</h4>
+                    <p className="text-xs text-zinc-300 mt-0.5 leading-relaxed">
+                      {gymProfile?.address || 'Plot 42, 27th Main, Sector 1, HSR Layout, Bengaluru, Karnataka 560102'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 border-t border-[#1a2130] pt-4">
+                  <Clock className="h-5 w-5 text-[#ccff00] shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">Operating Timings</h4>
+                    <p className="text-xs text-zinc-300 mt-0.5">
+                      {gymProfile?.operatingHours || 'Mon - Sat: 5:30 AM - 10:30 PM | Sun: 6:00 AM - 1:00 PM'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 border-t border-[#1a2130] pt-4">
+                  <MessageSquare className="h-5 w-5 text-[#25d366] shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">Front Desk WhatsApp</h4>
+                    <p className="text-xs text-zinc-300 mt-0.5">
+                      +{gymProfile?.whatsappNumber || '919876543210'} (Instant query response)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <a
+                    href={`https://wa.me/${gymProfile?.whatsappNumber || '919876543210'}?text=Hi%20${encodeURIComponent(gymName)},%20I%20want%20to%20know%20more%20about%20gym%20membership!`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#25d366] py-3 text-xs font-black uppercase tracking-wider text-black hover:bg-[#20b858] transition-colors"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Chat on WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Expandable FAQs Accordion */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
+                  Transparency & Assurance
+                </span>
+                <h3 className="text-2xl font-black uppercase text-white mt-1">
+                  Frequently Asked Questions
+                </h3>
+              </div>
+
+              <div className="space-y-3">
+                {faqs.map((faq, idx) => {
+                  const isOpen = openFaqIndex === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className="rounded-2xl border border-[#22283a] bg-[#0c1017] overflow-hidden transition-colors"
+                    >
+                      <button
+                        onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                        className="w-full flex items-center justify-between p-5 text-left text-xs sm:text-sm font-bold text-white hover:text-[#ccff00] transition-colors"
+                      >
+                        <span>{faq.q}</span>
+                        {isOpen ? (
+                          <ChevronUp className="h-4 w-4 text-[#ccff00] shrink-0 ml-3" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-zinc-400 shrink-0 ml-3" />
+                        )}
+                      </button>
+
+                      {isOpen && (
+                        <div className="px-5 pb-5 pt-0 text-xs text-zinc-300 leading-relaxed border-t border-[#1a2130]">
+                          <p className="pt-3">{faq.a}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* ─────────────────────────────────────────────────────────────
+          INTERACTIVE 1-DAY FREE PASS MODAL
           ───────────────────────────────────────────────────────────── */}
       <AnimatePresence>
-        {!isAlfirzaCardDismissed && (
+        {isTrialModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md rounded-3xl border border-[#263044] bg-[#0c1017] p-7 shadow-2xl"
+            >
+              <button
+                onClick={() => {
+                  setIsTrialModalOpen(false);
+                  setIsTrialClaimed(false);
+                }}
+                className="absolute top-5 right-5 text-zinc-400 hover:text-white p-1 rounded-lg"
+              >
+                <X className="h-5 w-5" />
+              </button>
+
+              {!isTrialClaimed ? (
+                <div>
+                  <div className="flex items-center gap-2 text-[#ccff00] text-xs font-black uppercase tracking-wider mb-1">
+                    <Sparkles className="h-4 w-4" />
+                    <span>Free Pass Invitation</span>
+                  </div>
+                  <h3 className="text-2xl font-black text-white">
+                    Claim 1-Day VIP Pass
+                  </h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-5">
+                    Experience our heavy free weights, cardio arena, and certified coaches with zero commitment.
+                  </p>
+
+                  <form onSubmit={handleClaimTrial} className="space-y-4">
+                    <div>
+                      <label className="text-xs font-bold text-zinc-300 block mb-1">Full Name</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Rohit Sharma"
+                        value={trialName}
+                        onChange={(e) => setTrialName(e.target.value)}
+                        className="w-full rounded-xl border border-[#22283a] bg-[#121724] px-3.5 py-2.5 text-xs font-semibold text-white outline-none focus:border-[#ccff00]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-zinc-300 block mb-1">WhatsApp Number</label>
+                      <input
+                        type="tel"
+                        required
+                        maxLength={10}
+                        placeholder="10-digit mobile number"
+                        value={trialPhone}
+                        onChange={(e) => setTrialPhone(e.target.value.replace(/\D/g, ''))}
+                        className="w-full rounded-xl border border-[#22283a] bg-[#121724] px-3.5 py-2.5 text-xs font-semibold text-white outline-none focus:border-[#ccff00]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-zinc-300 block mb-1">Preferred Slot</label>
+                      <select
+                        value={trialSlot}
+                        onChange={(e) => setTrialSlot(e.target.value)}
+                        className="w-full rounded-xl border border-[#22283a] bg-[#121724] px-3.5 py-2.5 text-xs font-semibold text-white outline-none focus:border-[#ccff00]"
+                      >
+                        <option>Morning (6:00 AM - 10:00 AM)</option>
+                        <option>Afternoon (12:00 PM - 4:00 PM)</option>
+                        <option>Evening (5:00 PM - 9:00 PM)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-zinc-300 block mb-1">Primary Fitness Goal</label>
+                      <select
+                        value={trialGoal}
+                        onChange={(e) => setTrialGoal(e.target.value)}
+                        className="w-full rounded-xl border border-[#22283a] bg-[#121724] px-3.5 py-2.5 text-xs font-semibold text-white outline-none focus:border-[#ccff00]"
+                      >
+                        <option>Muscle Building & Hypertrophy</option>
+                        <option>Fat Loss & Metabolic Conditioning</option>
+                        <option>Strength & Powerlifting (Squat/Bench/Deadlift)</option>
+                        <option>General Health & Posture Fix</option>
+                      </select>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg transition-all hover:brightness-110 mt-2"
+                      style={{ backgroundColor: primaryColor }}
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span>Generate My VIP Pass</span>
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="text-center py-4 space-y-4">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ccff00]/20 text-[#ccff00] border border-[#ccff00]/40">
+                    <Check className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white">VIP Pass Confirmed!</h3>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Welcome, <span className="text-white font-bold">{trialName}</span>! Your pass is active for {trialSlot}.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border-2 border-dashed border-[#ccff00]/50 bg-[#121724] p-4 text-left font-mono text-xs space-y-1.5">
+                    <div className="flex justify-between text-zinc-400">
+                      <span>PASS ID:</span>
+                      <span className="text-[#ccff00] font-bold">VIP-{Math.floor(100000 + Math.random() * 900000)}</span>
+                    </div>
+                    <div className="flex justify-between text-zinc-400">
+                      <span>FACILITY:</span>
+                      <span className="text-white font-bold">{gymName}</span>
+                    </div>
+                    <div className="flex justify-between text-zinc-400">
+                      <span>GOAL:</span>
+                      <span className="text-white font-bold truncate max-w-[170px]">{trialGoal}</span>
+                    </div>
+                  </div>
+
+                  <a
+                    href={`https://wa.me/${gymProfile?.whatsappNumber || '919876543210'}?text=Hi%20${encodeURIComponent(gymName)},%20I%20just%20claimed%20my%201-Day%20VIP%20Pass%20for%20${encodeURIComponent(trialName)}%20(${trialPhone})!`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#25d366] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#20b858] transition-colors"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Send Pass to My WhatsApp</span>
+                  </a>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+
+      {/* ─────────────────────────────────────────────────────────────
+          FLOATING QUICK-PORTAL NOTIFICATION PILL
+          ───────────────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {!isFloatingDismissed && (
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ type: "spring", damping: 22, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 22, stiffness: 300 }}
             className="fixed bottom-6 right-6 z-40 max-w-sm rounded-2xl apple-glass-card p-4 shadow-2xl"
           >
             <div className="flex items-start justify-between gap-3">
@@ -1015,14 +1194,16 @@ export function ClubShowcase({
                 </div>
                 <div>
                   <h3 className="text-xs font-bold text-white leading-tight">
-                    Let&apos;s power your next gym milestone.
+                    {gymName}
                   </h3>
-                  <p className="text-xs text-zinc-400 font-mono">Sector 15 Live Telemetry</p>
+                  <p className="text-[10px] text-zinc-400 font-mono">
+                    {gymProfile?.city || 'Bengaluru'} Live Arena
+                  </p>
                 </div>
               </div>
 
               <button
-                onClick={() => setIsAlfirzaCardDismissed(true)}
+                onClick={() => setIsFloatingDismissed(true)}
                 className="text-zinc-400 hover:text-white p-1 rounded-md apple-press"
                 title="Dismiss"
               >
@@ -1031,23 +1212,23 @@ export function ClubShowcase({
             </div>
 
             <p className="mt-2 text-xs text-zinc-300 leading-relaxed">
-              Count on us for instant QR check-ins, zero dues slippage, and real-time machine swaps during peak hours.
+              Experience Olympic barbells, heavy dumbbells, and certified coach guidance today.
             </p>
 
             <div className="mt-3 flex items-center justify-between border-t border-[#1f2434] pt-2.5">
               <button
-                onClick={() => onSwitchMode('operations')}
+                onClick={() => setIsTrialModalOpen(true)}
                 className="flex items-center gap-1.5 text-xs font-bold text-[#ccff00] hover:underline"
               >
-                <span>Launch Admin Portal</span>
-                <ArrowUpRight className="h-3.5 w-3.5" />
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Get Free Pass</span>
               </button>
 
               <button
-                onClick={() => onSwitchMode('member_portal')}
+                onClick={() => onSwitchMode('operations')}
                 className="flex items-center gap-1 text-xs font-medium text-zinc-400 hover:text-white"
               >
-                <span>Workout Arena →</span>
+                <span>Admin Console →</span>
               </button>
             </div>
           </motion.div>
