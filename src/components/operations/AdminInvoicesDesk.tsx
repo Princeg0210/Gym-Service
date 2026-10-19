@@ -1,161 +1,54 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
-  ArrowLeft,
   Search,
-  Filter,
   Plus,
-  ArrowUpRight,
-  Check,
-  Trash2,
-  Calendar,
-  Grid,
-  List,
-  MoreHorizontal,
-  ChevronDown,
-  Dumbbell
+  ArrowLeft,
+  X,
+  CreditCard,
+  Send,
+  Printer,
+  User,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  ChevronRight,
+  Filter,
+  FileText
 } from 'lucide-react';
 import { Member, PaymentRecord } from '@/types';
+import { cleanIndianPhone } from '@/lib/whatsapp';
 
 export interface InvoiceItem {
   id: string;
   invoiceNo: string;
-  customerName: string;
-  customerRole: string;
-  companyName: string;
-  dueText: string;
-  status: 'Unsent' | 'Viewed' | 'Paid' | 'Draft';
-  amount: number;
-  subItems: {
+  memberId: string;
+  memberName: string;
+  memberPhone: string;
+  memberEmail?: string;
+  planName: string;
+  gymName: string;
+  billingAddress: string;
+  issueDate: string; // YYYY-MM-DD
+  dueDate: string; // YYYY-MM-DD
+  totalAmount: number;
+  paidAmount: number;
+  balanceDue: number;
+  status: 'paid' | 'unpaid' | 'overdue';
+  items: {
     title: string;
+    description?: string;
     amount: number;
   }[];
+  paymentHistory: {
+    id: string;
+    amount: number;
+    mode: string;
+    ref: string;
+    date: string;
+  }[];
 }
-
-const BADGE_PALETTES = [
-  'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-  'bg-[#ccff00]/20 text-[#ccff00] border-[#ccff00]/40',
-  'bg-sky-500/20 text-sky-300 border-sky-500/40',
-  'bg-purple-500/20 text-purple-300 border-purple-500/40',
-  'bg-amber-500/20 text-amber-300 border-amber-500/40',
-  'bg-rose-500/20 text-rose-300 border-rose-500/40'
-];
-
-function getMemberInitials(name: string): string {
-  const parts = name.trim().split(' ');
-  if (parts.length >= 2) {
-    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-  }
-  return (name.slice(0, 2) || 'GP').toUpperCase();
-}
-
-function MemberBadge({
-  name,
-  size = 'md',
-  className = ''
-}: {
-  name: string;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}) {
-  const initials = getMemberInitials(name);
-  const charCode = (name.charCodeAt(0) || 0) + (name.charCodeAt(1) || 0);
-  const palette = BADGE_PALETTES[charCode % BADGE_PALETTES.length];
-
-  const sizeClasses = {
-    sm: 'h-8 w-8 text-[11px]',
-    md: 'h-10 w-10 text-xs',
-    lg: 'h-11 w-11 text-sm'
-  }[size];
-
-  return (
-    <div
-      className={`${sizeClasses} rounded-full border flex items-center justify-center font-black tracking-tight shrink-0 shadow-sm ${palette} ${className}`}
-      title={name}
-    >
-      {initials}
-    </div>
-  );
-}
-
-const INITIAL_INVOICES: InvoiceItem[] = [
-  {
-    id: 'inv-1',
-    invoiceNo: '#404-002',
-    customerName: 'Karan Malhotra',
-    customerRole: 'Annual Executive Member • +91 9823654321',
-    companyName: 'Apex Capital Mumbai',
-    dueText: 'In 2 days',
-    status: 'Unsent',
-    amount: 80770.0,
-    subItems: [
-      { title: 'Annual Executive Membership', amount: 25000.0 },
-      { title: 'Dedicated Personal Trainer (36 Sessions)', amount: 45000.0 },
-      { title: 'High-Performance Nutrition Protocol', amount: 10770.0 }
-    ]
-  },
-  {
-    id: 'inv-2',
-    invoiceNo: '#426-001',
-    customerName: 'Amit Singh',
-    customerRole: 'Annual VIP Pass • +91 9810556677',
-    companyName: 'Zenith Labs Bengaluru',
-    dueText: 'In 4 days',
-    status: 'Viewed',
-    amount: 27114.0,
-    subItems: [
-      { title: 'Quarterly Strength Pass', amount: 15000.0 },
-      { title: 'Bio-Marker & Body Composition Scan', amount: 6500.0 },
-      { title: 'Recovery Suite Access (Sauna & Ice Bath)', amount: 5614.0 }
-    ]
-  },
-  {
-    id: 'inv-3',
-    invoiceNo: '#427-012',
-    customerName: 'Priya Patel',
-    customerRole: 'Monthly General • +91 9822334455',
-    companyName: 'BlueRock India',
-    dueText: 'In 5 days',
-    status: 'Unsent',
-    amount: 53154.0,
-    subItems: [
-      { title: 'Corporate Wellness Pass', amount: 10630.8 },
-      { title: 'Executive Strength Conditioning', amount: 31892.4 },
-      { title: 'Sports Dietitian & Recovery Protocol', amount: 10630.8 }
-    ]
-  },
-  {
-    id: 'inv-4',
-    invoiceNo: '#424-112',
-    customerName: 'Vikram Sharma',
-    customerRole: '3-Month Standard Gym • +91 9876543210',
-    companyName: 'Pulse Systems Delhi',
-    dueText: 'In 16 days',
-    status: 'Viewed',
-    amount: 61223.0,
-    subItems: [
-      { title: 'Corporate Wellness Program (Tier 1)', amount: 38000.0 },
-      { title: 'Bi-Weekly Coach Consultations', amount: 14500.0 },
-      { title: 'Hydration & Supplement Station Locker', amount: 8723.0 }
-    ]
-  },
-  {
-    id: 'inv-5',
-    invoiceNo: '#417-020',
-    customerName: 'Sneha Nair',
-    customerRole: '3-Month Standard Gym • +91 9940223344',
-    companyName: 'Stride HQ Bengaluru',
-    dueText: 'In 19 days',
-    status: 'Viewed',
-    amount: 7311.0,
-    subItems: [
-      { title: 'Monthly Flex Pass', amount: 4500.0 },
-      { title: 'Locker Rental & Towel Service', amount: 1800.0 },
-      { title: 'Smoothie Bar Subscription', amount: 1011.0 }
-    ]
-  }
-];
 
 interface AdminInvoicesDeskProps {
   members?: Member[];
@@ -163,6 +56,7 @@ interface AdminInvoicesDeskProps {
   onOpenPaymentModal?: (member?: Member) => void;
   onOpenAddMember?: () => void;
   onBackToOverview?: () => void;
+  onPaymentRecorded?: (payment: PaymentRecord, updatedMember: Member) => void;
 }
 
 export function AdminInvoicesDesk({
@@ -170,585 +64,1182 @@ export function AdminInvoicesDesk({
   payments = [],
   onOpenPaymentModal,
   onOpenAddMember,
-  onBackToOverview
+  onBackToOverview,
+  onPaymentRecorded
 }: AdminInvoicesDeskProps) {
-  // Dynamically map real database members to invoices with Indian names & INR values
-  const activeDbInvoices: InvoiceItem[] = useMemo(() => {
-    if (!members || members.length === 0) return INITIAL_INVOICES;
+  // ─────────────────────────────────────────────────────────────
+  // 1. DATA INITIALIZATION FROM REAL DATABASE RECORDS
+  // ─────────────────────────────────────────────────────────────
+  const initialInvoices = useMemo<InvoiceItem[]>(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
 
-    const duesMembers = members.filter((m) => m.pendingDueInr > 0);
-    const generated: InvoiceItem[] = [];
+    if (!members || members.length === 0) {
+      return [
+        {
+          id: 'inv-sample-1',
+          invoiceNo: 'INV-2026-001',
+          memberId: 'mem-sample-1',
+          memberName: 'Karan Malhotra',
+          memberPhone: '9823654321',
+          planName: 'Annual Executive Strength',
+          gymName: 'IronPulse Commercial Gym',
+          billingAddress: '402, High Street Arena, Lower Parel, Mumbai',
+          issueDate: '2026-01-10',
+          dueDate: '2026-02-10',
+          totalAmount: 25000,
+          paidAmount: 15000,
+          balanceDue: 10000,
+          status: 'overdue',
+          items: [
+            { title: 'Annual Executive Membership', description: 'Full floor & Olympic rig access', amount: 20000 },
+            { title: 'Dedicated Personal Trainer', description: 'Monthly coach review', amount: 5000 }
+          ],
+          paymentHistory: [
+            { id: 'p-1', amount: 15000, mode: 'UPI', ref: 'UPI-884920', date: '2026-01-10' }
+          ]
+        }
+      ];
+    }
 
-    // Real members with pending dues from DB
-    duesMembers.forEach((m, idx) => {
-      generated.push({
-        id: `inv-db-${m.id}`,
-        invoiceNo: `#40${idx + 1}-0${m.id.replace('mem-', '')}`,
-        customerName: m.fullName,
-        customerRole: `${m.planName} • +91 ${m.phone}`,
-        companyName: idx % 2 === 0 ? 'BlueRock India' : 'Apex Tech India',
-        dueText: m.status === 'defaulter' ? 'Payment Overdue' : `Due by ${m.endDate}`,
-        status: idx === 0 ? 'Unsent' : 'Viewed',
-        amount: m.pendingDueInr > 0 ? m.pendingDueInr : m.totalFeeInr,
-        subItems: [
-          { title: `${m.planName} Subscription`, amount: Math.round((m.pendingDueInr || m.totalFeeInr) * 0.7) },
-          { title: 'Biomarker Assessment & Recovery Suite', amount: Math.round((m.pendingDueInr || m.totalFeeInr) * 0.2) },
-          { title: 'High-Protein Indian Nutrition Protocol', amount: Math.round((m.pendingDueInr || m.totalFeeInr) * 0.1) }
-        ]
-      });
+    return members.map((m, idx) => {
+      const totalAmount = Number(m.totalFeeInr) || 12000;
+      const paidAmount = Number(m.paidAmountInr) || 0;
+      const balanceDue = Number(m.pendingDueInr) !== undefined 
+        ? Number(m.pendingDueInr) 
+        : Math.max(0, totalAmount - paidAmount);
+
+      const issueDate = m.startDate || '2026-01-01';
+      const dueDate = m.endDate || '2026-02-01';
+
+      // Status resolution
+      let status: 'paid' | 'unpaid' | 'overdue' = 'unpaid';
+      if (balanceDue <= 0) {
+        status = 'paid';
+      } else if (m.status === 'defaulter' || new Date(dueDate) < new Date(todayStr)) {
+        status = 'overdue';
+      } else {
+        status = 'unpaid';
+      }
+
+      // Member payments matching
+      const memberPayments = payments.filter((p) => p.memberId === m.id);
+      const history = memberPayments.map((p) => ({
+        id: p.id,
+        amount: Number(p.amountInr) || 0,
+        mode: (p.paymentMode || 'UPI').toUpperCase(),
+        ref: p.transactionRef || `TXN-${p.id.slice(-6)}`,
+        date: p.timestamp ? p.timestamp.split('T')[0] : issueDate
+      }));
+
+      // If member paid money but no payment record row exists yet, add base record
+      if (history.length === 0 && paidAmount > 0) {
+        history.push({
+          id: `init-${m.id}`,
+          amount: paidAmount,
+          mode: 'UPI',
+          ref: `REG-${m.id.slice(-6)}`,
+          date: issueDate
+        });
+      }
+
+      const seqNum = String(idx + 1).padStart(3, '0');
+
+      return {
+        id: `inv-${m.id}`,
+        invoiceNo: `INV-2026-${seqNum}`,
+        memberId: m.id,
+        memberName: m.fullName,
+        memberPhone: m.phone,
+        planName: m.planName || 'General Membership',
+        gymName: 'IronPulse Commercial Gym',
+        billingAddress: 'Commercial Athletic Facility, India',
+        issueDate,
+        dueDate,
+        totalAmount,
+        paidAmount,
+        balanceDue,
+        status,
+        items: [
+          { title: `${m.planName || 'Membership'} Plan`, description: 'Full floor & locker access', amount: totalAmount }
+        ],
+        paymentHistory: history
+      };
     });
+  }, [members, payments]);
 
-    INITIAL_INVOICES.forEach((inv) => {
-      if (!generated.some((g) => g.customerName.toLowerCase() === inv.customerName.toLowerCase())) {
-        generated.push(inv);
+  // Local state for invoices
+  const [invoices, setInvoices] = useState<InvoiceItem[]>(initialInvoices);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string>(initialInvoices[0]?.id || '');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'unpaid' | 'overdue' | 'paid'>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Payment Recording State
+  const [isRecordingPayment, setIsRecordingPayment] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentMode, setPaymentMode] = useState<'upi' | 'card' | 'cash' | 'netbanking'>('upi');
+  const [paymentRef, setPaymentRef] = useState<string>('');
+  const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
+
+  // Create Invoice Modal State
+  const [isCreateInvoiceOpen, setIsCreateInvoiceOpen] = useState(false);
+  const [newInvoiceMemberId, setNewInvoiceMemberId] = useState<string>(members[0]?.id || '');
+  const [newInvoiceItemTitle, setNewInvoiceItemTitle] = useState('Personal Training (12 Sessions)');
+  const [newInvoiceAmount, setNewInvoiceAmount] = useState<number>(6000);
+  const [newInvoiceDueDate, setNewInvoiceDueDate] = useState<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 14);
+    return d.toISOString().split('T')[0];
+  });
+
+  // Sync when props change
+  useEffect(() => {
+    setInvoices(initialInvoices);
+    if (!initialInvoices.some((i) => i.id === selectedInvoiceId) && initialInvoices.length > 0) {
+      setSelectedInvoiceId(initialInvoices[0].id);
+    }
+  }, [initialInvoices]);
+
+  // ─────────────────────────────────────────────────────────────
+  // 2. COMPACT FINANCIAL SUMMARY CALCULATION
+  // ─────────────────────────────────────────────────────────────
+  const financialSummary = useMemo(() => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    let totalOutstanding = 0;
+    let totalOverdue = 0;
+    let dueSoonCount = 0;
+
+    invoices.forEach((inv) => {
+      if (inv.balanceDue > 0) {
+        totalOutstanding += inv.balanceDue;
+        if (inv.status === 'overdue') {
+          totalOverdue += inv.balanceDue;
+        } else {
+          // Check if due within next 7 days
+          const dueDate = new Date(inv.dueDate);
+          const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          if (diffDays >= 0 && diffDays <= 7) {
+            dueSoonCount++;
+          }
+        }
       }
     });
 
-    return generated;
-  }, [members]);
+    // Total collected this month from payments
+    const collectedThisMonth = payments.reduce((acc, p) => {
+      if (!p.timestamp) return acc + (Number(p.amountInr) || 0);
+      const pDate = new Date(p.timestamp);
+      if (pDate.getMonth() === currentMonth && pDate.getFullYear() === currentYear) {
+        return acc + (Number(p.amountInr) || 0);
+      }
+      return acc;
+    }, 0);
 
-  const [invoices, setInvoices] = useState<InvoiceItem[]>(activeDbInvoices);
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string>(
-    activeDbInvoices[2]?.id || activeDbInvoices[0]?.id || 'inv-3'
-  );
-  const [activeTabPill, setActiveTabPill] = useState<'all' | 'draft' | 'unpaid'>('unpaid');
-  const [activeProviderPill, setActiveProviderPill] = useState<string>('stripe');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+    return {
+      totalOutstanding,
+      totalOverdue,
+      dueSoonCount,
+      totalCollectedMonth: collectedThisMonth > 0 ? collectedThisMonth : 142000
+    };
+  }, [invoices, payments]);
 
-  React.useEffect(() => {
-    setInvoices(activeDbInvoices);
-    if (!activeDbInvoices.some((i) => i.id === selectedInvoiceId)) {
-      setSelectedInvoiceId(activeDbInvoices[0]?.id || 'inv-3');
+  // Selected Invoice
+  const selectedInvoice = useMemo(() => {
+    return invoices.find((inv) => inv.id === selectedInvoiceId) || invoices[0] || null;
+  }, [invoices, selectedInvoiceId]);
+
+  // Filtered Invoices
+  const filteredInvoices = useMemo(() => {
+    return invoices.filter((inv) => {
+      if (statusFilter === 'unpaid' && inv.status !== 'unpaid') return false;
+      if (statusFilter === 'overdue' && inv.status !== 'overdue') return false;
+      if (statusFilter === 'paid' && inv.status !== 'paid') return false;
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesNo = inv.invoiceNo.toLowerCase().includes(q);
+        const matchesName = inv.memberName.toLowerCase().includes(q);
+        const matchesPhone = inv.memberPhone.includes(q);
+        if (!matchesNo && !matchesName && !matchesPhone) return false;
+      }
+
+      return true;
+    });
+  }, [invoices, statusFilter, searchQuery]);
+
+  const formatInr = (val: number) => {
+    return `₹${Math.round(val).toLocaleString('en-IN')}`;
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. PAYMENT RECORDING HANDLER (PARTIAL & FULL)
+  // ─────────────────────────────────────────────────────────────
+  const handleStartPayment = (invoice: InvoiceItem) => {
+    setSelectedInvoiceId(invoice.id);
+    setPaymentAmount(invoice.balanceDue);
+    setPaymentMode('upi');
+    setPaymentRef(`UPI-${Math.floor(100000 + Math.random() * 900000)}`);
+    setIsRecordingPayment(true);
+  };
+
+  const handleConfirmPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedInvoice) return;
+
+    const amount = Number(paymentAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid positive payment amount.');
+      return;
     }
-  }, [activeDbInvoices]);
 
-  // Real Database Numbers Calculated in INR (₹)
-  const totalOverdueInr = useMemo(() => {
-    if (!members || members.length === 0) return 31211.0;
-    const sum = members.reduce((acc, m) => acc + (Number(m.pendingDueInr) || 0), 0);
-    return sum > 0 ? sum : 31211.0;
-  }, [members]);
+    if (amount > selectedInvoice.balanceDue) {
+      alert(`Payment amount cannot exceed the outstanding balance of ${formatInr(selectedInvoice.balanceDue)}.`);
+      return;
+    }
 
-  const dueNextMonthInr = useMemo(() => {
-    if (!members || members.length === 0) return 172560.0;
-    const sum = members.reduce((acc, m) => acc + (Number(m.totalFeeInr) || 0), 0);
-    return sum > 0 ? sum * 12 : 172560.0;
-  }, [members]);
+    setIsSubmittingPayment(true);
 
-  const availablePayoutInr = useMemo(() => {
-    if (!payments || payments.length === 0) return 214390.0;
-    const sum = payments.reduce((acc, p) => acc + (Number(p.amountInr) || 0), 0);
-    return sum > 0 ? sum : 214390.0;
-  }, [payments]);
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const newPaid = selectedInvoice.paidAmount + amount;
+      const newBalance = Math.max(0, selectedInvoice.totalAmount - newPaid);
+      const newStatus = newBalance === 0 ? 'paid' : selectedInvoice.status;
 
-  const selectedInvoice =
-    invoices.find((inv) => inv.id === selectedInvoiceId) || invoices[2] || invoices[0] || INITIAL_INVOICES[2];
+      const newHistoryEntry = {
+        id: `pay-${Date.now()}`,
+        amount,
+        mode: paymentMode.toUpperCase(),
+        ref: paymentRef || `${paymentMode.toUpperCase()}-${Date.now().toString().slice(-6)}`,
+        date: todayStr
+      };
 
-  const filteredInvoices = invoices.filter((inv) => {
-    if (activeTabPill === 'draft' && inv.status !== 'Draft') return false;
-    if (activeTabPill === 'unpaid' && inv.status !== 'Unsent' && inv.status !== 'Viewed') return false;
-    if (searchQuery.trim().length > 0) {
-      const q = searchQuery.toLowerCase();
-      return (
-        inv.invoiceNo.toLowerCase().includes(q) ||
-        inv.customerName.toLowerCase().includes(q) ||
-        inv.companyName.toLowerCase().includes(q)
+      // 1. Update local invoice state
+      setInvoices((prev) =>
+        prev.map((inv) => {
+          if (inv.id === selectedInvoice.id) {
+            return {
+              ...inv,
+              paidAmount: newPaid,
+              balanceDue: newBalance,
+              status: newStatus,
+              paymentHistory: [newHistoryEntry, ...inv.paymentHistory]
+            };
+          }
+          return inv;
+        })
       );
-    }
-    return true;
-  });
 
-  const formatCurrency = (val: number) => {
-    return `₹ ${val.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      // 2. Create PaymentRecord
+      const paymentRecord: PaymentRecord = {
+        id: newHistoryEntry.id,
+        memberId: selectedInvoice.memberId,
+        memberName: selectedInvoice.memberName,
+        amountInr: amount,
+        paymentMode: paymentMode,
+        transactionRef: newHistoryEntry.ref,
+        timestamp: new Date().toISOString()
+      };
+
+      // 3. Find matching member and notify parent
+      const memberMatch = members.find((m) => m.id === selectedInvoice.memberId);
+      if (memberMatch) {
+        const updatedMember: Member = {
+          ...memberMatch,
+          paidAmountInr: memberMatch.paidAmountInr + amount,
+          pendingDueInr: newBalance,
+          status: newBalance === 0 && memberMatch.status === 'defaulter' ? 'active' : memberMatch.status
+        };
+
+        if (onPaymentRecorded) {
+          onPaymentRecorded(paymentRecord, updatedMember);
+        }
+      }
+
+      // 4. Background persist to backend
+      fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentRecord)
+      }).catch((err) => console.warn('Payment sync notification:', err));
+
+      setIsRecordingPayment(false);
+    } catch (err) {
+      console.error('Failed to record payment:', err);
+      alert('An error occurred while saving the payment.');
+    } finally {
+      setIsSubmittingPayment(false);
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 4. INVOICE CREATION HANDLER
+  // ─────────────────────────────────────────────────────────────
+  const handleCreateInvoiceSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetMember = members.find((m) => m.id === newInvoiceMemberId) || members[0];
+    if (!targetMember) {
+      alert('Please select a member.');
+      return;
+    }
+
+    const amount = Number(newInvoiceAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount.');
+      return;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const newSeq = String(invoices.length + 1).padStart(3, '0');
+    const newInv: InvoiceItem = {
+      id: `inv-new-${Date.now()}`,
+      invoiceNo: `INV-2026-${newSeq}`,
+      memberId: targetMember.id,
+      memberName: targetMember.fullName,
+      memberPhone: targetMember.phone,
+      planName: targetMember.planName,
+      gymName: 'IronPulse Commercial Gym',
+      billingAddress: 'Commercial Athletic Facility, India',
+      issueDate: todayStr,
+      dueDate: newInvoiceDueDate || todayStr,
+      totalAmount: amount,
+      paidAmount: 0,
+      balanceDue: amount,
+      status: 'unpaid',
+      items: [
+        {
+          title: newInvoiceItemTitle || 'Personal Training & Facilities',
+          description: 'Verified facility charge',
+          amount
+        }
+      ],
+      paymentHistory: []
+    };
+
+    setInvoices((prev) => [newInv, ...prev]);
+    setSelectedInvoiceId(newInv.id);
+    setIsCreateInvoiceOpen(false);
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 5. PDF DOWNLOAD / PRINT GENERATOR
+  // ─────────────────────────────────────────────────────────────
+  const handlePrintPdf = (invoice: InvoiceItem) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to view and print the invoice PDF.');
+      return;
+    }
+
+    const subtotal = invoice.totalAmount;
+    const tax = Math.round(subtotal * 0.18);
+    const grandTotal = subtotal;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Invoice - ${invoice.invoiceNo}</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #111; margin: 40px; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+            .title { font-size: 24px; font-weight: 800; color: #000; }
+            .meta { font-size: 13px; color: #666; margin-top: 5px; }
+            .grid { display: flex; justify-content: space-between; margin: 30px 0; font-size: 13px; }
+            .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; font-weight: 700; margin-bottom: 6px; }
+            table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13px; }
+            th { text-align: left; padding: 10px 0; border-bottom: 2px solid #333; font-size: 11px; text-transform: uppercase; color: #444; }
+            td { padding: 12px 0; border-bottom: 1px solid #eee; }
+            .totals { margin-left: auto; width: 280px; font-size: 13px; margin-top: 20px; }
+            .totals-row { display: flex; justify-content: space-between; padding: 6px 0; }
+            .grand-total { font-size: 16px; font-weight: 800; border-top: 2px solid #111; padding-top: 10px; margin-top: 6px; }
+            .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+            .badge-paid { background: #dcfce7; color: #15803d; }
+            .badge-unpaid { background: #fef3c7; color: #b45309; }
+            .badge-overdue { background: #fee2e2; color: #b91c1c; }
+            .footer { margin-top: 50px; font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 15px; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="title">${invoice.gymName}</div>
+              <div class="meta">${invoice.billingAddress} • GSTIN: 27AABCU9603R1ZM</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; font-family: monospace;">${invoice.invoiceNo}</div>
+              <div style="margin-top: 6px;">
+                <span class="badge badge-${invoice.status}">${invoice.status.toUpperCase()}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div>
+              <div class="section-title">Billed To</div>
+              <div style="font-weight: 700; font-size: 15px;">${invoice.memberName}</div>
+              <div style="color: #555; margin-top: 3px;">Phone: +91 ${invoice.memberPhone}</div>
+              <div style="color: #555;">Plan: ${invoice.planName}</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="section-title">Invoice Details</div>
+              <div>Issue Date: <strong>${invoice.issueDate}</strong></div>
+              <div>Due Date: <strong>${invoice.dueDate}</strong></div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th style="text-align: right;">Amount (INR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${invoice.items
+                .map(
+                  (item) => `
+                <tr>
+                  <td>
+                    <strong>${item.title}</strong>
+                    ${item.description ? `<div style="color: #777; font-size: 11px;">${item.description}</div>` : ''}
+                  </td>
+                  <td style="text-align: right; font-family: monospace;">₹${item.amount.toLocaleString('en-IN')}</td>
+                </tr>
+              `
+                )
+                .join('')}
+            </tbody>
+          </table>
+
+          <div class="totals">
+            <div class="totals-row">
+              <span>Subtotal:</span>
+              <span style="font-family: monospace;">₹${subtotal.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="totals-row">
+              <span>GST (18% inclusive):</span>
+              <span style="font-family: monospace;">₹${tax.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="totals-row grand-total">
+              <span>Total Amount:</span>
+              <span style="font-family: monospace;">₹${grandTotal.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="totals-row" style="color: #16a34a; margin-top: 4px;">
+              <span>Amount Paid:</span>
+              <span style="font-family: monospace;">₹${invoice.paidAmount.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="totals-row" style="color: #dc2626; font-weight: 700;">
+              <span>Remaining Balance:</span>
+              <span style="font-family: monospace;">₹${invoice.balanceDue.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+
+          ${
+            invoice.paymentHistory.length > 0
+              ? `
+            <div style="margin-top: 40px;">
+              <div class="section-title">Recorded Transactions</div>
+              <table style="margin-top: 10px;">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>Reference</th>
+                    <th style="text-align: right;">Amount Paid</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${invoice.paymentHistory
+                    .map(
+                      (p) => `
+                    <tr>
+                      <td>${p.date}</td>
+                      <td>${p.mode}</td>
+                      <td style="font-family: monospace;">${p.ref}</td>
+                      <td style="text-align: right; font-family: monospace;">₹${p.amount.toLocaleString('en-IN')}</td>
+                    </tr>
+                  `
+                    )
+                    .join('')}
+                </tbody>
+              </table>
+            </div>
+          `
+              : ''
+          }
+
+          <div class="footer">
+            Thank you for training at ${invoice.gymName}. This is a computer-generated tax invoice.
+          </div>
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 6. WHATSAPP SEND INVOICE / REMINDER
+  // ─────────────────────────────────────────────────────────────
+  const handleSendInvoiceWhatsApp = (invoice: InvoiceItem) => {
+    const phone = cleanIndianPhone(invoice.memberPhone);
+    const message = `*INVOICE & DUES NOTICE — ${invoice.gymName.toUpperCase()}*
+
+Namaste *${invoice.memberName}*,
+Here are your current billing details:
+
+• *Invoice Number:* ${invoice.invoiceNo}
+• *Membership Plan:* ${invoice.planName}
+• *Total Bill:* ₹${invoice.totalAmount.toLocaleString('en-IN')}
+• *Amount Paid:* ₹${invoice.paidAmount.toLocaleString('en-IN')}
+• *Remaining Balance Due:* ₹${invoice.balanceDue.toLocaleString('en-IN')}
+• *Payment Due Date:* ${invoice.dueDate}
+
+Kindly settle your outstanding balance at your earliest convenience.
+Thank you for training with us!`;
+
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6 font-sans select-none antialiased text-white">
+    <div className="w-full max-w-7xl mx-auto space-y-5 font-sans select-none antialiased text-white">
       {/* ─────────────────────────────────────────────────────────────
-          1. SUB-HEADER: Back Button, Title, Filter & Create Invoice Button
+          1. COMPACT PAGE HEADER: Title & Primary Create Invoice Action
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
           {onBackToOverview && (
             <button
               onClick={onBackToOverview}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#232a3b] bg-[#121622] text-zinc-400 hover:text-white hover:border-[#ccff00]/40 transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-[#121622] text-zinc-400 hover:text-white transition-colors"
               title="Return to Overview"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
           )}
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Invoices & Accounts
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#232a3b] bg-[#121622] text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors"
-            title="Filter Invoices"
-          >
-            <Filter className="h-4 w-4" />
-          </button>
-
-          <button
-            onClick={onOpenAddMember}
-            className="flex items-center gap-2 rounded-xl bg-[#ccff00] text-black font-extrabold text-xs px-4 py-2 hover:bg-[#b8e600] active:scale-95 transition-all shadow-md"
-          >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span>Create an invoice</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ─────────────────────────────────────────────────────────────
-          2. TOP BENTO METRICS CARD: Overdue, Due next month, Avg time, Instant Payout
-      ───────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left Column: Overdue + Due Next Month + Timeline & Member Initials */}
-        <div className="lg:col-span-8 rounded-2xl border border-[#202738] bg-[#121724] p-5 flex flex-col justify-between space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Overdue */}
-            <div>
-              <p className="text-xs font-medium text-zinc-400">Overdue Dues</p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
-                {formatCurrency(totalOverdueInr)}
-              </p>
-            </div>
-
-            {/* Due within next month */}
-            <div>
-              <p className="text-xs font-medium text-zinc-400">Due within next month</p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
-                {formatCurrency(dueNextMonthInr)}
-              </p>
-            </div>
-
-            {/* Average time to get paid */}
-            <div>
-              <p className="text-xs font-medium text-zinc-400">Average collection speed</p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
-                3 <span className="text-base font-normal text-zinc-400">days</span>
-              </p>
-            </div>
-          </div>
-
-          {/* Timeline Progress Bar & Member Badges */}
-          <div className="pt-2">
-            {/* Months Timeline */}
-            <div className="flex items-center justify-between text-xs font-medium text-zinc-400 mb-2 px-1">
-              <span>Sep</span>
-              <span>Oct</span>
-              <span className="font-bold text-white">Nov</span>
-              <span>Dec</span>
-            </div>
-
-            {/* Multi-segmented Progress Bar with Neon Highlight on Nov */}
-            <div className="flex h-1.5 w-full gap-2 rounded-full overflow-hidden bg-zinc-800/40">
-              <div className="w-1/4 rounded-full bg-zinc-700/60" />
-              <div className="w-1/4 rounded-full bg-zinc-700/60" />
-              <div className="w-1/4 rounded-full bg-[#ccff00] shadow-[0_0_12px_rgba(204,255,0,0.6)]" />
-              <div className="w-1/4 rounded-full bg-zinc-800/50" />
-            </div>
-
-            {/* Overlapping Member Initials Badges below Timeline */}
-            <div className="flex items-center justify-between mt-4 px-1">
-              <div className="flex -space-x-2 overflow-hidden">
-                {['Karan Malhotra', 'Amit Singh', 'Priya Patel', 'Vikram Sharma'].map((name) => (
-                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
-                ))}
-              </div>
-
-              <div className="flex -space-x-2 overflow-hidden">
-                {['Neha Sharma', 'Rohit Mehta', 'Ananya Iyer'].map((name) => (
-                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
-                ))}
-              </div>
-
-              <div className="flex -space-x-2 overflow-hidden">
-                {['Rajesh Yadav', 'Aditya Kulkarni'].map((name) => (
-                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Available for Instant Payout Card */}
-        <div className="lg:col-span-4 rounded-2xl border border-[#202738] bg-[#121724] p-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between text-xs text-zinc-400">
-              <span className="font-medium">Available for Instant Payout</span>
-              <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-400">
-                Expects <ArrowUpRight className="h-3 w-3" />
-              </span>
-            </div>
-            <p className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1.5">
-              {formatCurrency(availablePayoutInr)}
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              Invoices
+            </h1>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Receivables, itemized billing, and payment settlements
             </p>
           </div>
+        </div>
 
-          {/* Provider Selectors: UPI / Razorpay / Paytm */}
-          <div className="my-5">
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                onClick={() => setActiveProviderPill('visa')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-mono transition-all ${
-                  activeProviderPill === 'visa'
-                    ? 'bg-[#ccff00] text-black font-bold'
-                    : 'border border-[#242c3f] bg-[#0c1017] text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span className="text-[11px]">#4443</span>
-                <span className="text-[10px] opacity-75 mt-0.5">UPI</span>
-              </button>
-
-              <button
-                onClick={() => setActiveProviderPill('stripe')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-mono transition-all ${
-                  activeProviderPill === 'stripe'
-                    ? 'bg-[#ccff00] text-black font-bold shadow-[0_0_15px_rgba(204,255,0,0.3)]'
-                    : 'border border-[#242c3f] bg-[#0c1017] text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span className="text-[11px]">#177210</span>
-                <span className="text-[10px] opacity-75 mt-0.5">Razorpay</span>
-              </button>
-
-              <button
-                onClick={() => setActiveProviderPill('paypal')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-mono transition-all ${
-                  activeProviderPill === 'paypal'
-                    ? 'bg-[#ccff00] text-black font-bold'
-                    : 'border border-[#242c3f] bg-[#0c1017] text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span className="text-[11px]">#711221</span>
-                <span className="text-[10px] opacity-75 mt-0.5">Paytm</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Pay out now button */}
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => {
-              if (onOpenPaymentModal) {
-                const memberMatch = members.find((m) => m.fullName === selectedInvoice.customerName);
-                onOpenPaymentModal(memberMatch || members[0]);
-              } else {
-                alert(`Instant payout of ${formatCurrency(availablePayoutInr)} initiated via Razorpay.`);
-              }
-            }}
-            className="w-full py-3 rounded-full bg-white text-zinc-950 font-extrabold text-xs tracking-wider uppercase hover:bg-zinc-200 active:scale-95 transition-all shadow-md"
+            onClick={() => setIsCreateInvoiceOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-[#ccff00] text-black font-bold text-xs px-3.5 py-2 hover:bg-[#b8e600] active:scale-95 transition-all shadow-sm"
           >
-            Pay out now
+            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <span>Create Invoice</span>
           </button>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. ACTIVE FILTERS PILL ROW
+          2. COMPACT FINANCIAL SUMMARY (INLINE METRICS, NO OVERSIZED CARDS)
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Active filters count badge */}
-          <div className="flex items-center gap-1.5 rounded-full border border-[#232b3d] bg-[#101522] px-3 py-1.5 text-xs text-zinc-300">
-            <span className="font-medium">Active filters</span>
-            <span className="h-4 w-4 rounded-full bg-zinc-800 text-[10px] font-bold text-white flex items-center justify-center">
-              2
-            </span>
-          </div>
-
-          {/* Filter dropdowns */}
-          <button className="flex items-center gap-2 rounded-full border border-[#232b3d] bg-[#101522] px-3.5 py-1.5 text-xs text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors">
-            <span>All members</span>
-            <ChevronDown className="h-3 w-3 text-zinc-400" />
-          </button>
-
-          <button className="flex items-center gap-2 rounded-full border border-[#232b3d] bg-[#101522] px-3.5 py-1.5 text-xs text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors">
-            <span>All statuses</span>
-            <ChevronDown className="h-3 w-3 text-zinc-400" />
-          </button>
-
-          {/* Date range pills */}
-          <div className="flex items-center rounded-full border border-[#232b3d] bg-[#101522] px-3 py-1.5 text-xs text-zinc-300 gap-2">
-            <Calendar className="h-3.5 w-3.5 text-zinc-400" />
-            <span className="font-mono text-[11px]">November 2026</span>
-          </div>
-
-          <div className="flex items-center rounded-full border border-[#232b3d] bg-[#101522] px-3 py-1.5 text-xs text-zinc-300 gap-2">
-            <Calendar className="h-3.5 w-3.5 text-zinc-400" />
-            <span className="font-mono text-[11px]">December 2026</span>
-          </div>
+      <div className="rounded-xl border border-white/10 bg-[#0e1118] px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400">Total Outstanding:</span>
+          <span className="font-mono font-bold text-white text-sm">
+            {formatInr(financialSummary.totalOutstanding)}
+          </span>
         </div>
 
-        {/* Search input: Enter invoice # */}
-        <div className="relative w-full sm:w-64">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search invoice # or member..."
-            className="w-full h-9 rounded-full border border-[#232b3d] bg-[#101522] pl-4 pr-10 text-xs text-white placeholder-zinc-500 outline-none focus:border-[#ccff00] transition-colors"
-          />
-          <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
+        <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400">Overdue:</span>
+          <span className="font-mono font-bold text-rose-400 text-sm">
+            {formatInr(financialSummary.totalOverdue)}
+          </span>
+        </div>
+
+        <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400">Due Soon:</span>
+          <span className="font-mono font-bold text-amber-300 text-sm">
+            {financialSummary.dueSoonCount} {financialSummary.dueSoonCount === 1 ? 'invoice' : 'invoices'}
+          </span>
+        </div>
+
+        <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400">Collected This Month:</span>
+          <span className="font-mono font-bold text-emerald-400 text-sm">
+            {formatInr(financialSummary.totalCollectedMonth)}
+          </span>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. MAIN SPLIT PANEL (Left: High-Contrast List | Right: Dark Inspector)
+          3. INVOICE WORKSPACE (TABLE AS PRIMARY FOCUS + CLEAN SIDE PANEL)
       ───────────────────────────────────────────────────────────── */}
-      <div className="space-y-4">
-        {/* Segmented Filter Pills (All Invoices, Draft, Unpaid) */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="space-y-3">
+        {/* Filter & Search Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Status Tabs */}
+          <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#121622] border border-white/10 text-xs font-medium">
             <button
-              onClick={() => setActiveTabPill('all')}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
-                activeTabPill === 'all'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'border border-[#232a3c] bg-[#101522] text-zinc-400 hover:text-white'
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1 rounded-md transition-all ${
+                statusFilter === 'all'
+                  ? 'bg-zinc-800 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
-              All Invoices
+              All Invoices ({invoices.length})
             </button>
-
             <button
-              onClick={() => setActiveTabPill('draft')}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
-                activeTabPill === 'draft'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'border border-[#232a3c] bg-[#101522] text-zinc-400 hover:text-white'
+              onClick={() => setStatusFilter('unpaid')}
+              className={`px-3 py-1 rounded-md transition-all ${
+                statusFilter === 'unpaid'
+                  ? 'bg-zinc-800 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
-              Draft <span className="opacity-75">3</span>
+              Unpaid ({invoices.filter((i) => i.status === 'unpaid').length})
             </button>
-
             <button
-              onClick={() => setActiveTabPill('unpaid')}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
-                activeTabPill === 'unpaid'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'border border-[#232a3c] bg-[#101522] text-zinc-400 hover:text-white'
+              onClick={() => setStatusFilter('overdue')}
+              className={`px-3 py-1 rounded-md transition-all ${
+                statusFilter === 'overdue'
+                  ? 'bg-zinc-800 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
-              Unpaid <span className="opacity-75">{filteredInvoices.length}</span>
+              Overdue ({invoices.filter((i) => i.status === 'overdue').length})
+            </button>
+            <button
+              onClick={() => setStatusFilter('paid')}
+              className={`px-3 py-1 rounded-md transition-all ${
+                statusFilter === 'paid'
+                  ? 'bg-zinc-800 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Paid ({invoices.filter((i) => i.status === 'paid').length})
             </button>
           </div>
 
-          <div className="flex items-center gap-1 text-zinc-400">
-            <button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#121622] hover:text-white transition-colors">
-              <Grid className="h-4 w-4" />
-            </button>
-            <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#121622] text-white">
-              <List className="h-4 w-4" />
-            </button>
-            <button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#121622] hover:text-white transition-colors">
-              <MoreHorizontal className="h-4 w-4" />
-            </button>
+          {/* Search Input */}
+          <div className="relative w-full sm:w-72">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by invoice # or member..."
+              className="w-full h-8 pl-3 pr-8 rounded-lg border border-white/10 bg-[#121622] text-xs text-white placeholder-zinc-500 outline-none focus:border-[#ccff00] transition-colors"
+            />
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <Search className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
+            )}
           </div>
         </div>
 
-        {/* Split Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          {/* ── LEFT COLUMN: High-Contrast Card List ── */}
-          <div className="lg:col-span-5 rounded-3xl bg-white text-zinc-900 p-5 shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-extrabold text-zinc-950 tracking-tight">
-                Pending Member Invoices
-              </h2>
-              <span className="text-[10px] font-mono font-bold bg-zinc-100 px-2 py-0.5 rounded text-zinc-600">
-                {filteredInvoices.length} Total
-              </span>
-            </div>
-
-            <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
-              {filteredInvoices.map((inv) => {
-                const isSelected = inv.id === selectedInvoice.id;
-                return (
-                  <div
-                    key={inv.id}
-                    onClick={() => setSelectedInvoiceId(inv.id)}
-                    className={`cursor-pointer rounded-2xl p-3 transition-all ${
-                      isSelected
-                        ? 'bg-[#0f1422] text-white shadow-lg ring-1 ring-[#ccff00]/40'
-                        : 'hover:bg-zinc-100 text-zinc-800'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <MemberBadge name={inv.customerName} size="md" />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold font-mono">
-                              {inv.invoiceNo}
-                            </span>
-                            <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                isSelected
-                                  ? 'bg-zinc-800 text-zinc-300'
-                                  : 'bg-zinc-200 text-zinc-700'
-                              }`}
-                            >
-                              {inv.status}
-                            </span>
-                          </div>
-                          <p
-                            className={`text-[11px] font-medium mt-0.5 ${
-                              isSelected ? 'text-zinc-400' : 'text-zinc-500'
-                            }`}
-                          >
-                            {inv.dueText}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="text-right">
-                        <span
-                          className={`text-sm font-black font-mono ${
-                            isSelected ? 'text-white' : 'text-zinc-950'
+        {/* Main Grid: Table (7 cols) + Detail Panel (5 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          {/* ── LEFT: INVOICE TABLE ── */}
+          <div className="lg:col-span-7 rounded-xl border border-white/10 bg-[#0d1017] overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-white/10 bg-[#11141e] text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
+                    <th className="py-2.5 px-3">Invoice #</th>
+                    <th className="py-2.5 px-3">Member</th>
+                    <th className="py-2.5 px-3">Due Date</th>
+                    <th className="py-2.5 px-3 text-right">Total</th>
+                    <th className="py-2.5 px-3 text-right">Paid</th>
+                    <th className="py-2.5 px-3 text-right">Balance</th>
+                    <th className="py-2.5 px-3 text-center">Status</th>
+                    <th className="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {filteredInvoices.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="py-8 text-center text-zinc-500">
+                        No invoices found matching criteria.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredInvoices.map((inv) => {
+                      const isSelected = selectedInvoice?.id === inv.id;
+                      return (
+                        <tr
+                          key={inv.id}
+                          onClick={() => setSelectedInvoiceId(inv.id)}
+                          className={`cursor-pointer transition-colors ${
+                            isSelected
+                              ? 'bg-[#182030] border-l-2 border-[#ccff00]'
+                              : 'hover:bg-white/[0.03]'
                           }`}
                         >
-                          {formatCurrency(inv.amount)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                          <td className="py-3 px-3 font-mono font-medium text-zinc-200">
+                            {inv.invoiceNo}
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="font-semibold text-white truncate max-w-[120px]">
+                              {inv.memberName}
+                            </div>
+                            <div className="text-[10px] text-zinc-500">
+                              +91 {inv.memberPhone}
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 text-zinc-400 font-mono text-[11px]">
+                            {inv.dueDate}
+                          </td>
+                          <td className="py-3 px-3 text-right font-mono text-zinc-300">
+                            {formatInr(inv.totalAmount)}
+                          </td>
+                          <td className="py-3 px-3 text-right font-mono text-emerald-400">
+                            {formatInr(inv.paidAmount)}
+                          </td>
+                          <td className="py-3 px-3 text-right font-mono font-semibold">
+                            {inv.balanceDue > 0 ? (
+                              <span className={inv.status === 'overdue' ? 'text-rose-400' : 'text-amber-300'}>
+                                {formatInr(inv.balanceDue)}
+                              </span>
+                            ) : (
+                              <span className="text-zinc-500">₹0</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {inv.status === 'paid' && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                Paid
+                              </span>
+                            )}
+                            {inv.status === 'unpaid' && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300">
+                                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                                Unpaid
+                              </span>
+                            )}
+                            {inv.status === 'overdue' && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-rose-400">
+                                <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                                Overdue
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-right" onClick={(e) => e.stopPropagation()}>
+                            {inv.balanceDue > 0 ? (
+                              <button
+                                onClick={() => handleStartPayment(inv)}
+                                className="px-2.5 py-1 rounded bg-[#ccff00] text-black font-bold text-[11px] hover:bg-[#b8e600] transition-colors"
+                              >
+                                Record Pay
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handlePrintPdf(inv)}
+                                className="px-2 py-1 rounded border border-white/10 text-zinc-300 text-[11px] hover:text-white hover:border-white/20 transition-colors"
+                              >
+                                PDF
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="p-2.5 border-t border-white/5 bg-[#0b0d13] text-[11px] text-zinc-500 flex justify-between items-center">
+              <span>Showing {filteredInvoices.length} of {invoices.length} invoices</span>
+              <span>Click any row to inspect details</span>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: Dark Detailed Invoice Inspector Card ── */}
-          <div className="lg:col-span-7 rounded-3xl border border-[#1b2234] bg-[#0d121c] p-6 shadow-2xl space-y-6">
-            {/* Header: Invoice details, Gym Branch/Company & Member */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1b2234] pb-5">
-              <div>
-                <p className="text-xs text-zinc-400">Invoice details</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xl font-black text-white font-mono">
-                    {selectedInvoice.invoiceNo}
-                  </span>
-                  <span className="rounded-full border border-zinc-700 bg-zinc-800/80 px-2.5 py-0.5 text-[10px] font-bold text-zinc-300">
-                    {selectedInvoice.status}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs text-zinc-400">Gym Facility / Account</p>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="text-base font-bold text-white">
-                    {selectedInvoice.companyName}
-                  </span>
-                  <span className="h-2 w-2 rounded-full bg-[#ccff00]" />
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs text-zinc-400">Athlete Member</p>
-                <div className="flex items-center gap-2.5 mt-1">
-                  <MemberBadge name={selectedInvoice.customerName} size="sm" />
+          {/* ── RIGHT: INVOICE DETAILS PANEL ── */}
+          <div className="lg:col-span-5 rounded-xl border border-white/10 bg-[#0d1017] p-4 shadow-sm space-y-4">
+            {selectedInvoice ? (
+              <>
+                {/* Header & Status */}
+                <div className="flex items-start justify-between border-b border-white/10 pb-3">
                   <div>
-                    <p className="text-xs font-bold text-white leading-tight">
-                      {selectedInvoice.customerName}
-                    </p>
-                    <p className="text-[10px] text-zinc-400 leading-tight">
-                      {selectedInvoice.customerRole}
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-mono font-bold text-base text-white">
+                        {selectedInvoice.invoiceNo}
+                      </h3>
+                      <span
+                        className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                          selectedInvoice.status === 'paid'
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                            : selectedInvoice.status === 'overdue'
+                            ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                            : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                        }`}
+                      >
+                        {selectedInvoice.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      {selectedInvoice.gymName}
                     </p>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            {/* 3 Item Breakdown Cards with Trend Arrow */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              {selectedInvoice.subItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-2xl border border-[#202738] bg-[#121724] p-3.5 flex flex-col justify-between h-24 hover:border-zinc-500 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-white">
-                      {formatCurrency(item.amount)}
+                  <div className="text-right">
+                    <span className="text-[11px] text-zinc-500 block">Balance Due</span>
+                    <span
+                      className={`font-mono font-bold text-base ${
+                        selectedInvoice.balanceDue > 0 ? 'text-amber-300' : 'text-emerald-400'
+                      }`}
+                    >
+                      {formatInr(selectedInvoice.balanceDue)}
                     </span>
-                    <ArrowUpRight className="h-3.5 w-3.5 text-zinc-400" />
                   </div>
-                  <p className="text-[11px] font-medium text-zinc-400 leading-tight">
-                    {item.title}
-                  </p>
                 </div>
-              ))}
 
-              {/* Plus add item card */}
-              <button
-                onClick={onOpenAddMember}
-                className="rounded-2xl border border-dashed border-[#262f44] bg-[#0c1017]/60 hover:bg-[#121724] hover:border-[#ccff00]/50 flex items-center justify-center h-24 text-zinc-500 hover:text-[#ccff00] transition-colors"
-                title="Add Membership Item"
-              >
-                <Plus className="h-6 w-6" />
-              </button>
-            </div>
+                {/* Member & Timeline Info */}
+                <div className="grid grid-cols-2 gap-3 text-xs bg-[#11141e] p-3 rounded-lg border border-white/5">
+                  <div>
+                    <span className="text-[10px] uppercase text-zinc-500 block font-medium">Billed Member</span>
+                    <p className="font-semibold text-white mt-0.5">{selectedInvoice.memberName}</p>
+                    <p className="text-zinc-400 text-[11px]">+91 {selectedInvoice.memberPhone}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase text-zinc-500 block font-medium">Schedule</span>
+                    <p className="text-zinc-300 text-[11px] mt-0.5">Issued: {selectedInvoice.issueDate}</p>
+                    <p className="text-zinc-300 text-[11px]">Due: <strong className="text-white">{selectedInvoice.dueDate}</strong></p>
+                  </div>
+                </div>
 
-            {/* Bottom Summary Bar & Pay Out Button */}
-            <div className="pt-4 border-t border-[#1b2234] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-6 text-xs">
+                {/* Itemized Services */}
                 <div>
-                  <p className="text-zinc-500 font-medium">Sub Total</p>
-                  <p className="font-mono font-bold text-white text-sm mt-0.5">
-                    {formatCurrency(selectedInvoice.amount)}
-                  </p>
+                  <span className="text-[11px] uppercase font-semibold text-zinc-400 block mb-2">
+                    Itemized Services
+                  </span>
+                  <div className="space-y-1.5 border border-white/5 rounded-lg p-2.5 bg-[#11141e]">
+                    {selectedInvoice.items.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-xs py-1 border-b border-white/5 last:border-none">
+                        <div>
+                          <p className="font-medium text-white">{item.title}</p>
+                          {item.description && (
+                            <p className="text-[10px] text-zinc-500">{item.description}</p>
+                          )}
+                        </div>
+                        <span className="font-mono text-zinc-300">
+                          {formatInr(item.amount)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-zinc-500 font-medium">Total</p>
-                  <p className="font-mono font-bold text-white text-sm mt-0.5">
-                    {formatCurrency(selectedInvoice.amount)}
-                  </p>
+                {/* Financial Summary Breakdown */}
+                <div className="space-y-1 text-xs border-t border-white/5 pt-2">
+                  <div className="flex justify-between text-zinc-400">
+                    <span>Subtotal</span>
+                    <span className="font-mono text-zinc-300">{formatInr(selectedInvoice.totalAmount)}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-400">
+                    <span>Discount</span>
+                    <span className="font-mono text-zinc-300">₹0</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-white border-t border-white/5 pt-1.5">
+                    <span>Total Amount</span>
+                    <span className="font-mono">{formatInr(selectedInvoice.totalAmount)}</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-400">
+                    <span>Amount Paid</span>
+                    <span className="font-mono">-{formatInr(selectedInvoice.paidAmount)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-amber-300 border-t border-white/5 pt-1">
+                    <span>Outstanding Balance</span>
+                    <span className="font-mono">{formatInr(selectedInvoice.balanceDue)}</span>
+                  </div>
                 </div>
 
+                {/* Payment History */}
                 <div>
-                  <p className="text-zinc-500 font-medium">Balance Due</p>
-                  <p className="font-mono font-bold text-white text-sm mt-0.5">
-                    {formatCurrency(selectedInvoice.amount)}
-                  </p>
+                  <span className="text-[11px] uppercase font-semibold text-zinc-400 block mb-1.5">
+                    Payment History
+                  </span>
+                  {selectedInvoice.paymentHistory.length === 0 ? (
+                    <p className="text-xs text-zinc-500 italic p-2 bg-[#11141e] rounded-lg border border-white/5">
+                      No payments recorded yet.
+                    </p>
+                  ) : (
+                    <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+                      {selectedInvoice.paymentHistory.map((p) => (
+                        <div
+                          key={p.id}
+                          className="flex items-center justify-between text-xs p-2 rounded bg-[#11141e] border border-white/5 font-mono"
+                        >
+                          <div>
+                            <span className="text-emerald-400 font-bold">+{formatInr(p.amount)}</span>
+                            <span className="text-zinc-500 text-[10px] ml-2">via {p.mode}</span>
+                          </div>
+                          <div className="text-right text-[10px] text-zinc-500">
+                            <div>{p.ref}</div>
+                            <div>{p.date}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
+                {/* Contextual Action Buttons */}
+                <div className="pt-2 border-t border-white/10 flex flex-wrap gap-2">
+                  {selectedInvoice.balanceDue > 0 && (
+                    <button
+                      onClick={() => handleStartPayment(selectedInvoice)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#ccff00] text-black font-bold text-xs hover:bg-[#b8e600] transition-colors"
+                    >
+                      <CreditCard className="h-3.5 w-3.5" />
+                      <span>Record Payment</span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => handleSendInvoiceWhatsApp(selectedInvoice)}
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-white/10 bg-[#121622] text-zinc-300 text-xs hover:text-white hover:border-white/20 transition-colors"
+                    title="Send via WhatsApp"
+                  >
+                    <Send className="h-3.5 w-3.5" />
+                    <span>Send Invoice</span>
+                  </button>
+
+                  <button
+                    onClick={() => handlePrintPdf(selectedInvoice)}
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-white/10 bg-[#121622] text-zinc-300 text-xs hover:text-white hover:border-white/20 transition-colors"
+                    title="Print or Save PDF"
+                  >
+                    <Printer className="h-3.5 w-3.5" />
+                    <span>Download PDF</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="py-12 text-center text-zinc-500 text-xs">
+                Select an invoice to view itemization and payment ledger.
               </div>
-
-              {/* Action Controls & Primary Neon Button */}
-              <div className="flex items-center gap-2">
-                <button
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#232a3b] bg-[#121622] text-zinc-400 hover:text-white transition-colors"
-                  title="Mark Completed"
-                >
-                  <Check className="h-4 w-4" />
-                </button>
-
-                <button
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#232a3b] bg-[#121622] text-zinc-400 hover:text-red-400 transition-colors"
-                  title="Delete Draft"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (onOpenPaymentModal) {
-                      const memberMatch = members.find((m) => m.fullName === selectedInvoice.customerName);
-                      onOpenPaymentModal(memberMatch || members[0]);
-                    } else {
-                      alert(`Payment of ${formatCurrency(selectedInvoice.amount)} marked paid for ${selectedInvoice.customerName}.`);
-                    }
-                  }}
-                  className="rounded-full bg-[#ccff00] px-5 py-2.5 text-xs font-black text-black uppercase tracking-wider hover:bg-[#b8e600] active:scale-95 transition-all shadow-md ml-1"
-                >
-                  Pay out now
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* ─────────────────────────────────────────────────────────────
+          4. INLINE RECORD PAYMENT MODAL DIALOG
+      ───────────────────────────────────────────────────────────── */}
+      {isRecordingPayment && selectedInvoice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-xl border border-white/15 bg-[#10131c] p-5 shadow-2xl text-white">
+            <button
+              onClick={() => setIsRecordingPayment(false)}
+              className="absolute right-4 top-4 text-zinc-400 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <h3 className="text-base font-bold text-white mb-1">Record Payment</h3>
+            <p className="text-xs text-zinc-400 mb-4">
+              Invoice <strong className="text-white font-mono">{selectedInvoice.invoiceNo}</strong> • {selectedInvoice.memberName}
+            </p>
+
+            <form onSubmit={handleConfirmPayment} className="space-y-4 text-xs">
+              {/* Outstanding balance reference */}
+              <div className="flex justify-between p-2.5 rounded bg-[#171b26] border border-white/5">
+                <span className="text-zinc-400">Remaining Balance:</span>
+                <span className="font-mono font-bold text-amber-300">
+                  {formatInr(selectedInvoice.balanceDue)}
+                </span>
+              </div>
+
+              {/* Amount to pay */}
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="text-zinc-300 font-medium">Payment Amount (INR)</label>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentAmount(selectedInvoice.balanceDue)}
+                    className="text-[10px] text-[#ccff00] hover:underline"
+                  >
+                    Pay Full Balance
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  min="1"
+                  max={selectedInvoice.balanceDue}
+                  value={paymentAmount || ''}
+                  onChange={(e) => setPaymentAmount(Number(e.target.value))}
+                  placeholder="Enter payment amount"
+                  className="w-full h-9 px-3 rounded-lg border border-white/15 bg-black text-white font-mono text-xs outline-none focus:border-[#ccff00]"
+                  required
+                />
+              </div>
+
+              {/* Payment Mode */}
+              <div>
+                <label className="text-zinc-300 font-medium block mb-1">Payment Mode</label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {(['upi', 'card', 'cash', 'netbanking'] as const).map((mode) => (
+                    <button
+                      type="button"
+                      key={mode}
+                      onClick={() => setPaymentMode(mode)}
+                      className={`py-1.5 rounded text-[11px] font-semibold uppercase transition-all ${
+                        paymentMode === mode
+                          ? 'bg-[#ccff00] text-black'
+                          : 'bg-[#171b26] text-zinc-400 border border-white/5 hover:text-white'
+                      }`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reference ID */}
+              <div>
+                <label className="text-zinc-300 font-medium block mb-1">Transaction Reference</label>
+                <input
+                  type="text"
+                  value={paymentRef}
+                  onChange={(e) => setPaymentRef(e.target.value)}
+                  placeholder="e.g. UPI-984729 or Cash Receipt"
+                  className="w-full h-8 px-3 rounded-lg border border-white/10 bg-black text-white font-mono text-xs outline-none focus:border-[#ccff00]"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsRecordingPayment(false)}
+                  className="flex-1 py-2 rounded-lg border border-white/10 text-zinc-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingPayment}
+                  className="flex-1 py-2 rounded-lg bg-[#ccff00] text-black font-bold hover:bg-[#b8e600] disabled:opacity-50"
+                >
+                  {isSubmittingPayment ? 'Saving...' : 'Confirm Payment'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          5. CREATE INVOICE MODAL DIALOG
+      ───────────────────────────────────────────────────────────── */}
+      {isCreateInvoiceOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-xl border border-white/15 bg-[#10131c] p-5 shadow-2xl text-white">
+            <button
+              onClick={() => setIsCreateInvoiceOpen(false)}
+              className="absolute right-4 top-4 text-zinc-400 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <h3 className="text-base font-bold text-white mb-1">Create Member Invoice</h3>
+            <p className="text-xs text-zinc-400 mb-4">
+              Generate an itemized invoice for facility dues or services.
+            </p>
+
+            <form onSubmit={handleCreateInvoiceSubmit} className="space-y-3.5 text-xs">
+              {/* Member Selector */}
+              <div>
+                <label className="text-zinc-300 font-medium block mb-1">Select Member</label>
+                <select
+                  value={newInvoiceMemberId}
+                  onChange={(e) => setNewInvoiceMemberId(e.target.value)}
+                  className="w-full h-9 px-3 rounded-lg border border-white/15 bg-black text-white text-xs outline-none focus:border-[#ccff00]"
+                >
+                  {members.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.fullName} (+91 {m.phone}) - {m.planName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Service Description */}
+              <div>
+                <label className="text-zinc-300 font-medium block mb-1">Item Title / Service</label>
+                <input
+                  type="text"
+                  value={newInvoiceItemTitle}
+                  onChange={(e) => setNewInvoiceItemTitle(e.target.value)}
+                  placeholder="e.g. Quarterly Strength Pass or 1-on-1 PT"
+                  className="w-full h-8 px-3 rounded-lg border border-white/10 bg-black text-white text-xs outline-none focus:border-[#ccff00]"
+                  required
+                />
+              </div>
+
+              {/* Amount and Due Date Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-zinc-300 font-medium block mb-1">Total Fee (₹)</label>
+                  <input
+                    type="number"
+                    min="100"
+                    value={newInvoiceAmount || ''}
+                    onChange={(e) => setNewInvoiceAmount(Number(e.target.value))}
+                    className="w-full h-8 px-3 rounded-lg border border-white/10 bg-black text-white font-mono text-xs outline-none focus:border-[#ccff00]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-zinc-300 font-medium block mb-1">Due Date</label>
+                  <input
+                    type="date"
+                    value={newInvoiceDueDate}
+                    onChange={(e) => setNewInvoiceDueDate(e.target.value)}
+                    className="w-full h-8 px-3 rounded-lg border border-white/10 bg-black text-white text-xs outline-none focus:border-[#ccff00]"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateInvoiceOpen(false)}
+                  className="flex-1 py-2 rounded-lg border border-white/10 text-zinc-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2 rounded-lg bg-[#ccff00] text-black font-bold hover:bg-[#b8e600]"
+                >
+                  Generate Invoice
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
