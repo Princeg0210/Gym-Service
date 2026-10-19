@@ -29,6 +29,7 @@ import Pricing02, { PricingPlan } from '@/components/Pricing02';
 import ScrollProgress from '@/components/ScrollProgress';
 import EquipmentTicker from '@/components/EquipmentTicker';
 import BackToTop from '@/components/BackToTop';
+import ParticleDrift from '@/components/ParticleDrift';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -241,6 +242,9 @@ export function ClubShowcase({
 
   return (
     <div className="relative text-zinc-100 selection:bg-[#ccff00] selection:text-black">
+      {/* OriginKit Interactive Particle Drift (Scroll velocity reactive + constellation links) */}
+      <ParticleDrift color={primaryColor} />
+
       {/* Top Scroll Reading Progress Indicator (Linear / Apple style) */}
       <ScrollProgress color={primaryColor} />
 
