@@ -224,6 +224,34 @@ export function useGymData() {
     }
   }, []);
 
+  const handleDeleteMember = useCallback(async (memberId: string) => {
+    setMembers((prev) => {
+      const updated = prev.filter((m) => m.id !== memberId);
+      AppStorage.saveMembers(updated);
+      return updated;
+    });
+
+    setAttendanceLogs((prev) => {
+      const updated = prev.filter((a) => a.memberId !== memberId);
+      AppStorage.saveAttendance(updated);
+      return updated;
+    });
+
+    setPayments((prev) => {
+      const updated = prev.filter((p) => p.memberId !== memberId);
+      AppStorage.savePayments(updated);
+      return updated;
+    });
+
+    try {
+      await fetch(`/api/members/${memberId}`, {
+        method: 'DELETE'
+      });
+    } catch (e) {
+      console.error('Failed to delete member from backend:', e);
+    }
+  }, []);
+
   return {
     isLoaded,
     members,
@@ -238,6 +266,7 @@ export function useGymData() {
     handleCheckInMember,
     handlePaymentSuccess,
     handleMemberCreated,
+    handleDeleteMember,
     handleToggleEquipmentStatus,
     handleUpdateRoutines,
     handleResetData

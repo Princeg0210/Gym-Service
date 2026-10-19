@@ -26,6 +26,7 @@ function AdminPageContent() {
     handleCheckInMember,
     handlePaymentSuccess,
     handleMemberCreated,
+    handleDeleteMember,
     handleToggleEquipmentStatus,
     handleUpdateRoutines
   } = useGymData();
@@ -63,6 +64,7 @@ function AdminPageContent() {
         onCheckInMember={handleCheckInMember}
         onPaymentSuccess={handlePaymentSuccess}
         onMemberCreated={handleMemberCreated}
+        onDeleteMember={handleDeleteMember}
         onToggleEquipmentStatus={handleToggleEquipmentStatus}
         onUpdateRoutines={handleUpdateRoutines}
         checkedInBannerMember={checkedInBannerMember}

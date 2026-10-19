@@ -43,7 +43,7 @@ export function AddMemberModal({ onClose, onMemberCreated }: AddMemberModalProps
       const endDate = new Date();
       endDate.setMonth(startDate.getMonth() + currentPlan.months);
 
-      const memberId = `mem-${phone.trim().slice(-4)}`;
+      const memberId = `mem-${phone.trim().slice(-4)}-${Date.now().toString().slice(-4)}`;
 
       const newMember: Member = {
         id: memberId,

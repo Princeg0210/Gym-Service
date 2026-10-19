@@ -122,13 +122,16 @@ export const memberRepository = {
 
       const { data, error } = await supabase
         .from('members')
-        .insert([row])
+        .upsert([row], { onConflict: 'id' })
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        console.error('Database upsert error (member):', error.message, error.details, error.hint);
+        throw error;
+      }
       return rowToMember(data as unknown as MemberRow);
     } catch (error) {
-      console.error('Database insert error (member):', error);
+      console.error('Database insert/upsert error (member):', error);
       return member;
     }
   },

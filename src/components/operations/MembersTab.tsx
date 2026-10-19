@@ -2,20 +2,22 @@
 
 import React, { useState } from 'react';
 import { Member, MemberStatus } from '@/types';
-import { Search, UserPlus, IndianRupee, Eye } from 'lucide-react';
+import { Search, UserPlus, IndianRupee, Eye, Trash2 } from 'lucide-react';
 
 interface MembersTabProps {
   members: Member[];
   onOpenAddMember: () => void;
   onOpenPaymentModal: (member: Member) => void;
   onSelectMember: (member: Member) => void;
+  onDeleteMember?: (memberId: string) => void;
 }
 
 export function MembersTab({
   members,
   onOpenAddMember,
   onOpenPaymentModal,
-  onSelectMember
+  onSelectMember,
+  onDeleteMember
 }: MembersTabProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | MemberStatus>('all');
@@ -172,6 +174,20 @@ export function MembersTab({
                           <IndianRupee className="h-3.5 w-3.5" />
                           <span>Pay</span>
                         </button>
+                        {onDeleteMember && (
+                          <button
+                            onClick={() => {
+                              if (confirm(`Remove ${member.fullName} from gym roster and delete from database?`)) {
+                                onDeleteMember(member.id);
+                              }
+                            }}
+                            title="Delete Member"
+                            className="inline-flex items-center gap-1 rounded-lg border border-red-500/30 bg-red-500/10 px-2 py-1 text-xs font-bold text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Delete</span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -84,6 +84,7 @@ interface OperationsDashboardProps {
   onCheckInMember: (member: Member, method: 'phone_search' | 'qr_scan') => void;
   onPaymentSuccess: (payment: PaymentRecord, updatedMember: Member) => void;
   onMemberCreated: (member: Member, initialPayment?: PaymentRecord) => void;
+  onDeleteMember?: (memberId: string) => void;
   onToggleEquipmentStatus: (id: string, status: EquipmentItem['status']) => void;
   checkedInBannerMember: Member | null;
   onDismissBanner: () => void;
@@ -104,6 +105,7 @@ export function OperationsDashboard({
   onCheckInMember,
   onPaymentSuccess,
   onMemberCreated,
+  onDeleteMember,
   onToggleEquipmentStatus,
   checkedInBannerMember,
   onDismissBanner,
@@ -1019,6 +1021,7 @@ export function OperationsDashboard({
                 onOpenAddMember={() => setIsAddMemberOpen(true)}
                 onOpenPaymentModal={(m: Member) => setPaymentModalMember(m)}
                 onSelectMember={(m: Member) => setSelectedMemberDossier(m)}
+                onDeleteMember={onDeleteMember}
               />
             </div>
           )}
