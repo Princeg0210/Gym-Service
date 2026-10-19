@@ -43,7 +43,6 @@ import { DuesTab } from './operations/DuesTab';
 import { MembersTab } from './operations/MembersTab';
 import { EquipmentTab } from './operations/EquipmentTab';
 import { LeadsTab } from './operations/LeadsTab';
-import { WorkoutsTab } from './operations/WorkoutsTab';
 import { DietTab } from './operations/DietTab';
 import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
 import { TrainersTab } from './operations/TrainersTab';
@@ -818,20 +817,9 @@ export function OperationsDashboard({
               </span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('workouts')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'workouts'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
-            >
-              <Dumbbell className="h-4 w-4 shrink-0" />
-              <span>Workouts & Plans</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('diet')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'diet'
+              <button
+                onClick={() => setActiveTab('diet')}
+                className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'diet'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
                 }`}
@@ -1111,15 +1099,6 @@ export function OperationsDashboard({
                 onConvertLead={() => setIsAddMemberOpen(true)}
               />
             </div>
-          )}
-
-          {activeTab === 'workouts' && (
-            <WorkoutsTab
-              members={members}
-              routines={routines}
-              exercises={exercises}
-              onUpdateRoutines={onUpdateRoutines}
-            />
           )}
 
           {activeTab === 'diet' && (

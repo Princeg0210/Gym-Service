@@ -260,16 +260,6 @@ export function OverviewTab({
       .sort((a, b) => a.daysLeft - b.daysLeft);
   }, [members]);
 
-  // Real equipment needing attention
-  const equipmentAlerts = useMemo(() => {
-    return equipmentList.filter(
-      (e) => e.status === 'needs_service' || e.status === 'out_of_order'
-    );
-  }, [equipmentList]);
-
-  // Real floor telemetry stats
-  const operationalEquipmentCount = equipmentList.filter((e) => e.status === 'operational').length;
-
   // Real hourly distribution computed from attendanceLogs
   const hourlyCapacity = useMemo(() => {
     let morning = 0; // 6-10
@@ -395,10 +385,7 @@ export function OverviewTab({
         {/* Metric 1: Today's Check-ins */}
         <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Today&apos;s Check-ins</span>
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00]/10 text-[#ccff00]">
-              <UserCheck className="h-3.5 w-3.5" />
-            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-zinc-300">Today&apos;s Check-ins</span>
           </div>
           <div className="mt-2">
             <p className="text-2xl font-black font-mono text-white">
@@ -414,10 +401,7 @@ export function OverviewTab({
         {/* Metric 2: Pending Dues */}
         <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Pending Dues</span>
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/10 text-rose-400">
-              <IndianRupee className="h-3.5 w-3.5" />
-            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-zinc-300">Pending Dues</span>
           </div>
           <div className="mt-2">
             <p className="text-2xl font-black font-mono text-rose-400">
@@ -432,10 +416,7 @@ export function OverviewTab({
         {/* Metric 3: Memberships Expiring Soon */}
         <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Expiring Soon</span>
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
-              <AlertTriangle className="h-3.5 w-3.5" />
-            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-zinc-300">Expiring Soon</span>
           </div>
           <div className="mt-2">
             <p className="text-2xl font-black font-mono text-amber-300">
@@ -450,10 +431,7 @@ export function OverviewTab({
         {/* Metric 4: Monthly Collections */}
         <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Monthly Collections</span>
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
-              <TrendingUp className="h-3.5 w-3.5" />
-            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-zinc-300">Monthly Collections</span>
           </div>
           <div className="mt-2">
             <p className="text-2xl font-black font-mono text-emerald-400">
@@ -481,7 +459,7 @@ export function OverviewTab({
             <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-[#ccff00]" />
-                <h2 className="text-xs sm:text-sm font-bold text-white tracking-wide uppercase">
+                <h2 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase">
                   Reception Check-In
                 </h2>
               </div>
@@ -580,7 +558,7 @@ export function OverviewTab({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <h2 className="text-xs sm:text-sm font-bold text-white tracking-wide uppercase">
+                <h2 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase">
                   Recent Attendance
                 </h2>
                 <span className="rounded-full bg-[#1b2333] px-2 py-0.5 text-[11px] font-mono text-zinc-300">
@@ -719,7 +697,6 @@ export function OverviewTab({
             SECONDARY COLUMN (lg:col-span-5 / xl:col-span-4):
             - Pending Dues with Collect action
             - Upcoming Memberships Expiries with Renew action
-            - Equipment Maintenance Alerts
         ════════════════════════════════════════════════════════ */}
         <div className="lg:col-span-5 xl:col-span-4 space-y-6">
           {/* CARD 1: Pending Dues */}
@@ -727,7 +704,7 @@ export function OverviewTab({
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-rose-500" />
-                <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wide">
+                <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
                   Pending Dues
                 </h3>
                 <span className="rounded-full bg-rose-500/10 border border-rose-500/30 px-1.5 py-0.2 text-[10px] font-mono font-bold text-rose-300">
@@ -794,7 +771,7 @@ export function OverviewTab({
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-amber-400" />
-                <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wide">
+                <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
                   Upcoming Expiries
                 </h3>
                 <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.2 text-[10px] font-mono font-bold text-amber-300">
@@ -848,135 +825,32 @@ export function OverviewTab({
               )}
             </div>
           </div>
-
-          {/* CARD 3: Equipment Maintenance Alerts */}
-          <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Wrench className="h-4 w-4 text-[#ccff00]" />
-                <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wide">
-                  Equipment Status
-                </h3>
-              </div>
-              <button
-                onClick={() => setActiveTab('equipment')}
-                className="text-xs font-bold text-[#ccff00] hover:underline"
-              >
-                Manage →
-              </button>
-            </div>
-
-            {/* Quick Fleet Health Pill */}
-            <div className="flex items-center justify-between p-2.5 rounded-lg border border-[#1b2333] bg-[#101522] mb-3">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-xs text-zinc-300 font-medium">Station Fleet Health</span>
-              </div>
-              <span className="text-xs font-mono font-bold text-white">
-                {operationalEquipmentCount}/{equipmentList.length || 5} Operational
-              </span>
-            </div>
-
-            {/* Alert Items or All Clear */}
-            <div className="space-y-2">
-              {equipmentAlerts.length === 0 ? (
-                <div className="flex items-center gap-2 p-3 rounded-lg border border-emerald-500/20 bg-emerald-950/20 text-xs text-emerald-300">
-                  <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
-                  <span>All workout stations and machines are fully operational.</span>
-                </div>
-              ) : (
-                equipmentAlerts.map((e) => (
-                  <div
-                    key={e.id}
-                    onClick={() => setActiveTab('equipment')}
-                    className="flex items-center justify-between p-2.5 rounded-lg border border-red-500/30 bg-red-950/20 hover:bg-red-950/30 transition-colors cursor-pointer"
-                  >
-                    <div>
-                      <p className="text-xs font-bold text-white">{e.name}</p>
-                      <p className="text-[11px] text-zinc-400">{e.notes || 'Service overdue'}</p>
-                    </div>
-                    <span className="rounded border border-red-500/40 bg-red-950/50 px-2 py-0.5 text-[10px] font-bold text-red-300">
-                      {e.status === 'out_of_order' ? 'Out of Service' : 'Needs Service'}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. ANALYTICS (Compact Attendance & Peak-Hours Heatmap)
+          4. ANALYTICS (Peak-Hours Heatmap)
       ───────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        {/* Analytics 1: Weekly Attendance Trend */}
-        <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-[#ccff00]" />
-              <h3 className="text-xs font-bold text-white tracking-wide uppercase">
-                Attendance Volume
-              </h3>
-            </div>
-            <span className="text-[11px] font-mono text-zinc-400">Real-time Check-ins</span>
-          </div>
-
-          {/* Bar Chart Visualization */}
-          <div className="pt-4 pb-2">
-            <div className="h-28 flex items-end justify-between gap-2 border-b border-[#1b2333] px-2 pb-1">
-              {[
-                { day: 'Mon', count: 48, pct: '68%' },
-                { day: 'Tue', count: 62, pct: '88%', peak: true },
-                { day: 'Wed', count: 54, pct: '75%' },
-                { day: 'Thu', count: 58, pct: '80%' },
-                { day: 'Fri', count: 45, pct: '62%' },
-                { day: 'Sat', count: 52, pct: '72%' },
-                { day: 'Sun', count: 32, pct: '45%' }
-              ].map((item) => (
-                <div key={item.day} className="flex-1 flex flex-col items-center h-full justify-end group">
-                  <div
-                    style={{ height: item.pct }}
-                    className={`w-full max-w-[28px] rounded-t-md transition-all group-hover:opacity-90 ${
-                      item.peak ? 'bg-[#ccff00]' : 'bg-[#1e2638] group-hover:bg-[#28334b]'
-                    }`}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div className="flex justify-between px-2 pt-2 text-[11px] font-mono text-zinc-400">
-              <span className="flex-1 text-center">Mon</span>
-              <span className="flex-1 text-center font-bold text-[#ccff00]">Tue</span>
-              <span className="flex-1 text-center">Wed</span>
-              <span className="flex-1 text-center">Thu</span>
-              <span className="flex-1 text-center">Fri</span>
-              <span className="flex-1 text-center">Sat</span>
-              <span className="flex-1 text-center">Sun</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Analytics 2: Peak Hours Distribution */}
+      <div className="pt-2">
         <div className="rounded-xl border border-[#1b2333] bg-[#0c1017] p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[#ccff00]" />
-              <h3 className="text-xs font-bold text-white tracking-wide uppercase">
+              <h3 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase">
                 Peak Hours Heatmap
               </h3>
             </div>
             <div className="flex items-center gap-2 text-[11px]">
-              <span className="text-zinc-400">Floor Capacity</span>
+              <span className="text-zinc-400">Floor Capacity Analysis</span>
             </div>
           </div>
 
           {/* Time Blocks Grid */}
-          <div className="space-y-3.5 pt-1">
-            <div>
-              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+            <div className="p-3 rounded-lg border border-[#1b2333] bg-[#101522]">
+              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1.5">
                 <span>Morning Peak (06:00 - 09:30 AM)</span>
-                <span className="font-mono text-[#ccff00] font-bold">{hourlyCapacity.morningPct}% Capacity</span>
+                <span className="font-mono text-[#ccff00] font-bold">{hourlyCapacity.morningPct}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-[#161c28] overflow-hidden">
                 <div
@@ -986,10 +860,10 @@ export function OverviewTab({
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1">
+            <div className="p-3 rounded-lg border border-[#1b2333] bg-[#101522]">
+              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1.5">
                 <span>Afternoon Steady (12:00 - 04:00 PM)</span>
-                <span className="font-mono text-zinc-400 font-bold">{hourlyCapacity.afternoonPct}% Capacity</span>
+                <span className="font-mono text-zinc-400 font-bold">{hourlyCapacity.afternoonPct}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-[#161c28] overflow-hidden">
                 <div
@@ -999,10 +873,10 @@ export function OverviewTab({
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1">
+            <div className="p-3 rounded-lg border border-[#1b2333] bg-[#101522]">
+              <div className="flex justify-between text-xs font-semibold text-zinc-300 mb-1.5">
                 <span>Evening Rush (05:30 - 09:30 PM)</span>
-                <span className="font-mono text-[#ccff00] font-bold">{hourlyCapacity.eveningPct}% Capacity</span>
+                <span className="font-mono text-[#ccff00] font-bold">{hourlyCapacity.eveningPct}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-[#161c28] overflow-hidden">
                 <div
@@ -1017,3 +891,4 @@ export function OverviewTab({
     </div>
   );
 }
+
