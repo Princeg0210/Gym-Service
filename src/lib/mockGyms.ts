@@ -24,6 +24,60 @@ export const INITIAL_GYM_PROFILES: GymProfile[] = [
     pincode: '560102',
     operatingHours: 'Mon - Sat: 5:30 AM - 10:30 PM | Sun: 6:00 AM - 1:00 PM',
     isPublished: true,
+    facilities: [
+      {
+        id: 'fac-1',
+        category: 'free-weights',
+        title: 'Free Weights & Power Racks',
+        desc: 'Competition-grade lifting stations featuring calibrated steel plates, Olympic power barbells, heavy-duty power racks with safety spotter arms, and rubber hex dumbbells up to 50kg.',
+        specs: [
+          'Eleiko & Texas Power Bars',
+          'Rubber Hex Dumbbells (2.5kg - 50kg)',
+          'Olympic Lifting Platforms',
+          'Competition Calibrated Steel Plates'
+        ],
+        imageUrl: '/images/gym_equipment_modern.jpg'
+      },
+      {
+        id: 'fac-2',
+        category: 'cables-machines',
+        title: 'Cable & Strength Machines',
+        desc: 'Dual adjustable pulley cable towers, plate-loaded leg presses, lat pulldowns, and chest-supported row stations engineered for controlled biomechanical isolation.',
+        specs: [
+          'Dual 100kg Precision Weight Stacks',
+          'Plate-Loaded 45° Leg Press & Hack Squat',
+          'Multi-Angle Cable Crossover Towers',
+          'ISO-Lateral Chest & Row Stations'
+        ],
+        imageUrl: '/images/gym_equipment_modern.jpg'
+      },
+      {
+        id: 'fac-3',
+        category: 'cardio',
+        title: 'Cardio & Conditioning',
+        desc: 'Low-impact conditioning stations including wind-resistance air assault bikes, Concept2 rowers, and curved self-powered treadmills for cardiovascular endurance and metabolic pacing.',
+        specs: [
+          'Concept2 RowErgs & SkiErgs',
+          'Air Assault Resistance Bikes',
+          'Curved Manual Self-Powered Treadmills',
+          'Interval Conditioning Timers'
+        ],
+        imageUrl: '/images/gym_hero_athlete.jpg'
+      },
+      {
+        id: 'fac-4',
+        category: 'mobility',
+        title: 'Mobility & Recovery',
+        desc: 'Dedicated recovery area with high-density foam rollers, resistance mobility bands, and high-traction athletic turf for warm-ups, cool-downs, and myofascial release.',
+        specs: [
+          'High-Density EVA Foam Rollers',
+          'Progressive Resistance Mobility Bands',
+          'Shock-Absorbent Sprint & Sled Turf',
+          'Targeted Percussion Recovery Tools'
+        ],
+        imageUrl: '/images/gym_trainers_group.jpg'
+      }
+    ],
     features: [
       {
         title: 'Certified Trainers',

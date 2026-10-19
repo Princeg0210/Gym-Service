@@ -240,6 +240,69 @@ export function ClubShowcase({
         },
       ];
 
+  // Resolve facilities from multi-tenant gym profile with clean default fallback
+  const facilities = gymProfile?.facilities && gymProfile.facilities.length > 0
+    ? gymProfile.facilities
+    : [
+        {
+          id: 'fac-1',
+          category: 'free-weights' as const,
+          title: 'Free Weights & Power Racks',
+          desc: 'Competition-grade lifting stations featuring calibrated steel plates, Olympic power barbells, heavy-duty power racks with safety spotter arms, and rubber hex dumbbells up to 50kg.',
+          specs: [
+            'Eleiko & Texas Power Bars',
+            'Rubber Hex Dumbbells (2.5kg - 50kg)',
+            'Olympic Lifting Platforms',
+            'Competition Calibrated Steel Plates'
+          ],
+          imageUrl: '/images/gym_equipment_modern.jpg'
+        },
+        {
+          id: 'fac-2',
+          category: 'cables-machines' as const,
+          title: 'Cable & Strength Machines',
+          desc: 'Dual adjustable pulley cable towers, plate-loaded leg presses, lat pulldowns, and chest-supported row stations engineered for controlled biomechanical isolation.',
+          specs: [
+            'Dual 100kg Precision Weight Stacks',
+            'Plate-Loaded 45° Leg Press & Hack Squat',
+            'Multi-Angle Cable Crossover Towers',
+            'ISO-Lateral Chest & Row Stations'
+          ],
+          imageUrl: '/images/gym_equipment_modern.jpg'
+        },
+        {
+          id: 'fac-3',
+          category: 'cardio' as const,
+          title: 'Cardio & Conditioning',
+          desc: 'Low-impact conditioning stations including wind-resistance air assault bikes, Concept2 rowers, and curved self-powered treadmills for cardiovascular endurance and metabolic pacing.',
+          specs: [
+            'Concept2 RowErgs & SkiErgs',
+            'Air Assault Resistance Bikes',
+            'Curved Manual Self-Powered Treadmills',
+            'Interval Conditioning Timers'
+          ],
+          imageUrl: '/images/gym_hero_athlete.jpg'
+        },
+        {
+          id: 'fac-4',
+          category: 'mobility' as const,
+          title: 'Mobility & Recovery',
+          desc: 'Dedicated recovery area with high-density foam rollers, resistance mobility bands, and high-traction athletic turf for warm-ups, cool-downs, and myofascial release.',
+          specs: [
+            'High-Density EVA Foam Rollers',
+            'Progressive Resistance Mobility Bands',
+            'Shock-Absorbent Sprint & Sled Turf',
+            'Targeted Percussion Recovery Tools'
+          ],
+          imageUrl: '/images/gym_trainers_group.jpg'
+        }
+      ];
+
+  const freeWeights = facilities.find(f => f.category === 'free-weights') || facilities[0];
+  const cables = facilities.find(f => f.category === 'cables-machines') || facilities[1];
+  const cardio = facilities.find(f => f.category === 'cardio') || facilities[2];
+  const mobility = facilities.find(f => f.category === 'mobility') || facilities[3];
+
   return (
     <div className="relative text-zinc-100 selection:bg-[#ccff00] selection:text-black">
       {/* OriginKit Interactive Particle Drift (Scroll velocity reactive + constellation links) */}
@@ -320,7 +383,7 @@ export function ClubShowcase({
 
 
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 2: FACILITY & EQUIPMENT SHOWCASE (4 Core Arenas)
+          SECTION 2: FACILITY & EQUIPMENT SHOWCASE
           ───────────────────────────────────────────────────────────── */}
       <section id="facilities" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
         <motion.div
@@ -331,108 +394,241 @@ export function ClubShowcase({
           className="mx-auto max-w-7xl px-4 sm:px-6"
         >
           
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
+          {/* Section Header */}
+          <div className="max-w-2xl mx-auto text-center mb-12 sm:mb-16">
+            <span
+              className="text-xs font-bold uppercase tracking-wider"
+              style={{ color: primaryColor }}
+            >
               Facility & Equipment
             </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-              Commercial Floor Standards
+            <h2 className="mt-2 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
+              EXPLORE OUR FACILITIES
             </h2>
             <p className="mt-3 text-xs sm:text-sm text-zinc-400">
-              No waiting in lines. Authentic commercial equipment engineered for lifters who prioritize performance and safety.
+              Verified commercial-grade equipment and specialized training zones engineered for strength, performance, and recovery.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Asymmetrical Image-Led Showcase */}
+          <div className="space-y-6 sm:space-y-8">
             
-            {/* Arena 1: Free Weights */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-7 transition-colors hover:border-white/20">
-              <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-[#ccff00] flex items-center justify-center">
-                  <Dumbbell className="h-5 w-5" />
+            {/* Row 1: Asymmetrical Split (Free Weights 7 cols + Cable & Strength 5 cols) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              
+              {/* Arena 1: Free Weights & Power Racks (7 Cols) */}
+              <div className="lg:col-span-7 flex flex-col rounded-2xl border border-white/10 bg-[#0e121a] overflow-hidden transition-colors hover:border-white/20">
+                <div className="relative aspect-[16/9] sm:aspect-[21/10] w-full bg-[#121622] overflow-hidden">
+                  <Image
+                    src={freeWeights.imageUrl || '/images/gym_equipment_modern.jpg'}
+                    alt={freeWeights.title}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                  />
+                  <div className="absolute top-3 left-3 rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-white border border-white/10">
+                    Free Weights Arena
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-white">
-                  Heavy Free Weights & Power Cages
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Calibrated steel plates, Texas & Eleiko power bars, Olympic deadlift platforms, and rubber hex dumbbells up to 50kg. Chalk-friendly lifting stations.
-                </p>
+
+                <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      {freeWeights.title}
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                      {freeWeights.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block mb-2">
+                      Verified Floor Specifications
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-zinc-300">
+                      {freeWeights.specs.map((spec, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="flex items-center gap-2 rounded-lg border border-white/5 bg-[#141924] px-3 py-2"
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: primaryColor }}
+                          />
+                          <span className="truncate">{spec}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
-                <span>Dumbbells 2.5kg - 50kg</span>
-                <span>•</span>
-                <span>Olympic Racks</span>
-                <span>•</span>
-                <span>Deadlift Platforms</span>
+
+              {/* Arena 2: Cable & Strength Machines (5 Cols) */}
+              <div className="lg:col-span-5 flex flex-col rounded-2xl border border-white/10 bg-[#0e121a] overflow-hidden transition-colors hover:border-white/20">
+                <div className="relative aspect-[16/9] sm:aspect-[16/10] w-full bg-[#121622] overflow-hidden">
+                  <Image
+                    src={cables.imageUrl || '/images/gym_equipment_modern.jpg'}
+                    alt={cables.title}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                  />
+                  <div className="absolute top-3 left-3 rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-white border border-white/10">
+                    Resistance Arena
+                  </div>
+                </div>
+
+                <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      {cables.title}
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                      {cables.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block mb-2">
+                      Verified Specifications
+                    </span>
+                    <div className="flex flex-col gap-2 text-xs font-mono text-zinc-300">
+                      {cables.specs.map((spec, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="flex items-center gap-2 rounded-lg border border-white/5 bg-[#141924] px-3 py-2"
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: primaryColor }}
+                          />
+                          <span className="truncate">{spec}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
 
-            {/* Arena 2: Cable Towers & Machines */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-7 transition-colors hover:border-white/20">
-              <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-orange-400 flex items-center justify-center">
-                  <Zap className="h-5 w-5" />
+            {/* Row 2: Asymmetrical Inversion (Cardio 5 cols + Mobility 7 cols) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              
+              {/* Arena 3: Cardio & Conditioning (5 Cols) */}
+              <div className="lg:col-span-5 flex flex-col rounded-2xl border border-white/10 bg-[#0e121a] overflow-hidden transition-colors hover:border-white/20">
+                <div className="relative aspect-[16/9] sm:aspect-[16/10] w-full bg-[#121622] overflow-hidden">
+                  <Image
+                    src={cardio.imageUrl || '/images/gym_hero_athlete.jpg'}
+                    alt={cardio.title}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                  />
+                  <div className="absolute top-3 left-3 rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-white border border-white/10">
+                    Conditioning Deck
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-white">
-                  Dual Cable Towers & Plate-Loaded Rigs
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Smooth dual 100kg weight stacks, multi-grip pull-up crossbars, resistance bands, lat pulldowns, and plate-loaded leg presses for focused muscle isolation.
-                </p>
+
+                <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      {cardio.title}
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                      {cardio.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block mb-2">
+                      Verified Conditioning Gear
+                    </span>
+                    <div className="flex flex-col gap-2 text-xs font-mono text-zinc-300">
+                      {cardio.specs.map((spec, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="flex items-center gap-2 rounded-lg border border-white/5 bg-[#141924] px-3 py-2"
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: primaryColor }}
+                          />
+                          <span className="truncate">{spec}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
-                <span>100kg Dual Stacks</span>
-                <span>•</span>
-                <span>Plate-Loaded Leg Press</span>
-                <span>•</span>
-                <span>Dual Cables</span>
+
+              {/* Arena 4: Mobility & Recovery (7 Cols) */}
+              <div className="lg:col-span-7 flex flex-col rounded-2xl border border-white/10 bg-[#0e121a] overflow-hidden transition-colors hover:border-white/20">
+                <div className="relative aspect-[16/9] sm:aspect-[21/10] w-full bg-[#121622] overflow-hidden">
+                  <Image
+                    src={mobility.imageUrl || '/images/gym_trainers_group.jpg'}
+                    alt={mobility.title}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                  />
+                  <div className="absolute top-3 left-3 rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-white border border-white/10">
+                    Mobility & Recovery Turf
+                  </div>
+                </div>
+
+                <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      {mobility.title}
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                      {mobility.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block mb-2">
+                      Verified Recovery Equipment
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-zinc-300">
+                      {mobility.specs.map((spec, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="flex items-center gap-2 rounded-lg border border-white/5 bg-[#141924] px-3 py-2"
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: primaryColor }}
+                          />
+                          <span className="truncate">{spec}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
 
-            {/* Arena 3: Cardio Arena */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-7 transition-colors hover:border-white/20">
-              <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-cyan-400 flex items-center justify-center">
-                  <Activity className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-black text-white">
-                  Cardio & Metabolic Conditioning
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Concept2 rowers, ski ergs, air assault bikes, and curved motorless treadmills engineered for genuine cardiovascular endurance and fat reduction.
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
-                <span>Concept2 Rowers</span>
-                <span>•</span>
-                <span>Air Assault Bikes</span>
-                <span>•</span>
-                <span>Curved Treadmills</span>
-              </div>
-            </div>
+          </div>
 
-            {/* Arena 4: Recovery & Mobility */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-7 transition-colors hover:border-white/20">
-              <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center">
-                  <Flame className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-black text-white">
-                  Mobility & Recovery Turf
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Percussion therapy massage guns, high-density foam rollers, resistance mobility bands, and dedicated warm-up/cool-down turf to accelerate workout recovery.
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
-                <span>Massage Guns</span>
-                <span>•</span>
-                <span>Turf Zone</span>
-                <span>•</span>
-                <span>Foam Rollers</span>
-              </div>
+          {/* Bottom Technical Note & Free Trial Action Bar */}
+          <div className="mt-10 rounded-xl border border-white/10 bg-[#0c1017] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs text-zinc-400 text-center sm:text-left">
+              <span className="font-bold text-white">Daily Equipment Maintenance:</span> All barbell sleeves, cable pulleys, and benches pass morning torque and safety inspections.
             </div>
-
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setIsTrialModalOpen(true);
+              }}
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
+              style={{ backgroundColor: primaryColor }}
+            >
+              <span>Book a Free Trial</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </button>
           </div>
 
         </motion.div>

@@ -203,6 +203,15 @@ export interface GymFeature {
   icon?: string;
 }
 
+export interface GymFacility {
+  id?: string;
+  category: 'free-weights' | 'cables-machines' | 'cardio' | 'mobility';
+  title: string;
+  desc: string;
+  specs: string[];
+  imageUrl?: string;
+}
+
 export interface GymTrainer {
   name: string;
   role: string;
@@ -249,6 +258,7 @@ export interface GymProfile {
   pincode: string;
   operatingHours: string;
   features: GymFeature[];
+  facilities?: GymFacility[];
   programs: GymProgram[];
   membershipPlans: GymCmsPlan[];
   trainers: GymTrainer[];

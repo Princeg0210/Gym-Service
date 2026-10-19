@@ -17,7 +17,8 @@ import {
   X,
   Sparkles,
   HelpCircle,
-  RefreshCw
+  RefreshCw,
+  Dumbbell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +42,7 @@ export function GymCmsManager() {
   const [currentGym, setCurrentGym] = useState<GymProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [activeSection, setActiveSection] = useState<'branding' | 'hero' | 'contact' | 'plans' | 'features'>('branding');
+  const [activeSection, setActiveSection] = useState<'branding' | 'hero' | 'contact' | 'plans' | 'facilities' | 'features'>('branding');
   const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
   const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -401,6 +402,18 @@ export function GymCmsManager() {
         >
           <Badge className="h-3.5 w-3.5 p-0 bg-transparent text-current" />
           <span>Membership Plans ({currentGym.membershipPlans?.length || 0})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSection('facilities')}
+          className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
+            activeSection === 'facilities'
+              ? 'border-[#ccff00] text-[#ccff00]'
+              : 'border-transparent text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Dumbbell className="h-4 w-4" />
+          <span>Facilities & Equipment ({currentGym.facilities?.length || 4})</span>
         </button>
 
         <button
@@ -929,6 +942,112 @@ export function GymCmsManager() {
                           }}
                           className="w-full rounded-lg border border-[#263147] bg-[#161d2d] px-2.5 py-1 text-xs text-white outline-none focus:border-[#ccff00]"
                           placeholder="Cardio access, Locker, Diet..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── SECTION: FACILITIES & EQUIPMENT SHOWCASE ── */}
+          {activeSection === 'facilities' && (
+            <div className="space-y-6 rounded-2xl border border-[#1e2433] bg-[#0c1017] p-6 shadow-md">
+              <div className="border-b border-[#1b2333] pb-4">
+                <h3 className="text-base font-black text-white">Facilities & Equipment Showcase</h3>
+                <p className="text-xs text-zinc-400">
+                  Manage the 4 primary training arenas, authentic equipment photography, and verified specifications.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {(currentGym.facilities || []).map((fac, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-xl border border-[#202738] bg-[#101522] p-4 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono">
+                        Zone {idx + 1}: {fac.category}
+                      </span>
+                      <button
+                        onClick={() => {
+                          const updated = (currentGym.facilities || []).filter((_, i) => i !== idx);
+                          handleFieldChange('facilities', updated);
+                        }}
+                        className="text-zinc-500 hover:text-red-400 p-1 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <div>
+                        <label className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                          Arena Title
+                        </label>
+                        <input
+                          type="text"
+                          value={fac.title}
+                          onChange={(e) => {
+                            const updated = [...(currentGym.facilities || [])];
+                            updated[idx].title = e.target.value;
+                            handleFieldChange('facilities', updated);
+                          }}
+                          className="w-full rounded-lg border border-[#263147] bg-[#161d2d] px-2.5 py-1.5 text-xs font-bold text-white outline-none focus:border-[#ccff00]"
+                          placeholder="e.g. Free Weights & Power Racks"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                          Concise Description
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={fac.desc}
+                          onChange={(e) => {
+                            const updated = [...(currentGym.facilities || [])];
+                            updated[idx].desc = e.target.value;
+                            handleFieldChange('facilities', updated);
+                          }}
+                          className="w-full rounded-lg border border-[#263147] bg-[#161d2d] px-2.5 py-1.5 text-xs text-zinc-300 outline-none focus:border-[#ccff00]"
+                          placeholder="Concise, verified description of this arena..."
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                          Verified Specifications (comma-separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={fac.specs ? fac.specs.join(', ') : ''}
+                          onChange={(e) => {
+                            const updated = [...(currentGym.facilities || [])];
+                            updated[idx].specs = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
+                            handleFieldChange('facilities', updated);
+                          }}
+                          className="w-full rounded-lg border border-[#263147] bg-[#161d2d] px-2.5 py-1.5 text-xs text-zinc-300 outline-none focus:border-[#ccff00]"
+                          placeholder="e.g. Eleiko Power Bars, Rubber Hex 2.5kg - 50kg, Calibrated Plates"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                          Equipment Image Asset URL
+                        </label>
+                        <input
+                          type="text"
+                          value={fac.imageUrl || ''}
+                          onChange={(e) => {
+                            const updated = [...(currentGym.facilities || [])];
+                            updated[idx].imageUrl = e.target.value;
+                            handleFieldChange('facilities', updated);
+                          }}
+                          className="w-full rounded-lg border border-[#263147] bg-[#161d2d] px-2.5 py-1.5 text-xs text-zinc-300 outline-none focus:border-[#ccff00]"
+                          placeholder="e.g. /images/gym_equipment_modern.jpg"
                         />
                       </div>
                     </div>
