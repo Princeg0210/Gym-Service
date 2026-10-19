@@ -22,6 +22,18 @@ function useIsMounted() {
   );
 }
 
+export interface AdminAuthContextType {
+  handleLogout: () => void;
+  isAuthenticated: boolean;
+}
+
+export const AdminAuthContext = React.createContext<AdminAuthContextType>({
+  handleLogout: () => {},
+  isAuthenticated: false
+});
+
+export const useAdminAuth = () => React.useContext(AdminAuthContext);
+
 export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
   const isMounted = useIsMounted();
   const [sessionAuth, setSessionAuth] = useState<boolean | null>(null);
@@ -172,19 +184,8 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
   }
 
   return (
-    <div className="relative">
-      {/* Session Lock Quick Action Floating Badge */}
-      <div className="fixed top-3 right-4 z-50 hidden md:block">
-        <button
-          onClick={handleLogout}
-          title="Sign out of Admin Session"
-          className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#07090d]/90 px-3 py-1.5 text-[11px] font-semibold text-zinc-400 backdrop-blur-md transition-all hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 shadow-md"
-        >
-          <Lock className="h-3 w-3" />
-          <span>Lock Console</span>
-        </button>
-      </div>
+    <AdminAuthContext.Provider value={{ handleLogout, isAuthenticated }}>
       {children}
-    </div>
+    </AdminAuthContext.Provider>
   );
 }
