@@ -205,16 +205,6 @@ export function ClubShowcase({
             {/* Left Column: Headlines & High-Converting CTAs */}
             <div className="lg:col-span-7 space-y-6">
               
-              {/* Social Proof Pill */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0e121a]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold shadow-lg">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <div className="flex items-center gap-1 text-amber-400 font-bold">
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                  <span>4.95 / 5.0</span>
-                </div>
-                <span className="text-zinc-500">•</span>
-                <span className="text-zinc-300">850+ Active Athletes in {gymProfile?.city || 'Bengaluru'}</span>
-              </div>
 
               {/* Headline */}
               <div className="space-y-1">
@@ -290,27 +280,6 @@ export function ClubShowcase({
                 {/* Dark Vignette Overlay for OLED Contrast */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-90" />
 
-                {/* Floating Athlete Live Status Pill */}
-                <div className="absolute bottom-5 left-5 right-5 rounded-2xl apple-glass-card p-4 shadow-xl">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-9 w-9 rounded-xl bg-[#ccff00] flex items-center justify-center text-black font-black text-xs">
-                        <Dumbbell className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-black text-white leading-tight">
-                          {gymName}
-                        </h4>
-                        <p className="text-[11px] text-zinc-400">
-                          {gymProfile?.city || 'Bengaluru'} • Open 5:30 AM - 10:30 PM
-                        </p>
-                      </div>
-                    </div>
-                    <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/30">
-                      LIVE ARENA
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
 
