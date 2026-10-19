@@ -316,73 +316,74 @@ export function OperationsDashboard({
               </div>
             </Link>
 
-            {/* Salesforce Style Header Pills */}
-            <nav className="hidden xl:flex items-center gap-1 bg-[#121620] rounded-full px-2 py-1 border border-white/5 shrink-0 ml-2">
-              <button
-                onClick={() => setActiveTab('leads')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === 'leads' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Estimates
-              </button>
+            {/* Salesforce Style Header Pills (Shown only on Invoices Desk where they belong) */}
+            {activeTab === 'dashboard' && (
+              <nav className="hidden xl:flex items-center gap-1 bg-[#121620] rounded-full px-2 py-1 border border-white/5 shrink-0 ml-2">
+                <button
+                  onClick={() => setActiveTab('leads')}
+                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
+                >
+                  Estimates
+                </button>
 
-              <button
-                onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold whitespace-nowrap transition-all ${
-                  activeTab === 'dashboard' || activeTab === 'dues'
-                    ? 'bg-[#ccff00] text-black shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-black shrink-0" />
-                <span>Invoices</span>
-              </button>
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold whitespace-nowrap transition-all bg-[#ccff00] text-black shadow-sm"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-black shrink-0" />
+                  <span>Invoices</span>
+                </button>
 
-              <button
-                onClick={() => setActiveTab('dues')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === 'dues' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Payments
-              </button>
+                <button
+                  onClick={() => setActiveTab('dues')}
+                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
+                >
+                  Payments
+                </button>
 
-              <button
-                onClick={() => setActiveTab('members')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === 'members' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Recurring
-              </button>
+                <button
+                  onClick={() => setActiveTab('members')}
+                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
+                >
+                  Recurring
+                </button>
 
-              <button
-                onClick={() => setActiveTab('attendance')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === 'attendance' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Checkouts
-              </button>
+                <button
+                  onClick={() => setActiveTab('attendance')}
+                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
+                >
+                  Checkouts
+                </button>
 
-              <button
-                onClick={() => {
-                  if (onSwitchToShowcase) {
-                    onSwitchToShowcase();
-                  }
-                }}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
-                title="Public Showcase"
-              >
-                <Home className="h-3 w-3 text-zinc-400 shrink-0" />
-                <span>Store</span>
-              </button>
-            </nav>
+                <button
+                  onClick={() => {
+                    if (onSwitchToShowcase) {
+                      onSwitchToShowcase();
+                    }
+                  }}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
+                  title="Return to Home Screen"
+                >
+                  <Home className="h-3 w-3 text-zinc-400 shrink-0" />
+                  <span>Home</span>
+                </button>
+              </nav>
+            )}
+
+            {/* When on Operations & Reception desk */}
+            {activeTab === 'overview' && (
+              <div className="hidden xl:flex items-center gap-2 bg-[#121620] rounded-full px-3 py-1 border border-white/5 shrink-0 ml-2">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ccff00] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ccff00]"></span>
+                </span>
+                <span className="text-xs font-bold text-white">Operations & Reception Desk</span>
+              </div>
+            )}
           </div>
 
           {/* Center: Full-width Global Member Search with "/" shortcut */}
-          <div className="flex-1 min-w-[200px] max-w-xs md:max-w-sm lg:max-w-md mx-2">
+          <div className="flex-1 min-w-[200px] max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-2 sm:mx-4 lg:mx-6">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
               <input
