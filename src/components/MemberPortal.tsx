@@ -11,7 +11,6 @@ import {
   QrCode,
   Apple,
   Dumbbell,
-  ExternalLink,
   CheckCircle2,
   ChevronRight,
   Flame,
@@ -22,6 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { MemberTrainingHub } from '@/components/member/MemberTrainingHub';
 
 interface MemberPortalProps {
   members: Member[];
@@ -36,7 +36,7 @@ export function MemberPortal({
   gymName
 }: MemberPortalProps) {
   const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || 'mem-101');
-  const [activePortalTab, setActivePortalTab] = useState<'opengym' | 'pass' | 'diet'>('opengym');
+  const [activePortalTab, setActivePortalTab] = useState<'training' | 'pass' | 'diet'>('training');
 
   // Diet Plan State
   const currentMember =
@@ -96,16 +96,16 @@ export function MemberPortal({
       {/* Member Portal Nav Tabs */}
       <TabsList className="w-full sm:w-auto grid grid-cols-3 sm:flex h-auto p-1 bg-[#0b0e14] border-[#1e2330]">
         <TabsTrigger
-          value="opengym"
-          onClick={() => setActivePortalTab('opengym')}
+          value="training"
+          onClick={() => setActivePortalTab('training')}
           className={cn(
             "flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-bold text-xs transition-all",
-            activePortalTab === 'opengym' && "bg-[#121724] text-[#ccff00] border border-[#293246] shadow-xs"
+            activePortalTab === 'training' && "bg-[#121724] text-[#ccff00] border border-[#293246] shadow-xs"
           )}
         >
           <Dumbbell className="h-4 w-4" />
-          <span className="hidden sm:inline">openGym Training Suite</span>
-          <span className="sm:hidden">openGym</span>
+          <span className="hidden sm:inline">Workouts & Training</span>
+          <span className="sm:hidden">Training</span>
         </TabsTrigger>
 
         <TabsTrigger
@@ -135,50 +135,9 @@ export function MemberPortal({
         </TabsTrigger>
       </TabsList>
 
-      {/* TAB: OPENGYM WORKOUT & TRAINING SUITE */}
-      {activePortalTab === 'opengym' && (
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#222738] bg-[#0c0f16] p-4 shadow-md">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ccff00] text-black shadow-md">
-                <Dumbbell className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-black text-sm text-white">openGym Workout & Analytics Suite</h3>
-                  <Badge variant="outline" className="text-[10px] py-0 border-[#ccff00]/40 text-[#ccff00] bg-[#ccff00]/10 font-bold">
-                    Exact Clone
-                  </Badge>
-                </div>
-                <p className="text-xs text-zinc-400">
-                  5,600+ animated exercises, weekday routine planner, live workout logger, rest timers, PR detection & muscle maps.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 self-start sm:self-auto">
-              <a
-                href="/opengym/index.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-xl border border-[#262c3e] bg-[#121622] px-3.5 py-2 text-xs font-bold text-zinc-200 hover:border-[#ccff00] hover:text-[#ccff00] transition-all shadow-xs"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                <span>Open Full Screen</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Embedded openGym Frame */}
-          <div className="relative w-full rounded-2xl border border-[#222738] bg-black overflow-hidden shadow-2xl h-[820px] sm:h-[880px]">
-            <iframe
-              src="/opengym/index.html"
-              title="openGym Application"
-              className="w-full h-full border-0 bg-black"
-              allow="accelerometer; autoplay; camera; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            />
-          </div>
-        </div>
+      {/* TAB 1: NATIVE WORKOUTS & TRAINING HUB */}
+      {activePortalTab === 'training' && (
+        <MemberTrainingHub currentMember={currentMember} gymName={gymName} />
       )}
 
       {/* TAB 2: INDIAN DIET & NUTRITION */}
