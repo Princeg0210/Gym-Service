@@ -12,6 +12,7 @@ import React, {
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Dumbbell, LayoutGrid, Loader2, CheckCircle2 } from 'lucide-react';
+import MetalLapJoint from '@/components/originkit/metal-lap-joint';
 
 interface PortalInfo {
   name: string;
@@ -300,19 +301,20 @@ export function PortalLoadingOverlay({
           </span>
         </div>
 
-        {/* Central Animated Portal Icon */}
-        <div className="relative flex items-center justify-center mb-6">
-          <div className="absolute -inset-3 rounded-3xl border-2 border-[#ccff00]/20 border-t-[#ccff00] animate-spin" />
-          <div className="absolute -inset-5 rounded-3xl border border-[#ccff00]/10 animate-pulse" />
-
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-xl shadow-black/50">
-            {portal.icon === 'admin' ? (
-              <ShieldCheck className="h-10 w-10 text-[#ccff00]" />
-            ) : portal.icon === 'member' ? (
-              <Dumbbell className="h-10 w-10 text-[#ccff00]" />
-            ) : (
-              <LayoutGrid className="h-10 w-10 text-[#ccff00]" />
-            )}
+        {/* OriginKit 3D Kinetic Dumbbell Lap Joint Loading Animation */}
+        <div className="relative flex items-center justify-center my-3 w-52 h-52 sm:w-60 sm:h-60">
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/10 blur-2xl pointer-events-none" />
+          <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+            <MetalLapJoint
+              variant="dumbbell"
+              baseColor="#ccff00"
+              speed={52}
+              distance={25}
+              material={{ roughness: 42, reflect: 82 }}
+              motion={{ spin: 20, fold: 90, hold: 28 }}
+              camera={{ tilt: 30, sideTilt: 0 }}
+              background="transparent"
+            />
           </div>
         </div>
 
@@ -394,17 +396,20 @@ export function RouteLoadingScreen({
           </span>
         </div>
 
-        {/* Central Icon */}
-        <div className="relative flex items-center justify-center mb-6">
-          <div className="absolute -inset-3 rounded-3xl border-2 border-[#ccff00]/20 border-t-[#ccff00] animate-spin" />
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#121724] border border-[#263147] text-[#ccff00] shadow-xl shadow-black/50">
-            {icon === 'admin' ? (
-              <ShieldCheck className="h-10 w-10 text-[#ccff00]" />
-            ) : icon === 'member' ? (
-              <Dumbbell className="h-10 w-10 text-[#ccff00]" />
-            ) : (
-              <LayoutGrid className="h-10 w-10 text-[#ccff00]" />
-            )}
+        {/* OriginKit 3D Kinetic Dumbbell Lap Joint Loading Animation */}
+        <div className="relative flex items-center justify-center my-3 w-52 h-52 sm:w-60 sm:h-60">
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/10 blur-2xl pointer-events-none" />
+          <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+            <MetalLapJoint
+              variant="dumbbell"
+              baseColor="#ccff00"
+              speed={52}
+              distance={25}
+              material={{ roughness: 42, reflect: 82 }}
+              motion={{ spin: 20, fold: 90, hold: 28 }}
+              camera={{ tilt: 30, sideTilt: 0 }}
+              background="transparent"
+            />
           </div>
         </div>
 
