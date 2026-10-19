@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Image from 'next/image';
 import {
   ArrowLeft,
   Search,
@@ -15,10 +14,7 @@ import {
   List,
   MoreHorizontal,
   ChevronDown,
-  Copy,
-  Layers,
-  FileText,
-  DollarSign
+  Dumbbell
 } from 'lucide-react';
 import { Member, PaymentRecord } from '@/types';
 
@@ -28,7 +24,6 @@ export interface InvoiceItem {
   customerName: string;
   customerRole: string;
   companyName: string;
-  avatarUrl: string;
   dueText: string;
   status: 'Unsent' | 'Viewed' | 'Paid' | 'Draft';
   amount: number;
@@ -38,14 +33,59 @@ export interface InvoiceItem {
   }[];
 }
 
+const BADGE_PALETTES = [
+  'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+  'bg-[#ccff00]/20 text-[#ccff00] border-[#ccff00]/40',
+  'bg-sky-500/20 text-sky-300 border-sky-500/40',
+  'bg-purple-500/20 text-purple-300 border-purple-500/40',
+  'bg-amber-500/20 text-amber-300 border-amber-500/40',
+  'bg-rose-500/20 text-rose-300 border-rose-500/40'
+];
+
+function getMemberInitials(name: string): string {
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  }
+  return (name.slice(0, 2) || 'GP').toUpperCase();
+}
+
+function MemberBadge({
+  name,
+  size = 'md',
+  className = ''
+}: {
+  name: string;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}) {
+  const initials = getMemberInitials(name);
+  const charCode = (name.charCodeAt(0) || 0) + (name.charCodeAt(1) || 0);
+  const palette = BADGE_PALETTES[charCode % BADGE_PALETTES.length];
+
+  const sizeClasses = {
+    sm: 'h-8 w-8 text-[11px]',
+    md: 'h-10 w-10 text-xs',
+    lg: 'h-11 w-11 text-sm'
+  }[size];
+
+  return (
+    <div
+      className={`${sizeClasses} rounded-full border flex items-center justify-center font-black tracking-tight shrink-0 shadow-sm ${palette} ${className}`}
+      title={name}
+    >
+      {initials}
+    </div>
+  );
+}
+
 const INITIAL_INVOICES: InvoiceItem[] = [
   {
     id: 'inv-1',
     invoiceNo: '#404-002',
     customerName: 'Karan Malhotra',
-    customerRole: 'Senior Partner • Apex Growth',
+    customerRole: 'Annual Executive Member • +91 9823654321',
     companyName: 'Apex Capital Mumbai',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80',
     dueText: 'In 2 days',
     status: 'Unsent',
     amount: 80770.0,
@@ -59,9 +99,8 @@ const INITIAL_INVOICES: InvoiceItem[] = [
     id: 'inv-2',
     invoiceNo: '#426-001',
     customerName: 'Amit Singh',
-    customerRole: 'Director • Zenith Tech',
+    customerRole: 'Annual VIP Pass • +91 9810556677',
     companyName: 'Zenith Labs Bengaluru',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
     dueText: 'In 4 days',
     status: 'Viewed',
     amount: 27114.0,
@@ -75,9 +114,8 @@ const INITIAL_INVOICES: InvoiceItem[] = [
     id: 'inv-3',
     invoiceNo: '#427-012',
     customerName: 'Priya Patel',
-    customerRole: 'CEO BlueRock India Pvt Ltd',
+    customerRole: 'Monthly General • +91 9822334455',
     companyName: 'BlueRock India',
-    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&h=120&q=80',
     dueText: 'In 5 days',
     status: 'Unsent',
     amount: 53154.0,
@@ -91,9 +129,8 @@ const INITIAL_INVOICES: InvoiceItem[] = [
     id: 'inv-4',
     invoiceNo: '#424-112',
     customerName: 'Vikram Sharma',
-    customerRole: 'Founder • Pulse Dynamics',
+    customerRole: '3-Month Standard Gym • +91 9876543210',
     companyName: 'Pulse Systems Delhi',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',
     dueText: 'In 16 days',
     status: 'Viewed',
     amount: 61223.0,
@@ -107,9 +144,8 @@ const INITIAL_INVOICES: InvoiceItem[] = [
     id: 'inv-5',
     invoiceNo: '#417-020',
     customerName: 'Sneha Nair',
-    customerRole: 'VP Product • Stride Digital',
+    customerRole: '3-Month Standard Gym • +91 9940223344',
     companyName: 'Stride HQ Bengaluru',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80',
     dueText: 'In 19 days',
     status: 'Viewed',
     amount: 7311.0,
@@ -119,14 +155,6 @@ const INITIAL_INVOICES: InvoiceItem[] = [
       { title: 'Smoothie Bar Subscription', amount: 1011.0 }
     ]
   }
-];
-
-const TIMELINE_AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80',
-  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=80&h=80&q=80'
 ];
 
 interface AdminInvoicesDeskProps {
@@ -149,8 +177,6 @@ export function AdminInvoicesDesk({
     if (!members || members.length === 0) return INITIAL_INVOICES;
 
     const duesMembers = members.filter((m) => m.pendingDueInr > 0);
-    const activeMembers = members.filter((m) => m.pendingDueInr === 0);
-
     const generated: InvoiceItem[] = [];
 
     // Real members with pending dues from DB
@@ -161,7 +187,6 @@ export function AdminInvoicesDesk({
         customerName: m.fullName,
         customerRole: `${m.planName} • +91 ${m.phone}`,
         companyName: idx % 2 === 0 ? 'BlueRock India' : 'Apex Tech India',
-        avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.avatarSeed || m.fullName}`,
         dueText: m.status === 'defaulter' ? 'Payment Overdue' : `Due by ${m.endDate}`,
         status: idx === 0 ? 'Unsent' : 'Viewed',
         amount: m.pendingDueInr > 0 ? m.pendingDueInr : m.totalFeeInr,
@@ -173,7 +198,6 @@ export function AdminInvoicesDesk({
       });
     });
 
-    // Fill with active members or high-value executive corporate passes
     INITIAL_INVOICES.forEach((inv) => {
       if (!generated.some((g) => g.customerName.toLowerCase() === inv.customerName.toLowerCase())) {
         generated.push(inv);
@@ -191,7 +215,6 @@ export function AdminInvoicesDesk({
   const [activeProviderPill, setActiveProviderPill] = useState<string>('stripe');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Keep invoices synchronized with dynamic DB props
   React.useEffect(() => {
     setInvoices(activeDbInvoices);
     if (!activeDbInvoices.some((i) => i.id === selectedInvoiceId)) {
@@ -256,7 +279,7 @@ export function AdminInvoicesDesk({
             </button>
           )}
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Invoices
+            Invoices & Accounts
           </h1>
         </div>
 
@@ -282,12 +305,12 @@ export function AdminInvoicesDesk({
           2. TOP BENTO METRICS CARD: Overdue, Due next month, Avg time, Instant Payout
       ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left Column: Overdue + Due Next Month + Timeline & Avatars */}
+        {/* Left Column: Overdue + Due Next Month + Timeline & Member Initials */}
         <div className="lg:col-span-8 rounded-2xl border border-[#202738] bg-[#121724] p-5 flex flex-col justify-between space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Overdue */}
             <div>
-              <p className="text-xs font-medium text-zinc-400">Overdue</p>
+              <p className="text-xs font-medium text-zinc-400">Overdue Dues</p>
               <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
                 {formatCurrency(totalOverdueInr)}
               </p>
@@ -303,14 +326,14 @@ export function AdminInvoicesDesk({
 
             {/* Average time to get paid */}
             <div>
-              <p className="text-xs font-medium text-zinc-400">Average time to get paid</p>
+              <p className="text-xs font-medium text-zinc-400">Average collection speed</p>
               <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
-                12 <span className="text-base font-normal text-zinc-400">days</span>
+                3 <span className="text-base font-normal text-zinc-400">days</span>
               </p>
             </div>
           </div>
 
-          {/* Timeline Progress Bar & Member Avatars */}
+          {/* Timeline Progress Bar & Member Badges */}
           <div className="pt-2">
             {/* Months Timeline */}
             <div className="flex items-center justify-between text-xs font-medium text-zinc-400 mb-2 px-1">
@@ -328,41 +351,23 @@ export function AdminInvoicesDesk({
               <div className="w-1/4 rounded-full bg-zinc-800/50" />
             </div>
 
-            {/* Overlapping Avatars below Timeline */}
+            {/* Overlapping Member Initials Badges below Timeline */}
             <div className="flex items-center justify-between mt-4 px-1">
               <div className="flex -space-x-2 overflow-hidden">
-                {TIMELINE_AVATARS.map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={src}
-                    alt="Customer Avatar"
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-[#0d121c] object-cover"
-                  />
+                {['Karan Malhotra', 'Amit Singh', 'Priya Patel', 'Vikram Sharma'].map((name) => (
+                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
                 ))}
               </div>
 
               <div className="flex -space-x-2 overflow-hidden">
-                {TIMELINE_AVATARS.slice(0, 3).map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={src}
-                    alt="Customer Avatar"
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-[#0d121c] object-cover"
-                  />
+                {['Neha Sharma', 'Rohit Mehta', 'Ananya Iyer'].map((name) => (
+                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
                 ))}
               </div>
 
               <div className="flex -space-x-2 overflow-hidden">
-                {TIMELINE_AVATARS.slice(2, 4).map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={src}
-                    alt="Customer Avatar"
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-[#0d121c] object-cover"
-                  />
+                {['Rajesh Yadav', 'Aditya Kulkarni'].map((name) => (
+                  <MemberBadge key={name} name={name} size="sm" className="ring-2 ring-[#0d121c]" />
                 ))}
               </div>
             </div>
@@ -383,7 +388,7 @@ export function AdminInvoicesDesk({
             </p>
           </div>
 
-          {/* Provider Selectors: UPI / Razorpay / HDFC */}
+          {/* Provider Selectors: UPI / Razorpay / Paytm */}
           <div className="my-5">
             <div className="grid grid-cols-3 gap-2">
               <button
@@ -456,7 +461,7 @@ export function AdminInvoicesDesk({
 
           {/* Filter dropdowns */}
           <button className="flex items-center gap-2 rounded-full border border-[#232b3d] bg-[#101522] px-3.5 py-1.5 text-xs text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors">
-            <span>All customers</span>
+            <span>All members</span>
             <ChevronDown className="h-3 w-3 text-zinc-400" />
           </button>
 
@@ -483,7 +488,7 @@ export function AdminInvoicesDesk({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Enter invoice # or name..."
+            placeholder="Search invoice # or member..."
             className="w-full h-9 rounded-full border border-[#232b3d] bg-[#101522] pl-4 pr-10 text-xs text-white placeholder-zinc-500 outline-none focus:border-[#ccff00] transition-colors"
           />
           <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
@@ -546,11 +551,16 @@ export function AdminInvoicesDesk({
 
         {/* Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          {/* ── LEFT COLUMN: High-Contrast Card List (Exact match to screenshot) ── */}
+          {/* ── LEFT COLUMN: High-Contrast Card List ── */}
           <div className="lg:col-span-5 rounded-3xl bg-white text-zinc-900 p-5 shadow-2xl">
-            <h2 className="text-sm font-extrabold text-zinc-950 mb-4 tracking-tight">
-              Unpaid Invoices
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-extrabold text-zinc-950 tracking-tight">
+                Pending Member Invoices
+              </h2>
+              <span className="text-[10px] font-mono font-bold bg-zinc-100 px-2 py-0.5 rounded text-zinc-600">
+                {filteredInvoices.length} Total
+              </span>
+            </div>
 
             <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
               {filteredInvoices.map((inv) => {
@@ -567,12 +577,7 @@ export function AdminInvoicesDesk({
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={inv.avatarUrl}
-                          alt={inv.customerName}
-                          className="h-10 w-10 rounded-full object-cover shrink-0"
-                        />
+                        <MemberBadge name={inv.customerName} size="md" />
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold font-mono">
@@ -616,7 +621,7 @@ export function AdminInvoicesDesk({
 
           {/* ── RIGHT COLUMN: Dark Detailed Invoice Inspector Card ── */}
           <div className="lg:col-span-7 rounded-3xl border border-[#1b2234] bg-[#0d121c] p-6 shadow-2xl space-y-6">
-            {/* Header: Invoice details, Company & Customer */}
+            {/* Header: Invoice details, Gym Branch/Company & Member */}
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1b2234] pb-5">
               <div>
                 <p className="text-xs text-zinc-400">Invoice details</p>
@@ -631,7 +636,7 @@ export function AdminInvoicesDesk({
               </div>
 
               <div>
-                <p className="text-xs text-zinc-400">Company</p>
+                <p className="text-xs text-zinc-400">Gym Facility / Account</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="text-base font-bold text-white">
                     {selectedInvoice.companyName}
@@ -641,14 +646,9 @@ export function AdminInvoicesDesk({
               </div>
 
               <div>
-                <p className="text-xs text-zinc-400">Customer</p>
+                <p className="text-xs text-zinc-400">Athlete Member</p>
                 <div className="flex items-center gap-2.5 mt-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selectedInvoice.avatarUrl}
-                    alt={selectedInvoice.customerName}
-                    className="h-8 w-8 rounded-full object-cover shrink-0"
-                  />
+                  <MemberBadge name={selectedInvoice.customerName} size="sm" />
                   <div>
                     <p className="text-xs font-bold text-white leading-tight">
                       {selectedInvoice.customerName}
@@ -684,7 +684,7 @@ export function AdminInvoicesDesk({
               <button
                 onClick={onOpenAddMember}
                 className="rounded-2xl border border-dashed border-[#262f44] bg-[#0c1017]/60 hover:bg-[#121724] hover:border-[#ccff00]/50 flex items-center justify-center h-24 text-zinc-500 hover:text-[#ccff00] transition-colors"
-                title="Add Line Item"
+                title="Add Membership Item"
               >
                 <Plus className="h-6 w-6" />
               </button>

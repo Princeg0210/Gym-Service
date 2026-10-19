@@ -5,10 +5,11 @@ import Link from 'next/link';
 import {
   Search,
   User,
-  ShoppingBag,
   Menu,
   X,
-  LayoutDashboard
+  LayoutDashboard,
+  Dumbbell,
+  ArrowUpRight
 } from 'lucide-react';
 import { GymProfile } from '@/types';
 
@@ -23,37 +24,48 @@ interface HeaderProps {
 export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const primaryColor = gymProfile?.primaryColor || '#ccff00';
+  const gymName = gymProfile?.gymName || 'IronPulse Commercial Gym';
 
   const navLinks = [
-    { label: 'MEN', href: '#men' },
-    { label: 'WOMEN', href: '#women' },
-    { label: 'ACCESSORIES', href: '#accessories' },
-    { label: 'COLLECTIONS', href: '#collections' },
-    { label: 'SALE', href: '#sale', isHighlight: true }
+    { label: 'FACILITIES', href: '#facilities' },
+    { label: 'PROGRAMS', href: '#programs' },
+    { label: 'COACHES', href: '#coaches' },
+    { label: 'MEMBERSHIPS', href: '#pricing' },
+    { label: 'VIP TRIAL', href: '#trial', isHighlight: true }
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#0a0a0c]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Brand Logo: Exact Image 1 `/// MOVE` */}
-        <Link href="/" className="flex items-center gap-1.5 group focus:outline-none">
-          <span
-            className="font-black tracking-tighter text-2xl group-hover:scale-105 transition-transform"
-            style={{ color: primaryColor }}
+        {/* Brand Logo: GymPRO with Sleek Neon Accents */}
+        <Link href="/" className="flex items-center gap-2 group focus:outline-none">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-black font-black transition-transform group-hover:scale-105"
+            style={{ backgroundColor: primaryColor }}
           >
-            ///
-          </span>
-          <span className="font-black text-2xl tracking-tight text-white uppercase">MOVE</span>
+            <Dumbbell className="h-4.5 w-4.5" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="font-black text-xl tracking-tight text-white uppercase">
+              Gym<span style={{ color: primaryColor }}>PRO</span>
+            </span>
+            <span className="text-zinc-600 font-light mx-1 hidden sm:inline">/</span>
+            <span className="text-xs font-semibold text-zinc-400 hidden sm:inline max-w-[140px] truncate">
+              {gymName}
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-bold tracking-wider uppercase text-zinc-300">
+        <nav className="hidden md:flex items-center gap-7 text-xs font-bold tracking-wider uppercase text-zinc-300">
           {navLinks.map((item) => (
             <a
               key={item.label}
               href={item.href}
               className={`transition-colors ${
-                item.isHighlight ? 'text-[#ccff00] hover:brightness-110' : 'hover:text-white'
+                item.isHighlight
+                  ? 'text-[#ccff00] hover:brightness-110'
+                  : 'hover:text-white'
               }`}
             >
               {item.label}
@@ -61,45 +73,38 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
           ))}
         </nav>
 
-        {/* Right Utilities: Search, Account / Admin, Cart (2) */}
+        {/* Right Utilities: Search, Admin Console Link, Free Pass CTA */}
         <div className="flex items-center gap-3 sm:gap-4 text-zinc-300">
-          <button
-            onClick={() => alert('Search MOVE apparel collection')}
-            className="p-1.5 hover:text-white transition-colors"
-            title="Search"
-            aria-label="Search"
-          >
-            <Search className="w-5 h-5 stroke-[1.8]" />
-          </button>
-
-          {/* User Profile -> Jump to Admin Dashboard */}
+          {/* Admin Operations Console Link */}
           <Link
             href="/admin"
-            className="p-1.5 hover:text-[#ccff00] transition-colors relative flex items-center gap-1 text-xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:bg-white/10 hover:border-white/20 transition-all"
             title="Admin Operations Console"
-            aria-label="Admin Operations Console"
           >
-            <User className="w-5 h-5 stroke-[1.8]" />
-            <span className="hidden xl:inline text-[10px] font-mono uppercase bg-white/10 px-1.5 py-0.5 rounded text-zinc-300">
-              Admin
-            </span>
+            <User className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Admin Desk</span>
           </Link>
 
-          {/* Shopping Bag with (2) Badge */}
-          <button
-            onClick={() => alert('Shopping Bag: 2 items active')}
-            className="p-1.5 hover:text-white transition-colors relative"
-            title="Cart (2)"
-            aria-label="Cart"
-          >
-            <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
-            <span
-              className="absolute -top-1 -right-1 h-4 w-4 rounded-full text-black text-[10px] font-black flex items-center justify-center shadow-sm"
+          {/* Primary CTA: Claim Pass */}
+          {onBookFreeTrial ? (
+            <button
+              onClick={onBookFreeTrial}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
               style={{ backgroundColor: primaryColor }}
             >
-              2
-            </span>
-          </button>
+              <span>1-Day Pass</span>
+              <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
+            </button>
+          ) : (
+            <a
+              href="#pricing"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
+              style={{ backgroundColor: primaryColor }}
+            >
+              <span>1-Day Pass</span>
+              <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
+            </a>
+          )}
 
           {/* Mobile Menu Toggle Button */}
           <button
@@ -130,7 +135,7 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
             ))}
           </nav>
 
-          <div className="pt-2 border-t border-white/10">
+          <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
             <Link
               href="/admin"
               onClick={() => setIsMobileMenuOpen(false)}

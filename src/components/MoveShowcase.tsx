@@ -1,26 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Search,
-  User,
-  ShoppingBag,
   ArrowRight,
   ChevronRight,
-  ChevronLeft,
-  Mail,
+  Droplets,
+  Flame,
+  Dumbbell,
+  ShieldCheck,
+  Award,
   Zap,
   Heart,
   Mountain,
-  Droplets,
-  Maximize2,
-  Feather,
-  RefreshCw,
-  Sparkles,
+  Mail,
   Check,
-  X
+  X,
+  Sparkles,
+  ArrowUpRight,
+  Clock,
+  Activity,
+  Users
 } from 'lucide-react';
 
 interface MoveShowcaseProps {
@@ -33,9 +33,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
   const [emailInput, setEmailInput] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [cartCount, setCartCount] = useState(2);
   const [selectedQuickView, setSelectedQuickView] = useState<string | null>(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,171 +44,83 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
     }
   };
 
-  const categories = [
+  // 5 Training Pillars using circular outline design element
+  const trainingPillars = [
     {
-      id: 'tops',
-      label: 'TOPS',
+      id: 'free-weights',
+      label: 'FREE WEIGHTS',
+      icon: <Dumbbell className="w-6 h-6 stroke-[1.8]" />
+    },
+    {
+      id: 'power-rigs',
+      label: 'POWER RIGS',
       icon: (
-        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
-          <path d="M7 3h10l3 5-3 3-1-1v11H8V10L7 11 4 8l3-5z" />
-          <path d="M10 3a2 2 0 0 0 4 0" />
+        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+          <rect x="4" y="3" width="16" height="18" rx="2" />
+          <line x1="4" y1="9" x2="20" y2="9" />
+          <line x1="4" y1="15" x2="20" y2="15" />
+          <line x1="12" y1="3" x2="12" y2="21" />
         </svg>
       )
     },
     {
-      id: 'bottoms',
-      label: 'BOTTOMS',
-      icon: (
-        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
-          <path d="M6 3h12l-1 18h-4.5l-.5-9-.5 9H7L6 3z" />
-        </svg>
-      )
+      id: 'cardio',
+      label: 'CARDIO & METCON',
+      icon: <Flame className="w-6 h-6 stroke-[1.8]" />
     },
     {
-      id: 'jackets',
-      label: 'JACKETS',
-      icon: (
-        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
-          <path d="M4 6l4-3h8l4 3v15H4V6z" />
-          <path d="M12 3v18" />
-          <path d="M8 8l4 3 4-3" />
-        </svg>
-      )
+      id: 'coaching',
+      label: '1-ON-1 COACHING',
+      icon: <Award className="w-6 h-6 stroke-[1.8]" />
     },
     {
-      id: 'footwear',
-      label: 'FOOTWEAR',
-      icon: (
-        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
-          <path d="M2 17h20v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2z" />
-          <path d="M4 17l4-9h8l4 9" />
-          <path d="M8 11h8" />
-        </svg>
-      )
-    },
-    {
-      id: 'accessories',
-      label: 'ACCESSORIES',
-      icon: (
-        <svg className="w-6 h-6 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
-          <path d="M6 8h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z" />
-          <path d="M9 8V5a3 3 0 0 1 6 0v3" />
-          <circle cx="12" cy="14" r="1.5" />
-        </svg>
-      )
+      id: 'recovery',
+      label: 'RECOVERY SUITE',
+      icon: <Droplets className="w-6 h-6 stroke-[1.8]" />
     }
   ];
 
+  // Authentic community training photos
   const communityPhotos = [
     {
       id: 'com-1',
-      img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&h=750&q=80',
-      tag: '@marcus_run'
+      img: '/images/gym_hero_athlete.jpg',
+      tag: '@vikram_heavy_squats'
     },
     {
       id: 'com-2',
-      img: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=750&q=80',
-      tag: '@elena_fit'
+      img: '/images/gym_equipment_modern.jpg',
+      tag: '@ironpulse_floor'
     },
     {
       id: 'com-3',
-      img: 'https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=600&h=750&q=80',
-      tag: '@tyler_stride'
+      img: '/images/gym_trainers_group.jpg',
+      tag: '@coaching_cadre'
     },
     {
       id: 'com-4',
-      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&h=750&q=80',
-      tag: '@sarah_active'
+      img: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=750&q=80',
+      tag: '@priya_conditioning'
     },
     {
       id: 'com-5',
-      img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&h=750&q=80',
-      tag: '@david_pulse'
+      img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&h=750&q=80',
+      tag: '@strength_protocol'
     }
   ];
 
   return (
     <div className="w-full bg-[#0a0a0c] text-white selection:bg-[#ccff00] selection:text-black min-h-screen font-sans">
       {/* ─────────────────────────────────────────────────────────────
-          1. MOVE TOP NAVIGATION (Exact Image 1)
-      ───────────────────────────────────────────────────────────── */}
-      {!hideHeader && (
-        <header className="sticky top-0 z-50 w-full bg-[#0a0a0c]/90 backdrop-blur-md border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            {/* Brand Logo */}
-            <Link href="/" className="flex items-center gap-1.5 group">
-              <span className="text-[#ccff00] font-black tracking-tighter text-2xl group-hover:scale-105 transition-transform">
-                ///
-              </span>
-              <span className="font-black text-2xl tracking-tight text-white uppercase">MOVE</span>
-            </Link>
-
-            {/* Desktop Nav Links */}
-            <nav className="hidden md:flex items-center gap-8 text-xs font-bold tracking-wider uppercase text-zinc-300">
-              <a href="#men" className="hover:text-white transition-colors">
-                MEN
-              </a>
-              <a href="#women" className="hover:text-white transition-colors">
-                WOMEN
-              </a>
-              <a href="#accessories" className="hover:text-white transition-colors">
-                ACCESSORIES
-              </a>
-              <a href="#collections" className="hover:text-white transition-colors">
-                COLLECTIONS
-              </a>
-              <a href="#sale" className="text-[#ccff00] hover:brightness-110 transition-colors">
-                SALE
-              </a>
-            </nav>
-
-            {/* Utility Icons */}
-            <div className="flex items-center gap-4 text-zinc-300">
-              <button
-                onClick={() => alert('Search MOVE apparel collection')}
-                className="p-1.5 hover:text-white transition-colors"
-                title="Search"
-              >
-                <Search className="w-5 h-5 stroke-[1.8]" />
-              </button>
-
-              {/* Account / Admin Portal link */}
-              <button
-                onClick={() => {
-                  if (onSwitchMode) onSwitchMode('operations');
-                }}
-                className="p-1.5 hover:text-[#ccff00] transition-colors relative"
-                title="Open Admin Console"
-              >
-                <User className="w-5 h-5 stroke-[1.8]" />
-              </button>
-
-              {/* Shopping Bag with (2) Badge */}
-              <button
-                onClick={() => alert('Shopping Bag: 2 items active')}
-                className="p-1.5 hover:text-white transition-colors relative"
-                title="Cart (2)"
-              >
-                <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#ccff00] text-black text-[10px] font-black flex items-center justify-center">
-                  {cartCount}
-                </span>
-              </button>
-            </div>
-          </div>
-        </header>
-      )}
-
-      {/* ─────────────────────────────────────────────────────────────
-          2. HERO SECTION: "SHIFT YOUR LIMITS. ELEVATE YOUR LIFE."
+          1. HERO SECTION: "SHIFT YOUR LIMITS. ELEVATE YOUR LIFE."
       ───────────────────────────────────────────────────────────── */}
       <section className="relative w-full min-h-[580px] sm:min-h-[640px] lg:min-h-[720px] flex items-center overflow-hidden border-b border-white/5">
-        {/* Background Image: Running Duo in Urban Bridge Environment */}
+        {/* Background Image: Authentic Gym Lifter Arena */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=2000&q=85"
-            alt="Athletes Running"
-            className="w-full h-full object-cover object-top opacity-50 contrast-125 brightness-90"
+            src="/images/gym_hero_athlete.jpg"
+            alt="GymPRO Strength Athlete"
+            className="w-full h-full object-cover object-top opacity-40 contrast-125 brightness-90"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0c] via-[#0a0a0c]/80 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent" />
@@ -218,7 +128,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 w-full">
           <div className="max-w-xl">
-            {/* Main Display Headline */}
+            {/* Main Display Headline (Exact 4-line typography rhythm) */}
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white leading-[0.92]">
               SHIFT
               <br />
@@ -232,42 +142,39 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
             {/* Neon lime accent dash */}
             <div className="w-12 h-1 bg-[#ccff00] mt-4 mb-4" />
 
-            <p className="text-zinc-300 text-sm sm:text-base font-normal max-w-md mb-8">
-              Performance apparel designed for every move.
+            <p className="text-zinc-300 text-sm sm:text-base font-normal max-w-md mb-8 leading-relaxed">
+              Competition Olympic barbells, calibrated steel plates, heavy dumbbells up to 50kg, certified coaches, and custom nutrition plans.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4">
-              <button
-                onClick={() => setSelectedQuickView('New Arrivals 2026 Collection')}
+              <a
+                href="#pricing"
                 className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-7 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-lg"
               >
-                <span>SHOP NEW IN</span>
+                <span>CLAIM 1-DAY PASS</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
+              </a>
 
-              <button
-                onClick={() => {
-                  const el = document.getElementById('collections');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
+              <a
+                href="#facilities"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent text-white font-bold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-white/10 active:scale-95 transition-all"
               >
-                <span>EXPLORE COLLECTIONS</span>
+                <span>EXPLORE FACILITIES</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. CATEGORY CIRCULAR ICONS ROW: TOPS, BOTTOMS, JACKETS, ETC.
+          2. TRAINING PILLARS CIRCULAR ICONS (Element Reference from Image 1)
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-10 sm:py-14 border-b border-white/5 bg-[#0e0f13]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-5 gap-3 sm:gap-6 text-center">
-            {categories.map((cat) => {
+            {trainingPillars.map((cat) => {
               const isSelected = activeCategory === cat.id;
               return (
                 <button
@@ -299,98 +206,98 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. 3-CARD COLLECTION GRID: WOMEN, MEN, NEW ARRIVALS
+          3. 3-CARD SHOWCASE GRID (Element Reference from Image 1)
       ───────────────────────────────────────────────────────────── */}
-      <section id="collections" className="w-full py-12 sm:py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+      <section id="facilities" className="w-full py-12 sm:py-16 px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Card 1: WOMEN COLLECTION */}
-          <div
-            id="women"
-            className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80"
-              alt="Women Collection"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-85 group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/60" />
-
-            <div className="relative z-10">
-              <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
-                WOMEN
-                <br />
-                COLLECTION
-              </h2>
-              <p className="text-xs text-zinc-300 font-medium mt-1">Engineered for strength & style.</p>
-            </div>
-
-            <div className="relative z-10">
-              <button
-                onClick={() => setSelectedQuickView('Women High-Performance Collection')}
-                className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
-              >
-                <span>SHOP WOMEN</span>
-                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
-            </div>
-          </div>
-
-          {/* Card 2: MEN COLLECTION */}
-          <div
-            id="men"
-            className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
-              alt="Men Collection"
-              className="absolute inset-0 w-full h-full object-cover object-top opacity-85 group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/60" />
-
-            <div className="relative z-10">
-              <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
-                MEN
-                <br />
-                COLLECTION
-              </h2>
-              <p className="text-xs text-zinc-300 font-medium mt-1">Built for performance. Made to move.</p>
-            </div>
-
-            <div className="relative z-10">
-              <button
-                onClick={() => setSelectedQuickView('Men Training & Conditioning Series')}
-                className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
-              >
-                <span>SHOP MEN</span>
-                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
-            </div>
-          </div>
-
-          {/* Card 3: NEW ARRIVALS */}
+          {/* Card 1: FREE WEIGHTS & POWER RACKS */}
           <div className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1">
             <img
-              src="https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=800&q=80"
-              alt="New Arrivals"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-85 group-hover:scale-105 transition-transform duration-700"
+              src="/images/gym_equipment_modern.jpg"
+              alt="Free Weights & Power Racks"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-75 group-hover:scale-105 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/60" />
 
             <div className="relative z-10">
               <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
-                NEW
+                FREE WEIGHTS
                 <br />
-                ARRIVALS
+                & POWER RACKS
               </h2>
-              <p className="text-xs text-zinc-300 font-medium mt-1">The latest drops for your best self.</p>
+              <p className="text-xs text-zinc-300 font-medium mt-1">
+                Eleiko competition barbells, calibrated steel plates, heavy dumbbells up to 50kg.
+              </p>
             </div>
 
             <div className="relative z-10">
               <button
-                onClick={() => setSelectedQuickView('New Arrivals Limited Drop')}
+                onClick={() => setSelectedQuickView('Free Weights & Power Lifting Rig')}
                 className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
               >
-                <span>SHOP NEW IN</span>
+                <span>EXPLORE ARENA</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2: CARDIO & CONDITIONING */}
+          <div className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1">
+            <img
+              src="/images/gym_hero_athlete.jpg"
+              alt="Cardio & Conditioning"
+              className="absolute inset-0 w-full h-full object-cover object-top opacity-75 group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/60" />
+
+            <div className="relative z-10">
+              <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
+                CARDIO &
+                <br />
+                METCON ZONES
+              </h2>
+              <p className="text-xs text-zinc-300 font-medium mt-1">
+                Concept2 rowers, assault resistance bikes, and shock-absorbent sprint turf.
+              </p>
+            </div>
+
+            <div className="relative z-10">
+              <button
+                onClick={() => setSelectedQuickView('Cardio & High-Output MetCon Arena')}
+                className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
+              >
+                <span>VIEW MACHINES</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
+            </div>
+          </div>
+
+          {/* Card 3: 1-ON-1 COACHING & RECOVERY */}
+          <div className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1">
+            <img
+              src="/images/gym_trainers_group.jpg"
+              alt="Coaches & Recovery Suite"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-75 group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/60" />
+
+            <div className="relative z-10">
+              <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
+                1-ON-1 COACHES
+                <br />
+                & RECOVERY SUITE
+              </h2>
+              <p className="text-xs text-zinc-300 font-medium mt-1">
+                Biomechanical form audits, Indian nutrition plans, and deep tissue recovery.
+              </p>
+            </div>
+
+            <div className="relative z-10">
+              <button
+                onClick={() => setSelectedQuickView('Certified Coaching Cadre & Recovery Suite')}
+                className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
+              >
+                <span>MEET COACHES</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </button>
             </div>
@@ -399,7 +306,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          5. TECHNICAL BENEFIT BADGES (4 Columns Exact Image 1)
+          4. TECHNICAL STANDARDS STRIP (Element Reference from Image 1)
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-10 border-y border-white/5 bg-[#090a0d]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -407,44 +314,44 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
             {/* Feature 1 */}
             <div className="flex items-start gap-3">
               <div className="shrink-0 mt-0.5 text-[#ccff00]">
-                <Droplets className="w-6 h-6 stroke-[1.8]" />
+                <Dumbbell className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-white">MOISTURE WICKING</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Stay dry. Stay focused.</p>
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">OLYMPIC SPEC</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Eleiko steel plates & calibrated bars.</p>
               </div>
             </div>
 
             {/* Feature 2 */}
             <div className="flex items-start gap-3">
               <div className="shrink-0 mt-0.5 text-[#ccff00]">
-                <Maximize2 className="w-6 h-6 stroke-[1.8]" />
+                <ShieldCheck className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-white">4-WAY STRETCH</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Move freely in every direction.</p>
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">CERTIFIED COACHES</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">CSCS & national powerlifting coaches.</p>
               </div>
             </div>
 
             {/* Feature 3 */}
             <div className="flex items-start gap-3">
               <div className="shrink-0 mt-0.5 text-[#ccff00]">
-                <Feather className="w-6 h-6 stroke-[1.8]" />
+                <Activity className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-white">LIGHTWEIGHT</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Featherlight feel. Heavy on performance.</p>
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">BIOMETRIC QR PASS</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">1-second contact-free reception check-in.</p>
               </div>
             </div>
 
             {/* Feature 4 */}
             <div className="flex items-start gap-3">
               <div className="shrink-0 mt-0.5 text-[#ccff00]">
-                <RefreshCw className="w-6 h-6 stroke-[1.8]" />
+                <Droplets className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-white">SUSTAINABLE</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Better for you. Better for the planet.</p>
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">RECOVERY SUITE</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Sauna, ice bath & spine decompression.</p>
               </div>
             </div>
           </div>
@@ -452,17 +359,17 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          6. FEATURE BANNER: "TRAIN. PERFORM. REPEAT."
+          5. FEATURE BANNER: "TRAIN. PERFORM. REPEAT."
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-12 px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="relative rounded-2xl overflow-hidden bg-[#121319] border border-white/10 min-h-[360px] sm:min-h-[420px] flex items-center">
-          {/* Background image of female athlete */}
+          {/* Authentic Gym Lifter Banner Background */}
           <img
-            src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1600&q=80"
+            src="/images/gym_hero_athlete.jpg"
             alt="Train Perform Repeat"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-45"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-35"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/50" />
 
           <div className="relative z-10 w-full p-8 sm:p-12 lg:p-16 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-lg">
@@ -474,16 +381,16 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
                 REPEAT.
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300 mt-3 max-w-sm">
-                High-performance gear for training, running & everyday.
+                Premier strength and conditioning arena built for dedicated lifters and daily transformations.
               </p>
               <div className="mt-6">
-                <button
-                  onClick={() => setSelectedQuickView('High-Performance Training Gear')}
+                <a
+                  href="#pricing"
                   className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-md"
                 >
-                  <span>SHOP PERFORMANCE</span>
+                  <span>CLAIM FREE TRIAL PASS</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-                </button>
+                </a>
               </div>
             </div>
 
@@ -507,40 +414,39 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          7. #MOVEMENTMAKERS COMMUNITY PHOTO CAROUSEL
+          6. #IRONPULSEATHLETES COMMUNITY ATHLETES ROW
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-12 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="shrink-0">
-            <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white">#MOVEMENTMAKERS</h3>
-            <p className="text-xs text-zinc-400 mt-0.5">Real people. Real movement.</p>
+            <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white">#IRONPULSEATHLETES</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">Real lifters. Real transformations.</p>
           </div>
 
-          {/* 5-Photo Row with Nav Button */}
+          {/* Authentic Gym Community Frames */}
           <div className="relative flex items-center gap-3 overflow-hidden">
             <div className="flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth">
-              {communityPhotos.map((item, idx) => (
+              {communityPhotos.map((item) => (
                 <div
                   key={item.id}
                   className="relative w-32 h-44 sm:w-36 sm:h-52 shrink-0 rounded-xl overflow-hidden bg-zinc-800 border border-white/10 group cursor-pointer"
-                  onClick={() => alert(`Showing post from ${item.tag}`)}
+                  onClick={() => alert(`Showing training profile from ${item.tag}`)}
                 >
                   <img
                     src={item.img}
                     alt={item.tag}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                  <div className="absolute bottom-1.5 left-1.5 right-1.5 text-center text-[9px] font-bold text-white bg-black/60 py-0.5 px-1 rounded backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors" />
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 text-center text-[9px] font-bold text-white bg-black/60 py-0.5 px-1 rounded backdrop-blur-sm truncate">
                     {item.tag}
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Next arrow icon button on the right */}
             <button
-              onClick={() => alert('Viewing more community photos from #MOVEMENTMAKERS')}
+              onClick={() => alert('Viewing more athlete transformations')}
               className="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 hover:bg-[#ccff00] hover:text-black text-white transition-colors"
               title="View next"
             >
@@ -551,7 +457,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          8. NEWSLETTER: "BE THE FIRST TO KNOW"
+          7. NEWSLETTER & VIP PASS REGISTRATION
       ───────────────────────────────────────────────────────────── */}
       <section className="w-full py-10 border-t border-white/5 bg-[#0a0a0c]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -562,7 +468,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
               </div>
               <div>
                 <h4 className="text-sm font-black uppercase tracking-wider text-white">BE THE FIRST TO KNOW</h4>
-                <p className="text-xs text-zinc-400 mt-0.5">New drops. Exclusive offers. Training tips.</p>
+                <p className="text-xs text-zinc-400 mt-0.5">New equipment drops. Exclusive VIP passes. Training blueprints.</p>
               </div>
             </div>
 
@@ -585,158 +491,137 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
           </div>
           {isSubscribed && (
             <p className="text-xs text-[#ccff00] font-bold mt-2 text-center md:text-right">
-              ✓ Thanks for subscribing! Welcome to the MOVE club.
+              ✓ Thanks for subscribing! Welcome to GymPRO.
             </p>
           )}
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          9. MOVE FOOTER (Exact Image 1)
+          8. GYMPRO FOOTER
       ───────────────────────────────────────────────────────────── */}
       <footer className="w-full py-12 border-t border-white/5 bg-[#07080a] text-zinc-400 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10">
             {/* Logo Column */}
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-1.5 group mb-4">
-                <span className="text-[#ccff00] font-black tracking-tighter text-2xl">///</span>
-                <span className="font-black text-2xl tracking-tight text-white uppercase">MOVE</span>
+              <Link href="/" className="flex items-center gap-2 group mb-4">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black">
+                  <Dumbbell className="h-4 w-4" />
+                </div>
+                <span className="font-black text-xl tracking-tight text-white uppercase">
+                  Gym<span className="text-[#ccff00]">PRO</span>
+                </span>
               </Link>
               <p className="text-[11px] text-zinc-500 leading-relaxed">
-                Engineered for maximum athletic performance, recovery, and daily movement.
+                Operating multi-tenant commercial strength arenas, Olympic power rigs, and automated reception desks across India.
               </p>
             </div>
 
-            {/* SHOP */}
+            {/* FACILITIES */}
             <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">SHOP</h5>
+              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">FACILITIES</h5>
               <ul className="space-y-2 text-[11px]">
                 <li>
-                  <a href="#men" className="hover:text-white transition-colors">
-                    Men
+                  <a href="#facilities" className="hover:text-white transition-colors">
+                    Olympic Power Racks
                   </a>
                 </li>
                 <li>
-                  <a href="#women" className="hover:text-white transition-colors">
-                    Women
+                  <a href="#facilities" className="hover:text-white transition-colors">
+                    Free Weights Arena
                   </a>
                 </li>
                 <li>
-                  <a href="#accessories" className="hover:text-white transition-colors">
-                    Accessories
+                  <a href="#facilities" className="hover:text-white transition-colors">
+                    MetCon Sprint Turf
                   </a>
                 </li>
                 <li>
-                  <a href="#sale" className="hover:text-[#ccff00] transition-colors">
-                    Sale
+                  <a href="#facilities" className="hover:text-[#ccff00] transition-colors">
+                    Recovery Suite
                   </a>
                 </li>
               </ul>
             </div>
 
-            {/* HELP */}
+            {/* PROGRAMS */}
             <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">HELP</h5>
+              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">PROGRAMS</h5>
               <ul className="space-y-2 text-[11px]">
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    FAQs
+                    Strength & Hypertrophy
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Shipping
+                    Cardio Fat Oxidation
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Returns
+                    1-on-1 Personal Trainer
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Size Guide
+                    Indian Nutrition Plans
                   </a>
                 </li>
               </ul>
             </div>
 
-            {/* ABOUT */}
+            {/* GYM MANAGEMENT */}
             <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">ABOUT</h5>
+              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">ADMIN PORTAL</h5>
               <ul className="space-y-2 text-[11px]">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Our Story
-                  </a>
+                  <Link href="/admin" className="hover:text-[#ccff00] transition-colors font-semibold">
+                    Invoices & Accounts Desk
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Sustainability
-                  </a>
+                  <Link href="/admin" className="hover:text-white transition-colors">
+                    Member Check-In Scanner
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </a>
+                  <Link href="/admin" className="hover:text-white transition-colors">
+                    WhatsApp Fee Reminders
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </a>
+                  <Link href="/admin" className="hover:text-white transition-colors">
+                    Equipment AMC Logs
+                  </Link>
                 </li>
               </ul>
             </div>
 
-            {/* FOLLOW US */}
+            {/* COMMUNITY */}
             <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">FOLLOW US</h5>
-              <div className="flex items-center gap-3 text-zinc-300">
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:text-[#ccff00] hover:border-[#ccff00] transition-colors"
-                >
-                  <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:text-[#ccff00] hover:border-[#ccff00] transition-colors"
-                >
-                  <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
-                    <path d="M9 8h-3v4h3v12h5V12h3.642l.358-4h-4V6.333C14 5.374 14.5 5 15.5 5H18V0h-3.8c-3.658 0-5.2 1.838-5.2 4.9V8z" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:text-[#ccff00] hover:border-[#ccff00] transition-colors"
-                >
-                  <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:text-[#ccff00] hover:border-[#ccff00] transition-colors"
-                >
-                  <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
-                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.98-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 2.89 3.46 2.72 1.07-.05 2.06-.63 2.62-1.55.43-.66.6-1.46.6-2.25V.02z" />
-                  </svg>
-                </a>
+              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">HOURS & ACCESS</h5>
+              <p className="text-[11px] text-zinc-400 mb-2 font-mono">
+                Mon - Sat: 5:30 AM - 10:30 PM
+                <br />
+                Sun: 7:00 AM - 8:00 PM
+              </p>
+              <div className="flex items-center gap-2 mt-4 text-[#ccff00] text-[11px] font-bold">
+                <Clock className="w-3.5 h-3.5" />
+                <span>24/7 Biometric QR Enabled</span>
               </div>
             </div>
           </div>
 
           <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
-            <p>© 2026 MOVE. All rights reserved.</p>
+            <p>© 2026 GymPRO India. All rights reserved.</p>
             <div className="flex items-center gap-6">
               <a href="#" className="hover:text-zinc-300 transition-colors">
                 Privacy Policy
               </a>
               <a href="#" className="hover:text-zinc-300 transition-colors">
-                Terms & Conditions
+                Terms of Service
               </a>
             </div>
           </div>
@@ -755,23 +640,20 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
             </button>
             <div className="flex items-center gap-2 text-[#ccff00] text-xs font-bold uppercase tracking-wider mb-2">
               <Sparkles className="w-4 h-4" />
-              <span>Collection Preview</span>
+              <span>Facility Overview</span>
             </div>
             <h3 className="text-xl font-black text-white uppercase">{selectedQuickView}</h3>
             <p className="text-xs text-zinc-300 mt-2">
-              Designed with 4-way stretch fabrics, dynamic ventilation zones, and ergonomic anti-chafe stitching.
+              Equipped with tournament-grade steel weights, certified spotters, and biomechanically calibrated motion paths.
             </p>
             <div className="mt-6 flex items-center gap-3">
-              <button
-                onClick={() => {
-                  setCartCount((c) => c + 1);
-                  setSelectedQuickView(null);
-                  alert(`Added ${selectedQuickView} to your bag!`);
-                }}
-                className="flex-1 py-3 rounded-full bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
+              <a
+                href="#pricing"
+                onClick={() => setSelectedQuickView(null)}
+                className="flex-1 py-3 text-center rounded-full bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
               >
-                Add to Bag
-              </button>
+                Claim 1-Day Trial Pass
+              </a>
               <button
                 onClick={() => setSelectedQuickView(null)}
                 className="py-3 px-5 rounded-full border border-white/20 text-white font-bold text-xs uppercase hover:bg-white/10"
