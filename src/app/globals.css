@@ -137,3 +137,18 @@ body {
   }
 }
 
+/* 16. Button Shine Animation */
+@keyframes shineInfinite {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-shine-infinite {
+  animation: shineInfinite 3s infinite ease-in-out;
+}
+
+

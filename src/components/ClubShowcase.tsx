@@ -26,6 +26,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { GymProfile } from '@/types';
 import { sounds } from '@/lib/audio';
+import Pricing02 from '@/components/Pricing02';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -58,9 +59,6 @@ export function ClubShowcase({
   const [trialSlot, setTrialSlot] = useState('Morning (6:00 AM - 10:00 AM)');
   const [trialGoal, setTrialGoal] = useState('Muscle Building & Hypertrophy');
   const [isTrialClaimed, setIsTrialClaimed] = useState(false);
-
-  // Billing Toggle (Monthly vs Yearly)
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   // Program Filter State
   const [selectedProgramCategory, setSelectedProgramCategory] = useState<string>('all');
@@ -719,201 +717,23 @@ export function ClubShowcase({
 
 
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 6: TRANSPARENT PRICING PLANS
+          SECTION 6: TRANSPARENT PRICING PLANS (ORIGINKIT PRICING-02)
           ───────────────────────────────────────────────────────────── */}
-      <section id="pricing" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">
-              Transparent Pricing
-            </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-[-0.03em] text-white sm:text-5xl">
-              Choose Your Membership
-            </h2>
-            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
-              Clear Indian Rupee pricing with zero surprise charges. Instant UPI confirmation and direct WhatsApp invoice.
-            </p>
-
-            {/* Monthly / Yearly Toggle */}
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#222738] bg-[#0c0f16] p-1.5">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`rounded-full px-5 py-2 text-xs font-bold transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-[#ccff00] text-black shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Monthly Plan
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-bold transition-all ${
-                  billingCycle === 'yearly'
-                    ? 'bg-[#ccff00] text-black shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                <span>Annual Pass</span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                  Save 25%
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {/* Plan 1: Starter */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c0f16] p-7 transition-all">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Starter Tier</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">
-                    ₹{billingCycle === 'monthly' ? '1,999' : '17,999'}
-                  </span>
-                  <span className="text-xs text-zinc-400 font-mono">
-                    /{billingCycle === 'monthly' ? 'month' : 'year'}
-                  </span>
-                </div>
-                <p className="mt-3 text-xs text-zinc-400">
-                  Ideal for self-directed athletes requiring standard gym floor access.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Full Gym Arena Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Free Weights & Machine Arena</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Locker Room & Shower Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Mobile QR Check-in Pass</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors apple-press"
-                >
-                  Join Starter
-                </button>
-              </div>
-            </div>
-
-            {/* Plan 2: Quarterly Pro (Most Popular Highlight) */}
-            <div className="relative flex flex-col justify-between rounded-3xl border-2 border-[#ccff00] bg-[#0f141f] p-7 shadow-2xl transform lg:-translate-y-2">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ccff00] px-4 py-1 text-xs font-black uppercase tracking-wider text-black shadow-md">
-                Most Popular • Pro
-              </div>
-
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#ccff00]">Quarterly Pro</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">
-                    ₹{billingCycle === 'monthly' ? '4,999' : '45,000'}
-                  </span>
-                  <span className="text-xs text-zinc-400 font-mono">
-                    /{billingCycle === 'monthly' ? 'quarter' : 'year'}
-                  </span>
-                </div>
-                <p className="mt-3 text-xs text-zinc-300">
-                  Our most popular package with coach guidance, diet blueprint, and priority perks.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-zinc-200">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span className="font-bold text-white">Unlimited All-Branch Access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>1 Personal Trainer Session / Month</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>Custom High-Protein Indian Diet Plan</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>Instant WhatsApp Invoices & Receipts</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#ccff00] shrink-0" />
-                    <span>30 Days Free Membership Freeze</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-[#262c3e]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#ccff00] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#b5e600] transition-all shadow-md apple-press"
-                >
-                  <span>Join Pro Package</span>
-                  <ArrowUpRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Plan 3: Annual VIP */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#222738] bg-[#0c1017] p-7 transition-all">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Annual VIP</span>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">
-                    ₹{billingCycle === 'monthly' ? '14,999' : '99,000'}
-                  </span>
-                  <span className="text-xs text-zinc-400 font-mono">
-                    /{billingCycle === 'monthly' ? 'year' : 'lifetime VIP'}
-                  </span>
-                </div>
-                <p className="mt-3 text-xs text-zinc-400">
-                  Full concierge VIP experience with dedicated master coaching and recovery lounge.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-zinc-300">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Everything in Pro Package</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>8 1-on-1 Personal Training Sessions</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>Dedicated VIP Locker & Laundry Support</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>4 Free Guest Passes Every Month</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-[#1f2434]">
-                <button
-                  onClick={() => onOpenAddMember ? onOpenAddMember() : onSwitchMode('operations')}
-                  className="w-full rounded-xl border border-zinc-700 bg-[#161b26] py-3.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#ccff00] transition-colors apple-press"
-                >
-                  Join Annual VIP
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
+      <Pricing02
+        heading="Unlock Your Peak Athletic Potential With Transparent Membership Plans"
+        subheading="Clear Indian Rupee pricing with zero surprise charges. Instant UPI confirmation, certified coaches, and flexible billing cycles."
+        badgeLabel="Pricing plans"
+        currencySymbol="₹"
+        onSelectPlan={(plan) => {
+          if (plan.monthlyPrice === null) {
+            setIsTrialModalOpen(true);
+          } else if (onOpenAddMember) {
+            onOpenAddMember();
+          } else {
+            onSwitchMode('operations');
+          }
+        }}
+      />
 
 
       {/* ─────────────────────────────────────────────────────────────
