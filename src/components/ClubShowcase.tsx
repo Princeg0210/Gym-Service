@@ -26,6 +26,9 @@ import {
 import { GymProfile } from '@/types';
 import { sounds } from '@/lib/audio';
 import Pricing02, { PricingPlan } from '@/components/Pricing02';
+import ScrollProgress from '@/components/ScrollProgress';
+import EquipmentTicker from '@/components/EquipmentTicker';
+import BackToTop from '@/components/BackToTop';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -238,6 +241,8 @@ export function ClubShowcase({
 
   return (
     <div className="relative text-zinc-100 selection:bg-[#ccff00] selection:text-black">
+      {/* Top Scroll Reading Progress Indicator (Linear / Apple style) */}
+      <ScrollProgress color={primaryColor} />
 
       {/* ─────────────────────────────────────────────────────────────
           SECTION 1: HERO SECTION
@@ -306,12 +311,21 @@ export function ClubShowcase({
         </div>
       </section>
 
+      {/* Infinite Equipment Standards Ticker Marquee (Equinox / Alo / Nike style) */}
+      <EquipmentTicker primaryColor={primaryColor} />
+
 
       {/* ─────────────────────────────────────────────────────────────
           SECTION 2: FACILITY & EQUIPMENT SHOWCASE (4 Core Arenas)
           ───────────────────────────────────────────────────────────── */}
       <section id="facilities" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mx-auto max-w-7xl px-4 sm:px-6"
+        >
           
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
@@ -417,7 +431,7 @@ export function ClubShowcase({
 
           </div>
 
-        </div>
+        </motion.div>
       </section>
 
 
@@ -425,7 +439,13 @@ export function ClubShowcase({
           SECTION 3: TRAINING PROGRAMS
           ───────────────────────────────────────────────────────────── */}
       <section id="programs" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mx-auto max-w-7xl px-4 sm:px-6"
+        >
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
@@ -499,7 +519,7 @@ export function ClubShowcase({
             ))}
           </div>
 
-        </div>
+        </motion.div>
       </section>
 
 
@@ -507,7 +527,13 @@ export function ClubShowcase({
           SECTION 4: FLOOR COACHES
           ───────────────────────────────────────────────────────────── */}
       <section id="trainers" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mx-auto max-w-7xl px-4 sm:px-6"
+        >
           
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
@@ -562,7 +588,7 @@ export function ClubShowcase({
             ))}
           </div>
 
-        </div>
+        </motion.div>
       </section>
 
 
@@ -570,7 +596,13 @@ export function ClubShowcase({
           SECTION 5: MEMBER PROGRESS
           ───────────────────────────────────────────────────────────── */}
       <section id="results" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mx-auto max-w-7xl px-4 sm:px-6"
+        >
           
           <div className="mb-12 text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
@@ -660,7 +692,7 @@ export function ClubShowcase({
 
           </div>
 
-        </div>
+        </motion.div>
       </section>
 
 
@@ -689,7 +721,13 @@ export function ClubShowcase({
           SECTION 7: FACILITY DETAILS & FAQ ACCORDION
           ───────────────────────────────────────────────────────────── */}
       <section id="faq" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mx-auto max-w-7xl px-4 sm:px-6"
+        >
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
@@ -796,7 +834,7 @@ export function ClubShowcase({
 
           </div>
 
-        </div>
+        </motion.div>
       </section>
 
 
@@ -940,6 +978,9 @@ export function ClubShowcase({
           </div>
         )}
       </AnimatePresence>
+
+      {/* Floating Tactile Back-To-Top Button (Apple / Equinox style) */}
+      <BackToTop primaryColor={primaryColor} />
 
     </div>
   );
