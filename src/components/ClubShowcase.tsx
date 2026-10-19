@@ -14,7 +14,6 @@ import {
   Clock,
   Utensils,
   Award,
-  Sparkles,
   MapPin,
   ChevronDown,
   ChevronUp,
@@ -241,17 +240,16 @@ export function ClubShowcase({
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
                 <button
                   onClick={() => setIsTrialModalOpen(true)}
-                  className="flex items-center justify-center gap-2 rounded-2xl px-7 py-4 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-xl transition-all hover:brightness-110 active:scale-95 apple-press"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-lg transition-all hover:brightness-110 active:scale-95 apple-press whitespace-nowrap"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  <Sparkles className="h-4 w-4" />
                   <span>Claim 1-Day Free Pass</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
 
                 <a
                   href="#pricing"
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-[#22283a] bg-[#0d111a] px-6 py-4 text-xs sm:text-sm font-bold text-zinc-200 hover:border-zinc-500 hover:text-white transition-all apple-press"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-xs sm:text-sm font-bold text-zinc-200 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all apple-press whitespace-nowrap"
                 >
                   <span>Explore Plans & Amenities</span>
                 </a>
@@ -1058,7 +1056,7 @@ export function ClubShowcase({
               {!isTrialClaimed ? (
                 <div>
                   <div className="flex items-center gap-2 text-[#ccff00] text-xs font-black uppercase tracking-wider mb-1">
-                    <Sparkles className="h-4 w-4" />
+                    <Dumbbell className="h-4 w-4" />
                     <span>Free Pass Invitation</span>
                   </div>
                   <h3 className="text-2xl font-black text-white">
@@ -1123,11 +1121,11 @@ export function ClubShowcase({
 
                     <button
                       type="submit"
-                      className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg transition-all hover:brightness-110 mt-2"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg transition-all hover:brightness-110 active:scale-[0.98] mt-2 apple-press"
                       style={{ backgroundColor: primaryColor }}
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span>Generate My VIP Pass</span>
+                      <span>Claim Free VIP Pass</span>
+                      <ArrowUpRight className="h-4 w-4" />
                     </button>
                   </form>
                 </div>
@@ -1220,8 +1218,8 @@ export function ClubShowcase({
                 onClick={() => setIsTrialModalOpen(true)}
                 className="flex items-center gap-1.5 text-xs font-bold text-[#ccff00] hover:underline"
               >
-                <Sparkles className="h-3.5 w-3.5" />
                 <span>Get Free Pass</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
               </button>
 
               <button
