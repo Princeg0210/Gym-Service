@@ -7,9 +7,12 @@ import { ClubShowcase } from '@/components/ClubShowcase';
 import { AddMemberModal } from '@/components/modals/AddMemberModal';
 import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 
+import { INITIAL_GYM_PROFILES } from '@/lib/mockGyms';
+
 export default function Home() {
   const { openPortal, notifyPageReady } = usePortalLoading();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const gymProfile = INITIAL_GYM_PROFILES[0];
 
   const {
     isLoaded,
@@ -49,15 +52,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#060709] text-zinc-100 antialiased selection:bg-[#ccff00] selection:text-black">
-      {/* Universal Header with direct links to /admin and /member */}
+      {/* Universal Public Header */}
       <Header
-        currentMode="showcase"
-        onModeChange={handleSwitchMode}
-        onResetData={handleResetData}
+        gymProfile={gymProfile}
       />
 
       <main className="pb-16">
         <ClubShowcase
+          gymProfile={gymProfile}
           onSwitchMode={handleSwitchMode}
           onOpenAddMember={() => setIsAddMemberOpen(true)}
           activeMembersCount={activeMembersCount}

@@ -132,11 +132,12 @@ export const Pricing02: React.FC<Pricing02Props> = ({
   const { isYearly, toggleBillingCycle } = useBillingCycle();
 
   return (
-    <main id="pricing" className="min-h-fit bg-[#0f0f0f] px-4 py-16 text-[#f2f2f3] sm:px-6 sm:py-24">
-      <section
-        aria-labelledby="pricing-heading"
-        className="flex w-full md:max-w-[620px] lg:max-w-[980px] xl:max-w-[1140px] md:mx-auto flex-col items-center gap-10"
-      >
+    <section
+      id="pricing"
+      aria-labelledby="pricing-heading"
+      className="relative min-h-fit border-b border-[#1c212e] bg-[#0f0f0f] px-4 py-16 text-[#f2f2f3] sm:px-6 sm:py-24"
+    >
+      <div className="flex w-full md:max-w-[620px] lg:max-w-[980px] xl:max-w-[1140px] md:mx-auto flex-col items-center gap-10">
         <header className="flex w-full max-w-[840px] flex-col items-center gap-2.5 text-center">
           <span className="flex items-center gap-1.5 rounded-[42px] border border-[#1f1f1f] bg-[#141414] px-3.5 py-1.5 shadow-sm">
             <img
@@ -357,8 +358,8 @@ export const Pricing02: React.FC<Pricing02Props> = ({
             })}
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
   );
 };
 
