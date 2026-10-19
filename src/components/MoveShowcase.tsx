@@ -153,7 +153,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
                 href="#pricing"
                 className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-7 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-lg"
               >
-                <span>CLAIM 1-DAY PASS</span>
+                <span>FREE TRIAL INQUIRY</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </a>
 
@@ -273,32 +273,32 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
             </div>
           </div>
 
-          {/* Card 3: 1-ON-1 COACHING & RECOVERY */}
+          {/* Card 3: ATHLETIC RECOVERY & WELLNESS SUITE */}
           <div className="group relative h-[440px] sm:h-[480px] rounded-2xl overflow-hidden bg-[#16171d] border border-white/10 flex flex-col justify-between p-6 transition-transform hover:-translate-y-1">
             <img
               src="/images/gym_trainers_group.jpg"
-              alt="Coaches & Recovery Suite"
+              alt="Recovery & Wellness Suite"
               className="absolute inset-0 w-full h-full object-cover object-center opacity-75 group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/60" />
 
             <div className="relative z-10">
               <h2 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
-                1-ON-1 COACHES
+                ATHLETIC MOBILITY
                 <br />
                 & RECOVERY SUITE
               </h2>
               <p className="text-xs text-zinc-300 font-medium mt-1">
-                Biomechanical form audits, Indian nutrition plans, and deep tissue recovery.
+                Percussion therapy lounge, myofascial mobility, and contrast recovery.
               </p>
             </div>
 
             <div className="relative z-10">
               <button
-                onClick={() => setSelectedQuickView('Certified Coaching Cadre & Recovery Suite')}
+                onClick={() => setSelectedQuickView('Athletic Mobility & Recovery Suite')}
                 className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider uppercase text-white group-hover:text-[#ccff00] transition-colors"
               >
-                <span>MEET COACHES</span>
+                <span>EXPLORE SUITE</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </button>
             </div>
@@ -329,8 +329,8 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
                 <ShieldCheck className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-white">CERTIFIED COACHES</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">CSCS & national powerlifting coaches.</p>
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">BIOMECHANICAL RIGS</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Engineered heavy-duty power racks.</p>
               </div>
             </div>
 
@@ -658,7 +658,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
                 onClick={() => setSelectedQuickView(null)}
                 className="flex-1 py-3 text-center rounded-full bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
               >
-                Claim 1-Day Trial Pass
+                Free Trial Inquiry
               </a>
               <button
                 onClick={() => setSelectedQuickView(null)}

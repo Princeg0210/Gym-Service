@@ -29,9 +29,8 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
   const navLinks = [
     { label: 'FACILITIES', href: '#facilities' },
     { label: 'PROGRAMS', href: '#programs' },
-    { label: 'COACHES', href: '#coaches' },
     { label: 'MEMBERSHIPS', href: '#pricing' },
-    { label: 'VIP TRIAL', href: '#trial', isHighlight: true }
+    { label: 'MEMBER PORTAL', href: '/member', isHighlight: true }
   ];
 
   return (
@@ -73,8 +72,19 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
           ))}
         </nav>
 
-        {/* Right Utilities: Search, Admin Console Link, Free Pass CTA */}
-        <div className="flex items-center gap-3 sm:gap-4 text-zinc-300">
+        {/* Right Utilities: Member Portal Link, Admin Console Link, Free Trial CTA */}
+        <div className="flex items-center gap-2 sm:gap-3 text-zinc-300">
+          {/* Member Portal Link */}
+          <Link
+            href="/member"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#ccff00]/40 bg-[#ccff00]/10 px-3.5 py-1.5 text-xs font-bold text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-all"
+            title="Athlete Member Portal"
+          >
+            <Dumbbell className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Member Portal</span>
+            <span className="sm:hidden">Portal</span>
+          </Link>
+
           {/* Admin Operations Console Link */}
           <Link
             href="/admin"
@@ -82,26 +92,26 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
             title="Admin Operations Console"
           >
             <User className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Admin Desk</span>
+            <span className="hidden md:inline">Admin Desk</span>
           </Link>
 
-          {/* Primary CTA: Claim Pass */}
+          {/* Primary CTA: Free Trial Inquiry */}
           {onBookFreeTrial ? (
             <button
               onClick={onBookFreeTrial}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
               style={{ backgroundColor: primaryColor }}
             >
-              <span>1-Day Pass</span>
+              <span>Free Trial</span>
               <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
             </button>
           ) : (
             <a
               href="#pricing"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
               style={{ backgroundColor: primaryColor }}
             >
-              <span>1-Day Pass</span>
+              <span>Free Trial</span>
               <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
             </a>
           )}
@@ -137,13 +147,22 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
 
           <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
             <Link
-              href="/admin"
+              href="/member"
               onClick={() => setIsMobileMenuOpen(false)}
               className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl text-xs font-black uppercase tracking-wider text-black shadow-md transition-all active:scale-95"
               style={{ backgroundColor: primaryColor }}
             >
+              <Dumbbell className="h-4 w-4" />
+              <span>Athlete Member Portal</span>
+            </Link>
+
+            <Link
+              href="/admin"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-200 border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+            >
               <LayoutDashboard className="h-4 w-4" />
-              <span>Open Admin Operations Desk</span>
+              <span>Admin Operations Desk</span>
             </Link>
           </div>
         </div>

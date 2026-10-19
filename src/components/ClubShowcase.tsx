@@ -27,7 +27,6 @@ import { GymProfile } from '@/types';
 import { sounds } from '@/lib/audio';
 import Pricing02, { PricingPlan } from '@/components/Pricing02';
 import ScrollProgress from '@/components/ScrollProgress';
-import EquipmentTicker from '@/components/EquipmentTicker';
 import BackToTop from '@/components/BackToTop';
 import ParticleDrift from '@/components/ParticleDrift';
 import { MoveShowcase } from './MoveShowcase';
@@ -320,9 +319,6 @@ export function ClubShowcase({
         onOpenAddMember={onOpenAddMember}
         hideHeader={true}
       />
-
-      {/* Infinite Equipment Standards Ticker Marquee (Equinox / Alo / Nike style) */}
-      <EquipmentTicker primaryColor={primaryColor} />
 
 
       {/* ─────────────────────────────────────────────────────────────
@@ -665,182 +661,8 @@ export function ClubShowcase({
         </motion.div>
       </section>
 
-
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 4: FLOOR COACHES
-          ───────────────────────────────────────────────────────────── */}
-      <section id="trainers" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#080a0f]">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
-          className="mx-auto max-w-7xl px-4 sm:px-6"
-        >
-          
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
-              Coaches
-            </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-              Certified Floor Mentors
-            </h2>
-            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
-              Our coaches actively assist with form audits, bar path checks, and progressive overload on the gym floor.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coaches.map((c, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-white/10 bg-[#0e121a] p-6 flex flex-col justify-between hover:border-white/20 transition-colors"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="h-11 w-11 rounded-xl bg-white/5 border border-white/10 text-[#ccff00] flex items-center justify-center font-black text-sm">
-                      {c.name.split(' ').map((n) => n[0]).join('')}
-                    </div>
-                    <div className="flex items-center gap-1 text-xs font-bold text-amber-400">
-                      <Star className="h-3.5 w-3.5 fill-current" />
-                      <span>{c.rating}</span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-lg font-black text-white">{c.name}</h3>
-                  <p className="text-xs font-bold text-[#ccff00] mt-0.5">{c.role}</p>
-                  
-                  <div className="mt-2 text-[11px] font-mono text-zinc-400">
-                    <span>{c.exp}</span> • <span>{c.spec}</span>
-                  </div>
-
-                  <p className="mt-3 text-xs text-zinc-400 leading-relaxed">
-                    {c.bio}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-6 border-t border-white/5">
-                  <button
-                    onClick={() => setIsTrialModalOpen(true)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-zinc-200 hover:bg-white/10 transition-all apple-press"
-                  >
-                    Consult Coach
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </motion.div>
-      </section>
-
-
-      {/* ─────────────────────────────────────────────────────────────
-          SECTION 5: MEMBER PROGRESS
-          ───────────────────────────────────────────────────────────── */}
-      <section id="results" className="relative border-b border-[#1c212e] py-16 sm:py-24 bg-[#060709]">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
-          className="mx-auto max-w-7xl px-4 sm:px-6"
-        >
-          
-          <div className="mb-12 text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
-              Member Transformations
-            </span>
-            <h2 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
-              Authentic Member Outcomes
-            </h2>
-            <p className="mt-3 text-xs sm:text-sm text-zinc-400">
-              Verified outcomes and feedback from athletes training consistently at our facility.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Transformation 1 */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                  <div>
-                    <h3 className="text-base font-black text-white">Rahul M.</h3>
-                    <p className="text-xs text-zinc-400">Software Architect • 31 Yrs</p>
-                  </div>
-                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">
-                    -15 kg Body Fat
-                  </span>
-                </div>
-
-                <p className="mt-4 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  &ldquo;Coach Priya customized a high-protein Indian diet with paneer, sprouts, and soya that fit my 10-hour desk schedule. Dropped from 88kg to 73kg in 6 months.&rdquo;
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                <span>Timeline: 6 Months</span>
-                <span className="font-bold text-white">88kg → 73kg</span>
-              </div>
-            </div>
-
-            {/* Transformation 2 */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                  <div>
-                    <h3 className="text-base font-black text-white">Ananya K.</h3>
-                    <p className="text-xs text-zinc-400">Consultant • 27 Yrs</p>
-                  </div>
-                  <span className="rounded-full bg-[#ccff00]/10 px-2.5 py-1 text-xs font-bold text-[#ccff00] border border-[#ccff00]/20">
-                    +40kg Deadlift PR
-                  </span>
-                </div>
-
-                <p className="mt-4 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  &ldquo;I was hesitant with heavy deadlifts due to back pain. Coach Vikram taught me proper breathing, lat engagement, and hip hinge. Lifted 125kg pain-free.&rdquo;
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                <span>Timeline: 4 Months</span>
-                <span className="font-bold text-white">45kg → 125kg</span>
-              </div>
-            </div>
-
-            {/* Transformation 3 */}
-            <div className="rounded-2xl border border-white/10 bg-[#0e121a] p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                  <div>
-                    <h3 className="text-base font-black text-white">Sameer D.</h3>
-                    <p className="text-xs text-zinc-400">Founder • 35 Yrs</p>
-                  </div>
-                  <span className="rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-cyan-400 border border-cyan-500/20">
-                    22 Sessions / Mo
-                  </span>
-                </div>
-
-                <p className="mt-4 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  &ldquo;The QR check-in and uncrowded free weight stations make early morning training completely frictionless. Resting heart rate reduced by 20 bpm.&rdquo;
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                <span>Attendance Streak</span>
-                <span className="font-bold text-white">92% Consistency</span>
-              </div>
-            </div>
-
-          </div>
-
-        </motion.div>
-      </section>
-
-
-      {/* ─────────────────────────────────────────────────────────────
-          SECTION 6: TRANSPARENT PRICING PLANS (ORIGINKIT PRICING-02)
+          SECTION 4: TRANSPARENT PRICING PLANS (ORIGINKIT PRICING-02)
           ───────────────────────────────────────────────────────────── */}
       <Pricing02
         heading={`Membership Plans at ${gymName}`}
@@ -1007,13 +829,13 @@ export function ClubShowcase({
                 <div>
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-1" style={{ color: primaryColor }}>
                     <Dumbbell className="h-4 w-4" />
-                    <span>Free Pass Invitation</span>
+                    <span>Free Trial Inquiry</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-white">
-                    Claim 1-Day Trial Pass
+                    Free Trial Inquiry
                   </h3>
                   <p className="text-xs text-zinc-400 mt-1 mb-5">
-                    Experience our heavy free weights, cardio arena, and certified coaches with zero commitment.
+                    Experience our heavy free weights, power rigs, and high-performance cardio arena with zero commitment.
                   </p>
 
                   <form onSubmit={handleClaimTrial} className="space-y-4">
@@ -1074,7 +896,7 @@ export function ClubShowcase({
                       className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-md transition-all hover:brightness-110 active:scale-[0.98] mt-2 apple-press"
                       style={{ backgroundColor: primaryColor }}
                     >
-                      <span>Claim Free Pass</span>
+                      <span>Submit Free Trial Inquiry</span>
                       <ArrowUpRight className="h-4 w-4" />
                     </button>
                   </form>
@@ -1085,16 +907,16 @@ export function ClubShowcase({
                     <Check className="h-7 w-7" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-white">Pass Confirmed!</h3>
+                    <h3 className="text-2xl font-black text-white">Trial Inquiry Confirmed!</h3>
                     <p className="text-xs text-zinc-400 mt-1">
-                      Welcome, <span className="text-white font-bold">{trialName}</span>! Your pass is active for {trialSlot}.
+                      Welcome, <span className="text-white font-bold">{trialName}</span>! Your trial inquiry is received for {trialSlot}.
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-[#121724] p-4 text-left font-mono text-xs space-y-1.5">
                     <div className="flex justify-between text-zinc-400">
-                      <span>PASS ID:</span>
-                      <span className="text-white font-bold">VIP-{Math.floor(100000 + Math.random() * 900000)}</span>
+                      <span>INQUIRY REF:</span>
+                      <span className="text-white font-bold">TRL-{Math.floor(100000 + Math.random() * 900000)}</span>
                     </div>
                     <div className="flex justify-between text-zinc-400">
                       <span>FACILITY:</span>
@@ -1107,13 +929,13 @@ export function ClubShowcase({
                   </div>
 
                   <a
-                    href={`https://wa.me/${gymProfile?.whatsappNumber || '919876543210'}?text=Hi%20${encodeURIComponent(gymName)},%20I%20just%20claimed%20my%201-Day%20Free%20Pass%20for%20${encodeURIComponent(trialName)}%20(${trialPhone})!`}
+                    href={`https://wa.me/${gymProfile?.whatsappNumber || '919876543210'}?text=Hi%20${encodeURIComponent(gymName)},%20I%20just%20submitted%20my%20Free%20Trial%20Inquiry%20for%20${encodeURIComponent(trialName)}%20(${trialPhone})!`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#25d366] py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#20b858] transition-colors"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    <span>Send Pass to My WhatsApp</span>
+                    <span>Send Confirmation to WhatsApp</span>
                   </a>
                 </div>
               )}

@@ -4,8 +4,8 @@ import { RouteLoadingScreen } from '@/components/PortalLoadingScreen';
 export default function Loading() {
   return (
     <RouteLoadingScreen
-      title="GymPRO Commercial Showcase"
-      badge="COMMERCIAL SHOWCASE"
+      title="GymPRO Home"
+      badge="GYMPRO HOME"
       subtitle="Loading interactive gym operating demo, metrics & reception scanner..."
       icon="showcase"
     />

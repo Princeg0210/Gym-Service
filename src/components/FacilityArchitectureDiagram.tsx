@@ -81,20 +81,12 @@ export function FacilityArchitectureDiagram() {
   return (
     <section className="relative my-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Editorial Header adhering to Cathryn Lavery Diagram-Design System */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-white/10 gap-4">
-        <div>
-          <div className="flex items-center gap-2.5 mb-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#ccff00] animate-pulse" />
-            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#ccff00] font-semibold">
-              DIAGRAM-DESIGN · SPECIFICATION V2.6
-            </span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono uppercase">
-            Facility Telemetry &amp; Athlete Lifecycle
-          </h2>
-          <p className="text-sm text-zinc-400 mt-1 max-w-2xl font-sans">
-            Orthogonal schematic of IronPulse hardware ingress, automated dues reconciliation, and floor sensor integration.
-          </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/10 gap-4">
+        <div className="flex items-center gap-2.5">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#ccff00] animate-pulse" />
+          <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#ccff00] font-semibold">
+            OPERATIONAL SCHEMATIC · V2.6
+          </span>
         </div>
 
         {/* View Mode Switcher */}

@@ -528,7 +528,7 @@ export function OperationsDashboard({
                     >
                       <div className="flex items-center gap-2">
                         <Home className="h-3.5 w-3.5 text-zinc-400" />
-                        <span>Home Screen (Showcase)</span>
+                        <span>Home Screen</span>
                       </div>
                       <ExternalLink className="h-3 w-3 text-zinc-500" />
                     </button>

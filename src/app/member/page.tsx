@@ -109,7 +109,7 @@ function MemberPageContent() {
               className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121622] px-3.5 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
             >
               <Home className="h-3.5 w-3.5" style={{ color: primaryColor }} />
-              <span>Showcase</span>
+              <span>Home</span>
             </Link>
           </div>
         </div>
