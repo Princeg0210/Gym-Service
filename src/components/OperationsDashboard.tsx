@@ -49,6 +49,7 @@ import { DietTab } from './operations/DietTab';
 import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
 import { TrainersTab } from './operations/TrainersTab';
 import { GymCmsManager } from './operations/GymCmsManager';
+import { AdminInvoicesDesk } from './operations/AdminInvoicesDesk';
 import { CheckInBanner } from './CheckInBanner';
 import { ExpiringAlertsCenter } from './ExpiringAlertsCenter';
 import { BusinessIntelligenceReports } from './BusinessIntelligenceReports';
@@ -61,6 +62,7 @@ import { sounds } from '@/lib/audio';
 
 export type SidebarTab =
   | 'dashboard'
+  | 'overview'
   | 'members'
   | 'attendance'
   | 'dues'
@@ -316,30 +318,69 @@ export function OperationsDashboard({
               </div>
             </Link>
 
-            {/* Standard Navigation: Desktop Quick Tabs */}
-            <nav className="hidden lg:flex items-center gap-1 ml-2 pl-3 border-l border-[#1f2738]">
+            {/* Salesforce Style Header Pills (Matching Image 2) */}
+            <nav className="hidden xl:flex items-center gap-1.5 ml-3 pl-3 border-l border-[#1f2738] bg-[#121620] rounded-full px-2.5 py-1 border border-white/5">
               <button
-                onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-bold transition-colors ${
-                  activeTab === 'dashboard'
-                    ? 'bg-[#ccff00]/15 text-[#ccff00] border border-[#ccff00]/30'
-                    : 'text-zinc-400 hover:text-white hover:bg-[#121724]'
-                }`}
+                onClick={() => setActiveTab('reports')}
+                className="p-1 text-zinc-400 hover:text-white transition-colors"
+                title="Reports Overview"
               >
                 <LayoutDashboard className="h-3.5 w-3.5" />
-                <span>Dashboard</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className="p-1 text-zinc-400 hover:text-white transition-colors"
+                title="Invoices Desk"
+              >
+                <CreditCard className="h-3.5 w-3.5" />
+              </button>
+
+              <button
+                onClick={() => setActiveTab('leads')}
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                  activeTab === 'leads' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                Estimates
+              </button>
+
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold transition-all ${
+                  activeTab === 'dashboard' || activeTab === 'dues'
+                    ? 'bg-[#ccff00] text-black shadow-sm'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-black shrink-0" />
+                <span>Invoices</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('dues')}
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                  activeTab === 'dues' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                Payments
               </button>
 
               <button
                 onClick={() => setActiveTab('members')}
-                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-bold transition-colors ${
-                  activeTab === 'members'
-                    ? 'bg-[#ccff00]/15 text-[#ccff00] border border-[#ccff00]/30'
-                    : 'text-zinc-400 hover:text-white hover:bg-[#121724]'
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                  activeTab === 'members' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
               >
-                <Users className="h-3.5 w-3.5" />
-                <span>Members</span>
+                Recurring Invoices
+              </button>
+
+              <button
+                onClick={() => setActiveTab('attendance')}
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                  activeTab === 'attendance' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                Checkouts
               </button>
 
               <button
@@ -348,11 +389,11 @@ export function OperationsDashboard({
                     onSwitchToShowcase();
                   }
                 }}
-                className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-[#121724] transition-colors"
-                title="View Public Commercial Showcase"
+                className="flex items-center gap-1 ml-1 px-2 py-0.5 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                title="Public Showcase"
               >
-                <Home className="h-3.5 w-3.5 text-zinc-400" />
-                <span>Home</span>
+                <Home className="h-3 w-3 text-zinc-400" />
+                <span>Store</span>
               </button>
             </nav>
           </div>
@@ -716,8 +757,19 @@ export function OperationsDashboard({
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
                 }`}
             >
+              <CreditCard className="h-4 w-4 shrink-0" />
+              <span>Invoices Desk</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'overview'
+                  ? 'bg-[#ccff00] text-black shadow-md'
+                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
+                }`}
+            >
               <LayoutDashboard className="h-4 w-4 shrink-0" />
-              <span>Dashboard</span>
+              <span>Operations & Reception</span>
             </button>
 
             <button
@@ -936,9 +988,20 @@ export function OperationsDashboard({
           />
 
           {/* ─────────────────────────────────────────────────────────────
-              VIEW: DASHBOARD (Exact reference screenshot match)
+              VIEW: DASHBOARD (Salesforce Invoices Desk - Exact Image 2)
           ───────────────────────────────────────────────────────────── */}
           {activeTab === 'dashboard' && (
+            <AdminInvoicesDesk
+              onOpenPaymentModal={(m) => setPaymentModalMember(m || members[0])}
+              onOpenAddMember={() => setIsAddMemberOpen(true)}
+              onBackToOverview={() => setActiveTab('overview')}
+            />
+          )}
+
+          {/* ─────────────────────────────────────────────────────────────
+              VIEW: OVERVIEW (Full Operations & Reception Desk)
+          ───────────────────────────────────────────────────────────── */}
+          {activeTab === 'overview' && (
             <OverviewTab
               members={members}
               attendanceLogs={attendanceLogs}
@@ -1023,17 +1086,10 @@ export function OperationsDashboard({
 
           {activeTab === 'dues' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-[#1b2333] pb-4">
-                <div>
-                  <h2 className="text-xl font-black text-white">Payments & Dues Recovery</h2>
-                  <p className="text-xs text-zinc-400">
-                    1-Click WhatsApp payment links with pre-filled UPI VPA reminders
-                  </p>
-                </div>
-              </div>
-              <DuesTab
-                members={members}
-                onOpenPaymentModal={(m) => setPaymentModalMember(m)}
+              <AdminInvoicesDesk
+                onOpenPaymentModal={(m) => setPaymentModalMember(m || members[0])}
+                onOpenAddMember={() => setIsAddMemberOpen(true)}
+                onBackToOverview={() => setActiveTab('overview')}
               />
             </div>
           )}

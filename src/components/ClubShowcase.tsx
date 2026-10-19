@@ -30,6 +30,7 @@ import ScrollProgress from '@/components/ScrollProgress';
 import EquipmentTicker from '@/components/EquipmentTicker';
 import BackToTop from '@/components/BackToTop';
 import ParticleDrift from '@/components/ParticleDrift';
+import { MoveShowcase } from './MoveShowcase';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -312,71 +313,13 @@ export function ClubShowcase({
       <ScrollProgress color={primaryColor} />
 
       {/* ─────────────────────────────────────────────────────────────
-          SECTION 1: HERO SECTION
-          ───────────────────────────────────────────────────────────── */}
-      <section className="relative border-b border-[#1c212e] py-14 lg:py-24 flex items-center bg-[#060709] overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            
-            {/* Left Column: Headlines & Actions */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              <div className="space-y-2">
-                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black uppercase tracking-tight text-white leading-none">
-                  {heroHeadline}{' '}
-                  <span
-                    className="block mt-2"
-                    style={{ color: primaryColor }}
-                  >
-                    {heroHighlight}
-                  </span>
-                </h1>
-              </div>
-
-              {/* Concise, gym-specific content */}
-              <p className="text-sm sm:text-base text-zinc-300 max-w-xl leading-relaxed">
-                {heroSubtitle}
-              </p>
-
-              {/* Action Buttons: 1 Primary + 1 Secondary CTA */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
-                <button
-                  onClick={() => setIsTrialModalOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-md transition-all hover:brightness-110 active:scale-95 apple-press whitespace-nowrap"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  <span>Claim 1-Day Free Pass</span>
-                  <ArrowUpRight className="h-4 w-4" />
-                </button>
-
-                <a
-                  href="#pricing"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-xs sm:text-sm font-bold text-zinc-200 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all apple-press whitespace-nowrap"
-                >
-                  <span>Explore Plans & Amenities</span>
-                </a>
-              </div>
-
-            </div>
-
-            {/* Right Column: Authentic Gym Photography */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-[#0c0f16] shadow-xl">
-                <Image
-                  src={heroImg}
-                  alt={`${gymName} athlete training`}
-                  fill
-                  className="object-cover object-center"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-transparent opacity-80 pointer-events-none" />
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+          SECTION 1: EXACT IMAGE 1 MOVE ATHLETIC APPAREL SHOWCASE
+      ───────────────────────────────────────────────────────────── */}
+      <MoveShowcase
+        onSwitchMode={onSwitchMode}
+        onOpenAddMember={onOpenAddMember}
+        hideHeader={true}
+      />
 
       {/* Infinite Equipment Standards Ticker Marquee (Equinox / Alo / Nike style) */}
       <EquipmentTicker primaryColor={primaryColor} />
