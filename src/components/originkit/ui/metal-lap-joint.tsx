@@ -162,6 +162,7 @@ void main() {
 
   col += lightTerm(N, V, BOX_A_DIR, f0, a, vec3(0.55, 0.55, 0.57));
   col += lightTerm(N, V, BOX_B_DIR, f0, a, vec3(0.22, 0.21, 0.20));
+  col += lightTerm(N, V, vec3(0.0, 0.7, 0.7), f0, a, vec3(0.18, 0.24, 0.03));
   col += uBase * 0.35;
   gl_FragColor = vec4(srgb(aces(col)), 1.0);
 }

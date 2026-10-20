@@ -277,17 +277,17 @@ export function PortalLoadingOverlay({
       transition={{ duration: 0.3 }}
       className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#060709]/96 backdrop-blur-xl px-4 text-center select-none"
     >
-      {/* Dynamic Background Glow */}
+      {/* Dynamic Background Glow - Exact Lush Green Radial Gradient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full bg-[#ccff00]/12 blur-[130px]" />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-[#1e2738]/50 blur-[90px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(204,255,0,0.22)_0%,_rgba(150,200,0,0.10)_35%,_rgba(6,7,9,0.85)_70%,_#060709_100%)]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[520px] w-[520px] rounded-full bg-[#ccff00]/18 blur-[130px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#ccff00]/12 blur-[80px]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
         {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
-          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/20 blur-3xl pointer-events-none" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
@@ -376,16 +376,17 @@ export function RouteLoadingScreen({
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#060709] px-4 text-center select-none">
+      {/* Dynamic Background Glow - Exact Lush Green Radial Gradient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full bg-[#ccff00]/12 blur-[130px]" />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-[#1e2738]/50 blur-[90px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(204,255,0,0.22)_0%,_rgba(150,200,0,0.10)_35%,_rgba(6,7,9,0.85)_70%,_#060709_100%)]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[520px] w-[520px] rounded-full bg-[#ccff00]/18 blur-[130px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#ccff00]/12 blur-[80px]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
         {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
-          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
+          <div className="absolute inset-0 rounded-full bg-[#ccff00]/20 blur-3xl pointer-events-none" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
