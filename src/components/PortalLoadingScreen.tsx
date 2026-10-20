@@ -284,12 +284,10 @@ export function PortalLoadingOverlay({
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black with Green Aura) */}
+        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          {/* Vibrant Green Gradient Aura behind the Dumbbell */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#7ab800]/25 via-[#ccff00]/20 to-[#e6ff80]/15 blur-3xl pointer-events-none" />
-          <div className="absolute inset-4 rounded-full bg-[#ccff00]/15 blur-2xl pointer-events-none" />
-          <div className="absolute inset-8 rounded-full border border-[#ccff00]/25 bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_50px_rgba(204,255,0,0.15)]" />
+          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
+          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
@@ -384,12 +382,10 @@ export function RouteLoadingScreen({
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black with Green Aura) */}
+        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          {/* Vibrant Green Gradient Aura behind the Dumbbell */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#7ab800]/25 via-[#ccff00]/20 to-[#e6ff80]/15 blur-3xl pointer-events-none" />
-          <div className="absolute inset-4 rounded-full bg-[#ccff00]/15 blur-2xl pointer-events-none" />
-          <div className="absolute inset-8 rounded-full border border-[#ccff00]/25 bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_50px_rgba(204,255,0,0.15)]" />
+          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
+          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
