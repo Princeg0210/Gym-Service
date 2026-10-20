@@ -709,7 +709,7 @@ export function OverviewTab({
                 </span>
               </div>
               <button
-                onClick={() => setActiveTab('dues')}
+                onClick={() => setActiveTab('dashboard')}
                 className="text-xs font-bold text-[#ccff00] hover:underline"
               >
                 View Ledger →

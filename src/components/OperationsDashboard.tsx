@@ -41,7 +41,6 @@ import {
 } from 'lucide-react';
 import { useAdminAuth } from './AdminAuthGuard';
 import { AttendanceTab } from './operations/AttendanceTab';
-import { DuesTab } from './operations/DuesTab';
 import { MembersTab } from './operations/MembersTab';
 import { EquipmentTab } from './operations/EquipmentTab';
 import { LeadsTab } from './operations/LeadsTab';
@@ -65,7 +64,6 @@ export type SidebarTab =
   | 'overview'
   | 'members'
   | 'attendance'
-  | 'dues'
   | 'renewal_bot'
   | 'leads'
   | 'workouts'
@@ -580,19 +578,6 @@ export function OperationsDashboard({
 
               <button
                 onClick={() => {
-                  setActiveTab('dues');
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`flex items-center gap-2 p-2.5 rounded-lg text-xs font-bold ${
-                  activeTab === 'dues' ? 'bg-[#ccff00] text-black' : 'bg-[#121724] text-zinc-300'
-                }`}
-              >
-                <CreditCard className="h-4 w-4 shrink-0" />
-                <span>Payments</span>
-              </button>
-
-              <button
-                onClick={() => {
                   setActiveTab('leads');
                   setIsMobileMenuOpen(false);
                 }}
@@ -725,18 +710,6 @@ export function OperationsDashboard({
             >
               <CalendarDays className="h-4 w-4 shrink-0" />
               <span>Attendance</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('dues')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
-                activeTab === 'dues'
-                  ? 'bg-[#ccff00] text-black shadow-md'
-                  : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-              }`}
-            >
-              <CreditCard className="h-4 w-4 shrink-0" />
-              <span>Payments & Dues</span>
             </button>
 
             <button
@@ -1011,18 +984,6 @@ export function OperationsDashboard({
                 attendanceLogs={attendanceLogs}
                 onCheckInMember={onCheckInMember}
                 onOpenPaymentModal={(m) => setPaymentModalMember(m)}
-              />
-            </div>
-          )}
-
-          {activeTab === 'dues' && (
-            <div className="space-y-4">
-              <AdminInvoicesDesk
-                members={members}
-                payments={payments}
-                onOpenPaymentModal={(m) => setPaymentModalMember(m || members[0])}
-                onOpenAddMember={() => setIsAddMemberOpen(true)}
-                onBackToOverview={() => setActiveTab('overview')}
               />
             </div>
           )}
