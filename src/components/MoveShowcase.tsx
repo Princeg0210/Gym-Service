@@ -439,7 +439,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors" />
-                  <div className="absolute bottom-1.5 left-1.5 right-1.5 text-center text-[9px] font-bold text-white bg-black/60 py-0.5 px-1 rounded backdrop-blur-sm truncate">
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 text-center text-[10px] font-bold text-white bg-black/60 py-0.5 px-1.5 rounded backdrop-blur-sm truncate">
                     {item.tag}
                   </div>
                 </div>
