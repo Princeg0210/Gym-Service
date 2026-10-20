@@ -1,5 +1,12 @@
-import { Outfit, JetBrains_Mono } from 'next/font/google';
+import { Poppins, Outfit, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+
+const poppins = Poppins({
+  variable: '--font-poppins',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
 
 const outfit = Outfit({
   variable: '--font-outfit',
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#060709] text-zinc-100">
         <Suspense fallback={null}>

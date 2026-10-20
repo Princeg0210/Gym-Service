@@ -30,6 +30,7 @@ import ScrollProgress from '@/components/ScrollProgress';
 import BackToTop from '@/components/BackToTop';
 import ParticleDrift from '@/components/ParticleDrift';
 import { MoveShowcase } from './MoveShowcase';
+import { Footer } from './Footer';
 
 interface ClubShowcaseProps {
   onSwitchMode: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -318,6 +319,7 @@ export function ClubShowcase({
         onSwitchMode={onSwitchMode}
         onOpenAddMember={onOpenAddMember}
         hideHeader={true}
+        hideFooter={true}
       />
 
 
@@ -943,6 +945,9 @@ export function ClubShowcase({
           </div>
         )}
       </AnimatePresence>
+
+      {/* Official GymPRO Multi-Tenant Commercial Footer */}
+      <Footer gymProfile={gymProfile} />
 
       {/* Floating Tactile Back-To-Top Button (Apple / Equinox style) */}
       <BackToTop primaryColor={primaryColor} />

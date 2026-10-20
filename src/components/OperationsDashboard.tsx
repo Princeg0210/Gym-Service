@@ -35,7 +35,9 @@ import {
   Menu,
   X,
   Lock,
-  ExternalLink
+  ExternalLink,
+  PanelLeftClose,
+  PanelLeft
 } from 'lucide-react';
 import { useAdminAuth } from './AdminAuthGuard';
 import { AttendanceTab } from './operations/AttendanceTab';
@@ -116,6 +118,7 @@ export function OperationsDashboard({
 }: OperationsDashboardProps) {
   // Navigation State
   const [activeTab, setActiveTab] = useState<SidebarTab>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [currentGymName, setCurrentGymName] = useState<string>('Alpha Fitness Gym');
   const [currentGymCity, setCurrentGymCity] = useState<string>('Bengaluru');
 
@@ -268,25 +271,32 @@ export function OperationsDashboard({
   };
 
   return (
-    <div className="min-h-screen bg-[#080b11] text-zinc-100 flex flex-col font-sans antialiased selection:bg-[#ccff00] selection:text-black">
-      {/* ─────────────────────────────────────────────────────────────
-          1. TOP NAVIGATION BAR (Exact reference reproduction)
-      ───────────────────────────────────────────────────────────── */}
+    <div className="h-screen overflow-hidden bg-[#080b11] text-zinc-100 flex flex-col font-sans antialiased selection:bg-[#ccff00] selection:text-black">
       {/* ─────────────────────────────────────────────────────────────
           1. REFACTORED TOP NAVIGATION BAR
+          - Sidebar toggle button (open / hide)
           - Compact logo & single-line brand name
-          - Standard navigation (Dashboard, Members, Home Screen)
           - Clearly labeled global member search with "/" shortcut
-          - Compact Neon DB live indicator
-          - Simplified Date/Time presentation
-          - Grouped notifications, WhatsApp, and profile controls
-          - Profile menu with "Lock Console"
-          - Responsive mobile navigation drawer
+          - Live DB indicator & notifications
       ───────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 w-full border-b border-[#1b2333] bg-[#090d16]/95 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-[#1b2333] bg-[#090d16]/95 backdrop-blur-md shrink-0">
         <div className="flex h-14 md:h-16 items-center justify-between px-3 sm:px-4 lg:px-6 gap-2 sm:gap-4">
-          {/* Left: Compact Logo + Single-Line Brand & Gym Identity */}
+          {/* Left: Sidebar Toggle + Compact Logo + Single-Line Brand & Gym Identity */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Sidebar Open/Hide Toggle Button */}
+            <button
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+              className="hidden md:inline-flex items-center justify-center h-8 w-8 rounded-lg border border-[#202738] bg-[#101522] text-zinc-400 hover:text-white hover:border-[#ccff00]/40 transition-colors shrink-0"
+              title={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+              aria-label={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+            >
+              {isSidebarOpen ? (
+                <PanelLeftClose className="h-4 w-4" />
+              ) : (
+                <PanelLeft className="h-4 w-4" />
+              )}
+            </button>
+
             <Link
               href="/"
               onClick={(e) => {
@@ -312,76 +322,11 @@ export function OperationsDashboard({
                 >
                   {currentGymName}
                 </span>
-                <span className="ml-2 rounded border border-[#ccff00]/40 bg-[#ccff00]/10 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#ccff00] hidden md:inline">
-                  ADMIN
+                <span className="ml-2 rounded border border-[#ccff00]/40 bg-[#ccff00]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#ccff00] hidden md:inline">
+                  Admin
                 </span>
               </div>
             </Link>
-
-            {/* Salesforce Style Header Pills (Shown only on Invoices Desk where they belong) */}
-            {activeTab === 'dashboard' && (
-              <nav className="hidden xl:flex items-center gap-1 bg-[#121620] rounded-full px-2 py-1 border border-white/5 shrink-0 ml-2">
-                <button
-                  onClick={() => setActiveTab('leads')}
-                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
-                >
-                  Estimates
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('dashboard')}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold whitespace-nowrap transition-all bg-[#ccff00] text-black shadow-sm"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-black shrink-0" />
-                  <span>Invoices</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('dues')}
-                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
-                >
-                  Payments
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('members')}
-                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
-                >
-                  Recurring
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('attendance')}
-                  className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap text-zinc-400 hover:text-white transition-colors"
-                >
-                  Checkouts
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (onSwitchToShowcase) {
-                      onSwitchToShowcase();
-                    }
-                  }}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
-                  title="Return to Home Screen"
-                >
-                  <Home className="h-3 w-3 text-zinc-400 shrink-0" />
-                  <span>Home</span>
-                </button>
-              </nav>
-            )}
-
-            {/* When on Operations & Reception desk */}
-            {activeTab === 'overview' && (
-              <div className="hidden xl:flex items-center gap-2 bg-[#121620] rounded-full px-3 py-1 border border-white/5 shrink-0 ml-2">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ccff00] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ccff00]"></span>
-                </span>
-                <span className="text-xs font-bold text-white">Operations & Reception Desk</span>
-              </div>
-            )}
           </div>
 
           {/* Center: Full-width Global Member Search with "/" shortcut */}
@@ -708,10 +653,19 @@ export function OperationsDashboard({
 
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN BODY: LEFT SIDEBAR + MAIN CONTENT WORKSPACE
+          - Independent sidebar scrolling
+          - Independent main content workspace scrolling
+          - Toggleable sidebar via isSidebarOpen state
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* ── LEFT SIDEBAR NAVIGATION ── */}
-        <aside className="w-60 shrink-0 border-r border-[#1b2333] bg-[#090d16] p-4 flex flex-col justify-between hidden md:flex">
+        <aside
+          className={`${
+            isSidebarOpen
+              ? 'w-60 shrink-0 border-r border-[#1b2333] bg-[#090d16] p-4 flex flex-col justify-between overflow-y-auto h-full hidden md:flex transition-all duration-200'
+              : 'hidden'
+          }`}
+        >
           {/* Quick Action Button */}
           <div className="mb-4">
             <button
@@ -727,10 +681,11 @@ export function OperationsDashboard({
           <nav className="space-y-1">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'dashboard'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'dashboard'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <CreditCard className="h-4 w-4 shrink-0" />
               <span>Invoices Desk</span>
@@ -738,10 +693,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('overview')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'overview'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'overview'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <LayoutDashboard className="h-4 w-4 shrink-0" />
               <span>Operations & Reception</span>
@@ -749,10 +705,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('members')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'members'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'members'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <Users className="h-4 w-4 shrink-0" />
               <span>Members</span>
@@ -760,10 +717,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('attendance')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'attendance'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'attendance'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <CalendarDays className="h-4 w-4 shrink-0" />
               <span>Attendance</span>
@@ -771,10 +729,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('dues')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'dues'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'dues'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <CreditCard className="h-4 w-4 shrink-0" />
               <span>Payments & Dues</span>
@@ -793,39 +752,40 @@ export function OperationsDashboard({
                 <span>Renewal Bot</span>
               </div>
               <span
-                className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded-full ${
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full ${
                   activeTab === 'renewal_bot'
                     ? 'bg-black text-[#ccff00]'
                     : 'bg-[#25d366]/20 text-[#25d366] border border-[#25d366]/30'
                 }`}
               >
-                AUTO
+                Auto
               </span>
             </button>
 
-
             <button
               onClick={() => setActiveTab('leads')}
-              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'leads'
+              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'leads'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <div className="flex items-center gap-3">
                 <PhoneCall className="h-4 w-4 shrink-0" />
                 <span>Enquiries & Trials</span>
               </div>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-950 border border-red-500/50 text-xs font-bold text-red-200">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-950 border border-red-500/50 text-[10px] font-bold text-red-200">
                 3
               </span>
             </button>
 
-              <button
-                onClick={() => setActiveTab('diet')}
-                className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'diet'
+            <button
+              onClick={() => setActiveTab('diet')}
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'diet'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <Utensils className="h-4 w-4 shrink-0" />
               <span>Diet & Nutrition</span>
@@ -833,10 +793,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('equipment')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'equipment'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'equipment'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <Wrench className="h-4 w-4 shrink-0" />
               <span>Equipment</span>
@@ -844,10 +805,11 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('reports')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'reports'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'reports'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <BarChart3 className="h-4 w-4 shrink-0" />
               <span>Reports</span>
@@ -855,22 +817,23 @@ export function OperationsDashboard({
 
             <button
               onClick={() => setActiveTab('staff')}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'staff'
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'staff'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <UserCheck className="h-4 w-4 shrink-0" />
               <span>Staff & Trainers</span>
             </button>
 
-
             <button
               onClick={() => setActiveTab('landing_cms')}
-              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${activeTab === 'landing_cms'
+              className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
+                activeTab === 'landing_cms'
                   ? 'bg-[#ccff00] text-black shadow-md'
                   : 'text-zinc-400 hover:bg-[#121724] hover:text-white'
-                }`}
+              }`}
             >
               <div className="flex items-center gap-3">
                 <Globe className="h-4 w-4 shrink-0" />
@@ -883,7 +846,7 @@ export function OperationsDashboard({
                     : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                 }`}
               >
-                BRAND
+                Brand
               </span>
             </button>
           </nav>
@@ -943,7 +906,7 @@ export function OperationsDashboard({
         </aside>
 
         {/* ── MAIN CONTENT WORKSPACE ── */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+        <main className="flex-1 min-w-0 p-4 lg:p-6 overflow-y-auto h-full">
           {/* Check-In Result Banner */}
           <CheckInBanner
             member={checkedInBannerMember}

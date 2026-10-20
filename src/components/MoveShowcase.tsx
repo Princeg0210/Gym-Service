@@ -27,9 +27,10 @@ interface MoveShowcaseProps {
   onSwitchMode?: (mode: 'showcase' | 'operations' | 'member_portal') => void;
   onOpenAddMember?: () => void;
   hideHeader?: boolean;
+  hideFooter?: boolean;
 }
 
-export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true }: MoveShowcaseProps) {
+export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true, hideFooter = false }: MoveShowcaseProps) {
   const [emailInput, setEmailInput] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -500,133 +501,135 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true 
       {/* ─────────────────────────────────────────────────────────────
           8. GYMPRO FOOTER
       ───────────────────────────────────────────────────────────── */}
-      <footer className="w-full py-12 border-t border-white/5 bg-[#07080a] text-zinc-400 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10">
-            {/* Logo Column */}
-            <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-2 group mb-4">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black">
-                  <Dumbbell className="h-4 w-4" />
+      {!hideFooter && (
+        <footer className="w-full py-12 border-t border-white/5 bg-[#07080a] text-zinc-400 text-xs">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10">
+              {/* Logo Column */}
+              <div className="col-span-2 md:col-span-1">
+                <Link href="/" className="flex items-center gap-2 group mb-4">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black">
+                    <Dumbbell className="h-4 w-4" />
+                  </div>
+                  <span className="font-black text-xl tracking-tight text-white uppercase">
+                    Gym<span className="text-[#ccff00]">PRO</span>
+                  </span>
+                </Link>
+                <p className="text-[11px] text-zinc-500 leading-relaxed">
+                  Operating multi-tenant commercial strength arenas, Olympic power rigs, and automated reception desks across India.
+                </p>
+              </div>
+
+              {/* FACILITIES */}
+              <div>
+                <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">FACILITIES</h5>
+                <ul className="space-y-2 text-[11px]">
+                  <li>
+                    <a href="#facilities" className="hover:text-white transition-colors">
+                      Olympic Power Racks
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#facilities" className="hover:text-white transition-colors">
+                      Free Weights Arena
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#facilities" className="hover:text-white transition-colors">
+                      MetCon Sprint Turf
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#facilities" className="hover:text-[#ccff00] transition-colors">
+                      Recovery Suite
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* PROGRAMS */}
+              <div>
+                <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">PROGRAMS</h5>
+                <ul className="space-y-2 text-[11px]">
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Strength & Hypertrophy
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Cardio Fat Oxidation
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      1-on-1 Personal Trainer
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Indian Nutrition Plans
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* GYM MANAGEMENT */}
+              <div>
+                <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">ADMIN PORTAL</h5>
+                <ul className="space-y-2 text-[11px]">
+                  <li>
+                    <Link href="/admin" className="hover:text-[#ccff00] transition-colors font-semibold">
+                      Invoices & Accounts Desk
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="hover:text-white transition-colors">
+                      Member Check-In Scanner
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="hover:text-white transition-colors">
+                      WhatsApp Fee Reminders
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="hover:text-white transition-colors">
+                      Equipment AMC Logs
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* COMMUNITY */}
+              <div>
+                <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">HOURS & ACCESS</h5>
+                <p className="text-[11px] text-zinc-400 mb-2 font-mono">
+                  Mon - Sat: 5:30 AM - 10:30 PM
+                  <br />
+                  Sun: 7:00 AM - 8:00 PM
+                </p>
+                <div className="flex items-center gap-2 mt-4 text-[#ccff00] text-[11px] font-bold">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>24/7 Biometric QR Enabled</span>
                 </div>
-                <span className="font-black text-xl tracking-tight text-white uppercase">
-                  Gym<span className="text-[#ccff00]">PRO</span>
-                </span>
-              </Link>
-              <p className="text-[11px] text-zinc-500 leading-relaxed">
-                Operating multi-tenant commercial strength arenas, Olympic power rigs, and automated reception desks across India.
-              </p>
+              </div>
             </div>
 
-            {/* FACILITIES */}
-            <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">FACILITIES</h5>
-              <ul className="space-y-2 text-[11px]">
-                <li>
-                  <a href="#facilities" className="hover:text-white transition-colors">
-                    Olympic Power Racks
-                  </a>
-                </li>
-                <li>
-                  <a href="#facilities" className="hover:text-white transition-colors">
-                    Free Weights Arena
-                  </a>
-                </li>
-                <li>
-                  <a href="#facilities" className="hover:text-white transition-colors">
-                    MetCon Sprint Turf
-                  </a>
-                </li>
-                <li>
-                  <a href="#facilities" className="hover:text-[#ccff00] transition-colors">
-                    Recovery Suite
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* PROGRAMS */}
-            <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">PROGRAMS</h5>
-              <ul className="space-y-2 text-[11px]">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Strength & Hypertrophy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Cardio Fat Oxidation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    1-on-1 Personal Trainer
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Indian Nutrition Plans
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* GYM MANAGEMENT */}
-            <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">ADMIN PORTAL</h5>
-              <ul className="space-y-2 text-[11px]">
-                <li>
-                  <Link href="/admin" className="hover:text-[#ccff00] transition-colors font-semibold">
-                    Invoices & Accounts Desk
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="hover:text-white transition-colors">
-                    Member Check-In Scanner
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="hover:text-white transition-colors">
-                    WhatsApp Fee Reminders
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="hover:text-white transition-colors">
-                    Equipment AMC Logs
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* COMMUNITY */}
-            <div>
-              <h5 className="text-white font-extrabold uppercase tracking-wider mb-3 text-[11px]">HOURS & ACCESS</h5>
-              <p className="text-[11px] text-zinc-400 mb-2 font-mono">
-                Mon - Sat: 5:30 AM - 10:30 PM
-                <br />
-                Sun: 7:00 AM - 8:00 PM
-              </p>
-              <div className="flex items-center gap-2 mt-4 text-[#ccff00] text-[11px] font-bold">
-                <Clock className="w-3.5 h-3.5" />
-                <span>24/7 Biometric QR Enabled</span>
+            <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
+              <p>© 2026 GymPRO India. All rights reserved.</p>
+              <div className="flex items-center gap-6">
+                <a href="#" className="hover:text-zinc-300 transition-colors">
+                  Privacy Policy
+                </a>
+                <a href="#" className="hover:text-zinc-300 transition-colors">
+                  Terms of Service
+                </a>
               </div>
             </div>
           </div>
-
-          <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
-            <p>© 2026 GymPRO India. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-zinc-300 transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-zinc-300 transition-colors">
-                Terms of Service
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
       {/* Quick View Item Modal */}
       {selectedQuickView && (
