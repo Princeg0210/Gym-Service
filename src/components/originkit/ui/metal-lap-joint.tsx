@@ -153,7 +153,8 @@ void main() {
   vec3 V = normalize(uCamPos - vP);
   float r = clamp(uRough, 0.03, 1.0);
   float a = r * r;
-  vec3 f0 = clamp(uBase * uReflect, vec3(0.0), vec3(1.0));
+  // Ensure dark/black materials retain crisp metallic specular highlights (F0 floor)
+  vec3 f0 = clamp(max(uBase * uReflect, vec3(0.18 * uReflect)), vec3(0.0), vec3(1.0));
   float NoV = max(dot(N, V), 1e-4);
   vec3 R = reflect(-V, N);
   vec3 Fe = f0 + (max(vec3(1.0 - r), f0) - f0) * pow(1.0 - NoV, 5.0);
@@ -161,6 +162,7 @@ void main() {
 
   col += lightTerm(N, V, BOX_A_DIR, f0, a, vec3(0.55, 0.55, 0.57));
   col += lightTerm(N, V, BOX_B_DIR, f0, a, vec3(0.22, 0.21, 0.20));
+  col += uBase * 0.35;
   gl_FragColor = vec4(srgb(aces(col)), 1.0);
 }
 `
@@ -324,29 +326,154 @@ export const packMesh = (m: Mesh) => ({
   idx: new Uint16Array(m.idx),
 })
 
+export function chamferedCylinder(
+  m: Mesh,
+  halfX: number,
+  radius: number,
+  centre: V3,
+  part: number,
+  chamfer: number = 0.02,
+  segments: number = 32
+) {
+  const c = Math.min(chamfer, Math.min(halfX * 0.45, radius * 0.45));
+  const hx = halfX - c;
+  const rc = radius - c;
+  const cx = centre[0];
+  const cy = centre[1];
+  const cz = centre[2];
+
+  const cosT: number[] = [];
+  const sinT: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    const a = (j / segments) * TAU;
+    cosT.push(Math.cos(a));
+    sinT.push(Math.sin(a));
+  }
+
+  const addV = (px: number, py: number, pz: number, nx: number, ny: number, nz: number) => {
+    const idx = m.pos.length / 3;
+    m.pos.push(px, py, pz);
+    m.nrm.push(nx, ny, nz);
+    m.part.push(part);
+    return idx;
+  };
+
+  const addTri = (i0: number, i1: number, i2: number) => {
+    m.idx.push(i0, i1, i2);
+  };
+
+  // 1. Left End Cap (x = cx - halfX, normal = [-1, 0, 0])
+  const leftCenter = addV(cx - halfX, cy, cz, -1, 0, 0);
+  const leftCapPerim: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    leftCapPerim.push(
+      addV(cx - halfX, cy + rc * cosT[j], cz + rc * sinT[j], -1, 0, 0)
+    );
+  }
+  for (let j = 0; j < segments; j++) {
+    const jNext = (j + 1) % segments;
+    addTri(leftCenter, leftCapPerim[jNext], leftCapPerim[j]);
+  }
+
+  // 2. Left Chamfer Bevel Ring
+  const SQRT2_INV = 0.70710678;
+  const leftBevelA: number[] = [];
+  const leftBevelB: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    const ny = SQRT2_INV * cosT[j];
+    const nz = SQRT2_INV * sinT[j];
+    leftBevelA.push(
+      addV(cx - halfX, cy + rc * cosT[j], cz + rc * sinT[j], -SQRT2_INV, ny, nz)
+    );
+    leftBevelB.push(
+      addV(cx - hx, cy + radius * cosT[j], cz + radius * sinT[j], -SQRT2_INV, ny, nz)
+    );
+  }
+  for (let j = 0; j < segments; j++) {
+    const jNext = (j + 1) % segments;
+    addTri(leftBevelA[j], leftBevelA[jNext], leftBevelB[jNext]);
+    addTri(leftBevelA[j], leftBevelB[jNext], leftBevelB[j]);
+  }
+
+  // 3. Central Cylindrical Barrel (normal = [0, cosT, sinT])
+  const barrelLeft: number[] = [];
+  const barrelRight: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    const ny = cosT[j];
+    const nz = sinT[j];
+    barrelLeft.push(
+      addV(cx - hx, cy + radius * cosT[j], cz + radius * sinT[j], 0, ny, nz)
+    );
+    barrelRight.push(
+      addV(cx + hx, cy + radius * cosT[j], cz + radius * sinT[j], 0, ny, nz)
+    );
+  }
+  for (let j = 0; j < segments; j++) {
+    const jNext = (j + 1) % segments;
+    addTri(barrelLeft[j], barrelLeft[jNext], barrelRight[jNext]);
+    addTri(barrelLeft[j], barrelRight[jNext], barrelRight[j]);
+  }
+
+  // 4. Right Chamfer Bevel Ring
+  const rightBevelA: number[] = [];
+  const rightBevelB: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    const ny = SQRT2_INV * cosT[j];
+    const nz = SQRT2_INV * sinT[j];
+    rightBevelA.push(
+      addV(cx + hx, cy + radius * cosT[j], cz + radius * sinT[j], SQRT2_INV, ny, nz)
+    );
+    rightBevelB.push(
+      addV(cx + halfX, cy + rc * cosT[j], cz + rc * sinT[j], SQRT2_INV, ny, nz)
+    );
+  }
+  for (let j = 0; j < segments; j++) {
+    const jNext = (j + 1) % segments;
+    addTri(rightBevelA[j], rightBevelA[jNext], rightBevelB[jNext]);
+    addTri(rightBevelA[j], rightBevelB[jNext], rightBevelB[j]);
+  }
+
+  // 5. Right End Cap (x = cx + halfX, normal = [1, 0, 0])
+  const rightCenter = addV(cx + halfX, cy, cz, 1, 0, 0);
+  const rightCapPerim: number[] = [];
+  for (let j = 0; j < segments; j++) {
+    rightCapPerim.push(
+      addV(cx + halfX, cy + rc * cosT[j], cz + rc * sinT[j], 1, 0, 0)
+    );
+  }
+  for (let j = 0; j < segments; j++) {
+    const jNext = (j + 1) % segments;
+    addTri(rightCenter, rightCapPerim[j], rightCapPerim[jNext]);
+  }
+}
+
 export function buildGeometry(variant: "dumbbell" | "lap-joint" = "dumbbell") {
   const m = emptyMesh()
 
   if (variant === "dumbbell") {
     for (let k = 0; k < PART_COUNT; k++) {
-      // 1. Central Knurled Barbell / Dumbbell Rod
-      chamferedBox(m, [0.75, 0.12, 0.12], [0, 0, 0], k, 0.02)
+      // 1. Central Knurled Round Handle / Barbell Shaft
+      chamferedCylinder(m, 0.60, 0.11, [0, 0, 0], k, 0.02, 32)
 
-      // 2. Inner Collars
-      chamferedBox(m, [0.05, 0.28, 0.28], [-0.55, 0, 0], k, 0.02)
-      chamferedBox(m, [0.05, 0.28, 0.28], [0.55, 0, 0], k, 0.02)
+      // 2. Inner Round Retaining Collars
+      chamferedCylinder(m, 0.04, 0.22, [-0.56, 0, 0], k, 0.015, 32)
+      chamferedCylinder(m, 0.04, 0.22, [0.56, 0, 0], k, 0.015, 32)
 
-      // 3. Primary Heavy Calibrated Weight Plates
-      chamferedBox(m, [0.12, 0.54, 0.54], [-0.74, 0, 0], k, 0.04)
-      chamferedBox(m, [0.12, 0.54, 0.54], [0.74, 0, 0], k, 0.04)
+      // 3. Primary Heavy Calibrated Round Weight Plates
+      chamferedCylinder(m, 0.12, 0.58, [-0.74, 0, 0], k, 0.035, 32)
+      chamferedCylinder(m, 0.12, 0.58, [0.74, 0, 0], k, 0.035, 32)
 
-      // 4. Secondary Outer Weight Plates
-      chamferedBox(m, [0.10, 0.44, 0.44], [-0.98, 0, 0], k, 0.03)
-      chamferedBox(m, [0.10, 0.44, 0.44], [0.98, 0, 0], k, 0.03)
+      // 4. Secondary Outer Round Weight Plates
+      chamferedCylinder(m, 0.10, 0.48, [-0.98, 0, 0], k, 0.03, 32)
+      chamferedCylinder(m, 0.10, 0.48, [0.98, 0, 0], k, 0.03, 32)
 
-      // 5. End Olympic Caps / Hex Nuts
-      chamferedBox(m, [0.08, 0.24, 0.24], [-1.18, 0, 0], k, 0.02)
-      chamferedBox(m, [0.08, 0.24, 0.24], [1.18, 0, 0], k, 0.02)
+      // 5. Tertiary Outer Round Plates
+      chamferedCylinder(m, 0.08, 0.38, [-1.18, 0, 0], k, 0.025, 32)
+      chamferedCylinder(m, 0.08, 0.38, [1.18, 0, 0], k, 0.025, 32)
+
+      // 6. Outer Olympic Locking Nuts / End Hub Caps
+      chamferedCylinder(m, 0.06, 0.20, [-1.34, 0, 0], k, 0.02, 32)
+      chamferedCylinder(m, 0.06, 0.20, [1.34, 0, 0], k, 0.02, 32)
     }
   } else {
     for (let k = 0; k < PART_COUNT; k++) chamferedBox(m, BAR, [0, 0, 0], k)

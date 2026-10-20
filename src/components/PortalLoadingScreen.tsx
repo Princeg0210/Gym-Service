@@ -284,16 +284,17 @@ export function PortalLoadingOverlay({
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Large Prominent OriginKit 3D Kinetic Dumbbell Loading Animation */}
+        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          <div className="absolute inset-0 rounded-full bg-[#ccff00]/15 blur-3xl pointer-events-none" />
+          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
+          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
-              baseColor="#ccff00"
+              baseColor="#121216"
               speed={48}
               distance={13}
-              material={{ roughness: 40, reflect: 85 }}
+              material={{ roughness: 28, reflect: 95 }}
               motion={{ spin: 20, fold: 90, hold: 28 }}
               camera={{ tilt: 28, sideTilt: 0 }}
               background="transparent"
@@ -381,16 +382,17 @@ export function RouteLoadingScreen({
       </div>
 
       <div className="relative z-10 flex flex-col items-center max-w-md w-full">
-        {/* Large Prominent OriginKit 3D Kinetic Dumbbell Loading Animation */}
+        {/* Large Prominent OriginKit 3D Kinetic Round Dumbbell Loading Animation (Sleek Black) */}
         <div className="relative flex items-center justify-center w-72 h-72 sm:w-96 sm:h-96 md:w-[440px] md:h-[440px]">
-          <div className="absolute inset-0 rounded-full bg-[#ccff00]/15 blur-3xl pointer-events-none" />
+          <div className="absolute inset-4 rounded-full bg-white/[0.04] blur-2xl pointer-events-none" />
+          <div className="absolute inset-8 rounded-full border border-white/[0.08] bg-black/40 backdrop-blur-sm pointer-events-none shadow-[0_0_60px_rgba(0,0,0,0.9)]" />
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             <MetalLapJoint
               variant="dumbbell"
-              baseColor="#ccff00"
+              baseColor="#121216"
               speed={48}
               distance={13}
-              material={{ roughness: 40, reflect: 85 }}
+              material={{ roughness: 28, reflect: 95 }}
               motion={{ spin: 20, fold: 90, hold: 28 }}
               camera={{ tilt: 28, sideTilt: 0 }}
               background="transparent"
