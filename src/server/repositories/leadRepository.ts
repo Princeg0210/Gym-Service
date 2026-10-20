@@ -44,11 +44,12 @@ export const leadRepository = {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .neq('status', 'deleted')
         .order('created_at', { ascending: false });
       if (error) throw error;
       if (!data || data.length === 0) return [];
-      return (data as unknown as LeadRow[]).map(rowToLead);
+      return (data as unknown as LeadRow[])
+        .filter((r) => r.status !== 'deleted')
+        .map(rowToLead);
     } catch (error) {
       console.error('Database fetch error (leads):', error);
       return [];

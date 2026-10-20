@@ -28,13 +28,13 @@ export const paymentRepository = {
   async getAll(): Promise<PaymentRecord[]> {
     if (!supabase) return [];
     try {
-      const { data: activeMembers } = await supabase
+      const { data: allMembers } = await supabase
         .from('members')
-        .select('id')
-        .neq('status', 'deleted');
+        .select('id, status');
 
-      if (!activeMembers || activeMembers.length === 0) return [];
-      const memberIds = activeMembers.map((m) => m.id);
+      if (!allMembers || allMembers.length === 0) return [];
+      const memberIds = allMembers.filter((m) => m.status !== 'deleted').map((m) => m.id);
+      if (memberIds.length === 0) return [];
 
       const { data, error } = await supabase
         .from('payments')

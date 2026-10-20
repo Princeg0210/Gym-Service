@@ -14,7 +14,7 @@ export interface MemberRow {
   total_fee_inr: number | string;
   paid_amount_inr: number | string;
   pending_due_inr: number | string;
-  status: 'active' | 'expired' | 'trial' | 'defaulter';
+  status?: 'active' | 'expired' | 'trial' | 'defaulter' | 'deleted' | null;
   emergency_contact?: string | null;
   fitness_goal?: string | null;
   dietary_preference?: string | null;
@@ -42,22 +42,22 @@ function normalizeDietaryPreference(pref?: string | null): DietaryPreference {
 export function rowToMember(row: MemberRow): Member {
   return {
     id: row.id,
-    fullName: row.full_name,
-    phone: row.phone,
-    gender: row.gender,
-    age: Number(row.age),
-    planId: row.plan_id,
-    planName: row.plan_name,
-    startDate: row.start_date,
-    endDate: row.end_date,
-    totalFeeInr: Number(row.total_fee_inr),
-    paidAmountInr: Number(row.paid_amount_inr),
-    pendingDueInr: Number(row.pending_due_inr),
-    status: row.status,
+    fullName: row.full_name || 'Member',
+    phone: row.phone || '',
+    gender: row.gender || 'male',
+    age: Number(row.age) || 25,
+    planId: row.plan_id || 'plan-1m',
+    planName: row.plan_name || 'Standard Gym',
+    startDate: row.start_date || new Date().toISOString().split('T')[0],
+    endDate: row.end_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    totalFeeInr: Number(row.total_fee_inr) || 0,
+    paidAmountInr: Number(row.paid_amount_inr) || 0,
+    pendingDueInr: Number(row.pending_due_inr) || 0,
+    status: (row.status === 'expired' || row.status === 'defaulter' || row.status === 'trial') ? row.status : 'active',
     emergencyContact: row.emergency_contact || undefined,
     fitnessGoal: normalizeFitnessGoal(row.fitness_goal),
     dietaryPreference: normalizeDietaryPreference(row.dietary_preference),
-    avatarSeed: row.avatar_seed || row.full_name.split(' ')[0]
+    avatarSeed: row.avatar_seed || (row.full_name ? row.full_name.split(' ')[0] : 'Member')
   };
 }
 
@@ -68,11 +68,12 @@ export const memberRepository = {
       const { data, error } = await supabase
         .from('members')
         .select('*')
-        .neq('status', 'deleted')
         .order('created_at', { ascending: false });
       if (error) throw error;
       if (!data) return [];
-      return (data as unknown as MemberRow[]).map(rowToMember);
+      return (data as unknown as MemberRow[])
+        .filter((row) => row.status !== 'deleted')
+        .map(rowToMember);
     } catch (error) {
       console.error('Database fetch error (members):', error);
       return [];
@@ -86,10 +87,9 @@ export const memberRepository = {
         .from('members')
         .select('*')
         .eq('id', id)
-        .neq('status', 'deleted')
         .maybeSingle();
       if (error) throw error;
-      if (!data) return null;
+      if (!data || data.status === 'deleted') return null;
       return rowToMember(data as unknown as MemberRow);
     } catch (error) {
       console.error(`Database fetch error (member ${id}):`, error);
