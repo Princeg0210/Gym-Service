@@ -11,6 +11,7 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import { GymProfile } from '@/types';
+import { GymProMark } from './GymProLogo';
 
 interface HeaderProps {
   currentMode?: 'showcase' | 'operations' | 'member_portal';
@@ -28,14 +29,12 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#0a0a0c]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Brand Logo: GymPRO with Sleek Neon Accents */}
+        {/* Brand Logo: Minimalist GymPRO Mark */}
         <Link href="/" className="flex items-center gap-2.5 group focus:outline-none">
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-black font-black transition-transform group-hover:scale-105"
-            style={{ backgroundColor: primaryColor }}
-          >
-            <Dumbbell className="h-4.5 w-4.5" />
-          </div>
+          <GymProMark
+            className="h-6 w-6 text-white group-hover:scale-105 transition-transform"
+            color={primaryColor}
+          />
           <div className="flex items-center gap-1.5">
             <span className="font-extrabold text-xl tracking-tight text-white">
               Gym<span style={{ color: primaryColor }}>PRO</span>

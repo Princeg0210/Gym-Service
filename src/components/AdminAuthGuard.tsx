@@ -2,7 +2,8 @@
 
 import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { Lock, ShieldCheck, ArrowRight, Home, AlertCircle, Dumbbell } from 'lucide-react';
+import { Lock, ShieldCheck, ArrowRight, Home, AlertCircle } from 'lucide-react';
+import { GymProMark } from './GymProLogo';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -97,10 +98,8 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
           <CardContent className="p-8">
             {/* Header */}
             <div className="flex flex-col items-center text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ccff00] text-black shadow-lg">
-                <Dumbbell className="h-6 w-6" />
-              </div>
-              <div className="mt-4 flex items-center gap-2">
+              <GymProMark className="h-10 w-10 text-white" color="#ccff00" />
+              <div className="mt-3 flex items-center gap-2">
                 <span className="font-black text-xl text-white">
                   Gym<span className="text-[#ccff00]">PRO</span>
                 </span>

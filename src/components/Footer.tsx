@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Dumbbell, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
+import { GymProMark } from './GymProLogo';
 import { GymProfile } from '@/types';
 
 interface FooterProps {
@@ -19,13 +20,8 @@ export function Footer({ gymProfile }: FooterProps) {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10">
           {/* Logo Column */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 group mb-4">
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-black font-black"
-                style={{ backgroundColor: primaryColor }}
-              >
-                <Dumbbell className="h-4 w-4" />
-              </div>
+            <Link href="/" className="flex items-center gap-2.5 group mb-4">
+              <GymProMark className="h-6 w-6 text-white group-hover:scale-105 transition-transform shrink-0" color={primaryColor} />
               <span className="font-extrabold text-xl tracking-tight text-white">
                 Gym<span style={{ color: primaryColor }}>PRO</span>
               </span>

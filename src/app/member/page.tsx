@@ -6,7 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { MemberPortal } from '@/components/MemberPortal';
 import { useGymData } from '@/lib/useGymData';
 import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
-import { Dumbbell, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
+import { GymProMark } from '@/components/GymProLogo';
 import { INITIAL_GYM_PROFILES } from '@/lib/mockGyms';
 import { GymProfile } from '@/types';
 import { gymApiClient } from '@/client/api/gymApiClient';
@@ -75,12 +76,7 @@ function MemberPageContent() {
       <header className="sticky top-0 z-40 w-full border-b border-[#1e2330] bg-[#07090d]/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link href={homeHref} className="flex items-center gap-3 group">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl text-black shadow-md transition-transform group-hover:scale-105"
-              style={{ backgroundColor: primaryColor }}
-            >
-              <Dumbbell className="h-5 w-5" />
-            </div>
+            <GymProMark className="h-8 w-8 text-white transition-transform group-hover:scale-105 shrink-0" color={primaryColor} />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-black tracking-tight text-white text-lg">

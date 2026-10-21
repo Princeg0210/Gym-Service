@@ -22,6 +22,7 @@ import {
   Activity,
   Users
 } from 'lucide-react';
+import { GymProMark } from './GymProLogo';
 
 interface MoveShowcaseProps {
   onSwitchMode?: (mode: 'showcase' | 'operations' | 'member_portal') => void;
@@ -507,10 +508,8 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10">
               {/* Logo Column */}
               <div className="col-span-2 md:col-span-1">
-                <Link href="/" className="flex items-center gap-2 group mb-4">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ccff00] text-black font-black">
-                    <Dumbbell className="h-4 w-4" />
-                  </div>
+                <Link href="/" className="flex items-center gap-2.5 group mb-4">
+                  <GymProMark className="h-6 w-6 text-white group-hover:scale-105 transition-transform shrink-0" color="#ccff00" />
                   <span className="font-black text-xl tracking-tight text-white uppercase">
                     Gym<span className="text-[#ccff00]">PRO</span>
                   </span>

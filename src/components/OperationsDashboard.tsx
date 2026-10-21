@@ -39,6 +39,7 @@ import {
   PanelLeftClose,
   PanelLeft
 } from 'lucide-react';
+import { GymProMark } from './GymProLogo';
 import { useAdminAuth } from './AdminAuthGuard';
 import { AttendanceTab } from './operations/AttendanceTab';
 import { MembersTab } from './operations/MembersTab';
@@ -306,9 +307,7 @@ export function OperationsDashboard({
               className="flex items-center gap-2.5 group focus:outline-none"
               title="Return to Home Screen"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ccff00] text-black shadow-md group-hover:scale-105 transition-transform shrink-0">
-                <Dumbbell className="h-4.5 w-4.5" />
-              </div>
+              <GymProMark className="h-6 w-6 text-white group-hover:scale-105 transition-transform shrink-0" color="#ccff00" />
               <div className="flex items-center">
                 <span className="text-base sm:text-lg font-black tracking-tight text-white">
                   Gym<span className="text-[#ccff00]">PRO</span>
