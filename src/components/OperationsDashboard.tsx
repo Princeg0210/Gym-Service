@@ -24,7 +24,6 @@ import {
   BarChart3,
   UserCheck,
   Search,
-  Bell,
   ChevronDown,
   ChevronRight,
   QrCode,
@@ -46,7 +45,7 @@ import { MembersTab } from './operations/MembersTab';
 import { EquipmentTab } from './operations/EquipmentTab';
 import { LeadsTab } from './operations/LeadsTab';
 import { DietTab } from './operations/DietTab';
-import { OverviewTab, MemberAvatar, WhatsAppIcon } from './operations/OverviewTab';
+import { OverviewTab, MemberAvatar } from './operations/OverviewTab';
 import { TrainersTab } from './operations/TrainersTab';
 import { GymCmsManager } from './operations/GymCmsManager';
 import { AdminInvoicesDesk } from './operations/AdminInvoicesDesk';
@@ -319,9 +318,6 @@ export function OperationsDashboard({
                 >
                   {currentGymName}
                 </span>
-                <span className="ml-2 rounded border border-[#ccff00]/40 bg-[#ccff00]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#ccff00] hidden md:inline">
-                  Admin
-                </span>
               </div>
             </Link>
           </div>
@@ -396,41 +392,6 @@ export function OperationsDashboard({
 
           {/* Right: Grouped Controls (consistent h-9 controls) */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Compact Database Indicator */}
-            <div
-              className="hidden lg:flex items-center gap-1.5 h-9 px-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/30 text-[11px] font-mono text-emerald-400 shrink-0"
-              title="Neon Database Connected & Live"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="hidden xl:inline">DB Live</span>
-            </div>
-
-            {/* Notification Bell (Lead follow-up) */}
-            <button
-              onClick={() => setActiveTab('leads')}
-              title="3 Enquiries pending follow-up"
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[#202738] bg-[#101522] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors shrink-0"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-950 border border-red-500/50 text-[10px] font-bold text-red-200">
-                3
-              </span>
-            </button>
-
-            {/* WhatsApp Quick Launcher */}
-            <button
-              onClick={() => {
-                if (pendingDuesList[0]) setWhatsAppMember(pendingDuesList[0]);
-              }}
-              title="Open WhatsApp dues messenger"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#202738] bg-[#101522] text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-colors shrink-0"
-            >
-              <WhatsAppIcon className="h-4 w-4" />
-            </button>
-
             {/* Profile Dropdown Trigger (with Lock Console inside) */}
             <div className="relative" ref={profileMenuRef}>
               <button
