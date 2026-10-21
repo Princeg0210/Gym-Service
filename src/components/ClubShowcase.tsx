@@ -751,7 +751,7 @@ export function ClubShowcase({
                     className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#25d366] py-3 text-xs font-black uppercase tracking-wider text-black hover:bg-[#20b858] transition-colors"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    <span>Chat on WhatsApp</span>
+                    <span>Connect</span>
                   </a>
                 </div>
               </div>
