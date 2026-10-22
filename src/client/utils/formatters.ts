@@ -10,7 +10,7 @@ export function formatInr(amount: number | string): string {
  * Formats ISO date to readable string (e.g., "15 Oct 2026")
  */
 export function formatDate(isoDateString?: string): string {
-  if (!isoDateString) return '—';
+  if (!isoDateString) return '-';
   try {
     const d = new Date(isoDateString);
     if (isNaN(d.getTime())) return isoDateString;

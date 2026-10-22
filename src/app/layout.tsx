@@ -25,9 +25,12 @@ import type { Metadata } from 'next';
 import { PortalLoadingProvider } from '@/components/PortalLoadingScreen';
 
 export const metadata: Metadata = {
-  title: 'GymPRO India — Commercial Gym Engine & Athlete Arena',
+  title: 'GymPRO India - Commercial Gym Engine & Athlete Arena',
   description:
     'High-velocity athletic gym operating ecosystem with automated UPI dues recovery, WhatsApp passes, peak-hour machine swap, and high-protein Indian nutrition.',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

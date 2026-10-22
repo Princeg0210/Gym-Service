@@ -24,7 +24,7 @@ export function generatePaymentReceiptWhatsAppUrl(
   gymName = GYM_DEFAULT_INFO.name
 ): string {
   const phone = cleanIndianPhone(member.phone);
-  const message = `*PAYMENT RECEIPT — ${gymName.toUpperCase()}* 🏋️‍♂️
+  const message = `*PAYMENT RECEIPT - ${gymName.toUpperCase()}*
 
 Namaste *${member.fullName}*,
 We have received your payment:
@@ -35,7 +35,7 @@ We have received your payment:
 • *Plan Validity:* Active till ${member.endDate}
 • *Pending Dues:* ₹${member.pendingDueInr.toLocaleString('en-IN')}
 
-Thank you for training with us! Keep crushing your goals. 💪`;
+Thank you for training with us!`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
@@ -45,7 +45,7 @@ export function generateWhatsAppDuesReminder(
   gymName = GYM_DEFAULT_INFO.name,
   upiVpa = GYM_DEFAULT_INFO.upiVpa
 ): string {
-  return `*FEE RENEWAL REMINDER — ${gymName.toUpperCase()}* ⚠️
+  return `*FEE RENEWAL REMINDER - ${gymName.toUpperCase()}*
 
 Namaste *${member.fullName}*,
 This is a gentle reminder regarding your gym membership:
@@ -56,7 +56,7 @@ This is a gentle reminder regarding your gym membership:
 
 Kindly clear the balance to avoid interruption in your access pass.
 
-💳 *Pay via UPI:* \`${upiVpa}\` (GPay / PhonePe / Paytm)
+*Pay via UPI:* \`${upiVpa}\` (GPay / PhonePe / Paytm)
 Or visit the reception desk.
 
 Warm regards,
@@ -82,7 +82,7 @@ export function generateWelcomeWhatsAppUrl(
   gymName = GYM_DEFAULT_INFO.name
 ): string {
   const phone = cleanIndianPhone(member.phone);
-  const message = `*WELCOME TO ${gymName.toUpperCase()}* 🏆
+  const message = `*WELCOME TO ${gymName.toUpperCase()}*
 
 Namaste *${member.fullName}*!
 Welcome to our fitness family. Your membership is now active:
@@ -92,9 +92,7 @@ Welcome to our fitness family. Your membership is now active:
 • *Valid From:* ${member.startDate} to ${member.endDate}
 • *Target Goal:* ${member.fitnessGoal.replace('_', ' ').toUpperCase()}
 
-You can check in at the reception using the last 4 digits of your phone (*${member.phone.slice(-4)}*) or by scanning your digital QR code.
-
-Let's achieve greatness together! 💥`;
+You can check in at the reception using the last 4 digits of your phone (*${member.phone.slice(-4)}*) or by scanning your digital QR code.`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
@@ -111,7 +109,7 @@ export function generateExpiringSoonWhatsAppUrl(
       ? 'expires *TOMORROW*'
       : `expires in *${daysLeft} days* (on ${member.endDate})`;
 
-  const message = `*MEMBERSHIP EXPIRY NOTICE — ${gymName.toUpperCase()}* ⏳
+  const message = `*MEMBERSHIP EXPIRY NOTICE - ${gymName.toUpperCase()}*
 
 Namaste *${member.fullName}*,
 Your gym membership ${urgencyText}!
@@ -120,10 +118,8 @@ Your gym membership ${urgencyText}!
 • *Valid Until:* ${member.endDate}
 • *Renewal Offer:* Renew today at the desk or via UPI to lock in your active member rate with 0 re-joining fee!
 
-💳 *Instant Renewal UPI:* \`${upiVpa}\`
-Or speak with our front desk team during your next session.
-
-Don't break your workout streak — let's keep the momentum going! 💪🔥`;
+*Instant Renewal UPI:* \`${upiVpa}\`
+Or speak with our front desk team during your next session.`;
 
   return getWhatsAppWebLink(member.phone, message);
 }
@@ -133,16 +129,16 @@ export function generateExpiredMembershipWhatsAppUrl(
   gymName = GYM_DEFAULT_INFO.name,
   upiVpa = GYM_DEFAULT_INFO.upiVpa
 ): string {
-  const message = `*MEMBERSHIP EXPIRED — WE MISS YOU AT ${gymName.toUpperCase()}* 🏋️‍♂️
+  const message = `*MEMBERSHIP EXPIRED - WE MISS YOU AT ${gymName.toUpperCase()}*
 
 Namaste *${member.fullName}*,
 Your membership for *${member.planName}* has expired.
 
-We'd love to welcome you back on the floor!
+We would love to welcome you back on the floor!
 • *Special Comeback Benefit:* 10% discount on 3-month or 6-month plans this week.
 • *Zero Registration Fee* on immediate renewal.
 
-💳 *Pay via UPI:* \`${upiVpa}\`
+*Pay via UPI:* \`${upiVpa}\`
 Or drop by the gym today for your next workout!
 
 Best regards,
@@ -188,7 +184,7 @@ export function buildExpiringAlerts(
         member: m,
         daysRemaining: 0,
         urgency: 'today',
-        suggestedAction: 'Expires Today — Send Last Chance Alert',
+        suggestedAction: 'Expires Today - Send Last Chance Alert',
         whatsappUrl: generateExpiringSoonWhatsAppUrl(m, 0, gymName, upiVpa)
       });
     } else if (days >= 1 && days <= 3) {
@@ -196,7 +192,7 @@ export function buildExpiringAlerts(
         member: m,
         daysRemaining: days,
         urgency: 'urgent',
-        suggestedAction: `Expires in ${days} days — Send Urgent Renewal`,
+        suggestedAction: `Expires in ${days} days - Send Urgent Renewal`,
         whatsappUrl: generateExpiringSoonWhatsAppUrl(m, days, gymName, upiVpa)
       });
     } else if (days >= 4 && days <= 7) {
@@ -204,7 +200,7 @@ export function buildExpiringAlerts(
         member: m,
         daysRemaining: days,
         urgency: 'upcoming',
-        suggestedAction: `Expires in ${days} days — Send Friendly Reminder`,
+        suggestedAction: `Expires in ${days} days - Send Friendly Reminder`,
         whatsappUrl: generateExpiringSoonWhatsAppUrl(m, days, gymName, upiVpa)
       });
     } else if (m.pendingDueInr > 0 && m.status === 'defaulter') {
@@ -212,7 +208,7 @@ export function buildExpiringAlerts(
         member: m,
         daysRemaining: days,
         urgency: 'urgent',
-        suggestedAction: `Pending dues ₹${m.pendingDueInr} — Send Fee Notice`,
+        suggestedAction: `Pending dues ₹${m.pendingDueInr} - Send Fee Notice`,
         whatsappUrl: generateDuesReminderWhatsAppUrl(m, gymName, upiVpa)
       });
     }

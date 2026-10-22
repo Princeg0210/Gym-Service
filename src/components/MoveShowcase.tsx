@@ -130,29 +130,29 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 w-full">
           <div className="max-w-xl">
-            {/* Main Display Headline (Exact 4-line typography rhythm) */}
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white leading-[0.92]">
-              SHIFT
+            {/* Main Display Headline */}
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white leading-[0.95]">
+              COMMERCIAL
               <br />
-              YOUR LIMITS.
+              STRENGTH ARENA.
               <br />
-              ELEVATE
+              OPERATIONAL
               <br />
-              YOUR LIFE.
+              PRECISION.
             </h1>
 
             {/* Neon lime accent dash */}
             <div className="w-12 h-1 bg-[#ccff00] mt-4 mb-4" />
 
             <p className="text-zinc-300 text-sm sm:text-base font-normal max-w-md mb-8 leading-relaxed">
-              Competition Olympic barbells, calibrated steel plates, heavy dumbbells up to 50kg, certified coaches, and custom nutrition plans.
+              Heavy-duty Olympic power rigs, calibrated steel plates, and 50kg dumbbells backed by automated QR check-in, real-time fee recovery, and certified coaching.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4">
               <a
                 href="#faq"
-                className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-7 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-lg"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-7 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-lg"
               >
                 <span>FREE TRIAL INQUIRY</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -160,7 +160,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
 
               <a
                 href="#facilities"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent text-white font-bold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-white/10 active:scale-95 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-transparent text-white font-bold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-white/10 active:scale-95 transition-all"
               >
                 <span>EXPLORE FACILITIES</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -388,7 +388,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
               <div className="mt-6">
                 <a
                   href="#faq"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-md"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-md"
                 >
                   <span>CLAIM FREE TRIAL PASS</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -400,15 +400,15 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Zap className="w-5 h-5 text-[#ccff00]" />
-                <span className="text-xs font-black uppercase tracking-wider text-white">ENERGY UNLEASHED</span>
+                <span className="text-xs font-black uppercase tracking-wider text-white">SUB-10MS RECEPTION SCAN</span>
               </div>
               <div className="flex items-center gap-3">
-                <Heart className="w-5 h-5 text-[#ccff00]" />
-                <span className="text-xs font-black uppercase tracking-wider text-white">FOCUS ELEVATED</span>
+                <ShieldCheck className="w-5 h-5 text-[#ccff00]" />
+                <span className="text-xs font-black uppercase tracking-wider text-white">AUTOMATED UPI RECOVERY</span>
               </div>
               <div className="flex items-center gap-3">
-                <Mountain className="w-5 h-5 text-[#ccff00]" />
-                <span className="text-xs font-black uppercase tracking-wider text-white">LIMITS LEFT BEHIND</span>
+                <Activity className="w-5 h-5 text-[#ccff00]" />
+                <span className="text-xs font-black uppercase tracking-wider text-white">BIOMETRIC TURNSTILE SYNC</span>
               </div>
             </div>
           </div>
@@ -422,7 +422,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="shrink-0">
             <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white">#IRONPULSEATHLETES</h3>
-            <p className="text-xs text-zinc-400 mt-0.5">Real lifters. Real transformations.</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Verified facility zones and training protocols.</p>
           </div>
 
           {/* Authentic Gym Community Frames */}
@@ -431,8 +431,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
               {communityPhotos.map((item) => (
                 <div
                   key={item.id}
-                  className="relative w-32 h-44 sm:w-36 sm:h-52 shrink-0 rounded-xl overflow-hidden bg-zinc-800 border border-white/10 group cursor-pointer"
-                  onClick={() => alert(`Showing training profile from ${item.tag}`)}
+                  className="relative w-32 h-44 sm:w-36 sm:h-52 shrink-0 rounded-xl overflow-hidden bg-zinc-800 border border-white/10 group"
                 >
                   <img
                     src={item.img}
@@ -447,13 +446,12 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
               ))}
             </div>
 
-            <button
-              onClick={() => alert('Viewing more athlete transformations')}
-              className="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 hover:bg-[#ccff00] hover:text-black text-white transition-colors"
-              title="View next"
+            <div
+              className="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-zinc-300"
+              title="Verified Floor Gallery"
             >
               <ChevronRight className="w-5 h-5 stroke-[2.5]" />
-            </button>
+            </div>
           </div>
         </div>
       </section>
@@ -618,12 +616,12 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
             <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
               <p>© 2026 GymPRO India. All rights reserved.</p>
               <div className="flex items-center gap-6">
-                <a href="#" className="hover:text-zinc-300 transition-colors">
+                <Link href="/privacy" className="hover:text-zinc-300 transition-colors">
                   Privacy Policy
-                </a>
-                <a href="#" className="hover:text-zinc-300 transition-colors">
-                  Terms of Service
-                </a>
+                </Link>
+                <Link href="/terms" className="hover:text-zinc-300 transition-colors">
+                  Terms & Conditions
+                </Link>
               </div>
             </div>
           </div>
@@ -652,13 +650,13 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
               <a
                 href="#faq"
                 onClick={() => setSelectedQuickView(null)}
-                className="flex-1 py-3 text-center rounded-full bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
+                className="flex-1 py-3 text-center rounded-xl bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
               >
                 Free Trial Inquiry
               </a>
               <button
                 onClick={() => setSelectedQuickView(null)}
-                className="py-3 px-5 rounded-full border border-white/20 text-white font-bold text-xs uppercase hover:bg-white/10"
+                className="py-3 px-5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase hover:bg-white/10"
               >
                 Close
               </button>

@@ -27,7 +27,6 @@ import { GymProfile } from '@/types';
 import { sounds } from '@/lib/audio';
 import ScrollProgress from '@/components/ScrollProgress';
 import BackToTop from '@/components/BackToTop';
-import ParticleDrift from '@/components/ParticleDrift';
 import { MoveShowcase } from './MoveShowcase';
 import { Footer } from './Footer';
 
@@ -123,45 +122,6 @@ export function ClubShowcase({
       ? programs
       : programs.filter((p) => p.category === selectedProgramCategory);
 
-  const coaches = [
-    {
-      name: 'Rajesh Nair',
-      role: 'Head Strength Coach',
-      spec: 'Competitive Powerlifting & Squat Mechanics',
-      exp: '11 Years Exp.',
-      rating: '4.99',
-      achievements: 'State Gold Medalist • CSCS Certified',
-      bio: 'Mentors competitive lifters and dedicated trainees on bar path optimization, breathing bracing, and safe progressive overload.'
-    },
-    {
-      name: 'Vikram Singh',
-      role: 'Senior Hypertrophy Coach',
-      spec: 'Bodybuilding & Structural Hypertrophy',
-      exp: '8 Years Exp.',
-      rating: '4.95',
-      achievements: 'National Bodybuilding Finalist',
-      bio: 'Expert in high-intensity tension sets, drop mechanics, and injury-free muscle hypertrophy for working professionals.'
-    },
-    {
-      name: 'Priya Sharma',
-      role: 'Lead Nutritionist & Mobility Specialist',
-      spec: 'Sports Nutrition & Spine Decompression',
-      exp: '5 Years Exp.',
-      rating: '4.98',
-      achievements: 'Registered Clinical Sports Dietitian',
-      bio: 'Creates delicious high-protein Indian meal plans (paneer, soya, eggs, chicken, lentils) that fit your daily schedule.'
-    },
-    {
-      name: 'Amit Verma',
-      role: 'Conditioning & MetCon Coach',
-      spec: 'HIIT & Fat Loss Circuits',
-      exp: '4 Years Exp.',
-      rating: '4.89',
-      achievements: 'CrossFit L2 • Endurance Athlete',
-      bio: 'Passionate about athletic stamina, metabolic conditioning, kettlebell circuits, and sustainable fat loss.'
-    }
-  ];
-
   const faqs = [
     {
       q: 'Can I freeze or pause my gym membership if I travel?',
@@ -173,7 +133,7 @@ export function ClubShowcase({
     },
     {
       q: 'What are your peak hours and locker room amenities?',
-      a: 'Morning peak is 7:00 AM – 9:00 AM, and evening peak is 6:30 PM – 8:30 PM. Our facility includes secure electronic day lockers, hot showers, filtered drinking water stations, charging stations, and high-speed Wi-Fi.'
+      a: 'Morning peak is 7:00 AM - 9:00 AM, and evening peak is 6:30 PM - 8:30 PM. Our facility includes secure electronic day lockers, hot showers, filtered drinking water stations, charging stations, and high-speed Wi-Fi.'
     },
     {
       q: 'Do you provide vegetarian or Indian high-protein diet plans?',
@@ -250,9 +210,6 @@ export function ClubShowcase({
 
   return (
     <div className="relative text-zinc-100 selection:bg-[#ccff00] selection:text-black">
-      {/* OriginKit Interactive Particle Drift (Scroll velocity reactive + constellation links) */}
-      <ParticleDrift color={primaryColor} />
-
       {/* Top Scroll Reading Progress Indicator (Linear / Apple style) */}
       <ScrollProgress color={primaryColor} />
 

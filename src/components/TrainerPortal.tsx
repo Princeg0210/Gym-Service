@@ -392,7 +392,7 @@ export function TrainerPortal({
                     {gymName}
                   </span>
                   <span
-                    className="rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                    className="rounded-lg border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
                     style={{
                       borderColor: `${primaryColor}40`,
                       backgroundColor: `${primaryColor}15`,
@@ -462,8 +462,9 @@ export function TrainerPortal({
                 <p className="text-xs text-zinc-400 font-medium mt-0.5">
                   {activeTrainer?.role} • {activeTrainer?.spec}
                 </p>
-                <p className="text-[11px] text-zinc-500 font-mono mt-1">
-                  📞 {activeTrainer?.phone} {activeTrainer?.email ? `• ${activeTrainer.email}` : ''}
+                <p className="text-[11px] text-zinc-500 font-mono mt-1 flex items-center gap-1.5">
+                  <Phone className="h-3 w-3 text-zinc-400 shrink-0" />
+                  <span>{activeTrainer?.phone} {activeTrainer?.email ? `• ${activeTrainer.email}` : ''}</span>
                 </p>
               </div>
             </div>
@@ -708,11 +709,13 @@ export function TrainerPortal({
 
                           {/* Fitness Goal & Diet Tags */}
                           <div className="mt-3.5 flex flex-wrap gap-1.5">
-                            <span className="text-[11px] font-semibold bg-white/5 border border-white/10 text-zinc-300 px-2 py-0.5 rounded-md">
-                              🎯 {member.fitnessGoal}
+                            <span className="text-[11px] font-semibold bg-white/5 border border-white/10 text-zinc-300 px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <Target className="h-3 w-3 text-zinc-400" />
+                              <span>{member.fitnessGoal}</span>
                             </span>
-                            <span className="text-[11px] font-semibold bg-white/5 border border-white/10 text-zinc-300 px-2 py-0.5 rounded-md">
-                              🥗 {member.dietaryPreference}
+                            <span className="text-[11px] font-semibold bg-white/5 border border-white/10 text-zinc-300 px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <Utensils className="h-3 w-3 text-zinc-400" />
+                              <span>{member.dietaryPreference}</span>
                             </span>
                           </div>
 
@@ -1269,7 +1272,7 @@ export function TrainerPortal({
                   onChange={(e) => setNewRoutineAssignMemberId(e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-[#141a24] px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#ccff00]"
                 >
-                  <option value="unassigned">— General Gym Library (Do not assign yet) —</option>
+                  <option value="unassigned">- General Gym Library (Do not assign yet) -</option>
                   {assignedMembers.map((m) => (
                     <option key={m.id} value={m.id}>
                       {m.fullName} ({m.fitnessGoal})
@@ -1399,7 +1402,7 @@ export function TrainerPortal({
                     onChange={(e) => setNewDietAssignMemberId(e.target.value)}
                     className="w-full rounded-xl border border-white/10 bg-[#141a24] px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#ccff00]"
                   >
-                    <option value="unassigned">— General Diet Library —</option>
+                    <option value="unassigned">- General Diet Library -</option>
                     {assignedMembers.map((m) => (
                       <option key={m.id} value={m.id}>
                         {m.fullName} ({m.fitnessGoal})

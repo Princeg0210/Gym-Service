@@ -174,7 +174,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Next 1–3 Days</span>
+            <span className="text-xs font-semibold text-zinc-400">Next 1-3 Days</span>
             <Clock className="h-3.5 w-3.5 text-amber-400" />
           </div>
           <p className="mt-2 text-2xl font-black text-amber-400 font-mono">{counts.urgent}</p>
@@ -190,7 +190,7 @@ export function ExpiringAlertsCenter({ members, onRefreshData }: ExpiringAlertsC
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Next 4–7 Days</span>
+            <span className="text-xs font-semibold text-zinc-400">Next 4-7 Days</span>
             <Calendar className="h-3.5 w-3.5 text-[#ccff00]" />
           </div>
           <p className="mt-2 text-2xl font-black text-[#ccff00] font-mono">{counts.upcoming}</p>

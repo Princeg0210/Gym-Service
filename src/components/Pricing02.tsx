@@ -3,7 +3,7 @@
 import React from 'react';
 import { useBillingCycle } from '@/components/originkit/ui/use-billing-cycle';
 
-/** Asset root — flat files in package assets/. */
+/** Asset root - flat files in package assets/. */
 const A = '/sections/pricing-02/assets';
 
 export type PricingPlan = {
@@ -139,7 +139,7 @@ export const Pricing02: React.FC<Pricing02Props> = ({
     >
       <div className="flex w-full md:max-w-[620px] lg:max-w-[980px] xl:max-w-[1140px] md:mx-auto flex-col items-center gap-10">
         <header className="flex w-full max-w-[840px] flex-col items-center gap-2.5 text-center">
-          <span className="flex items-center gap-1.5 rounded-[42px] border border-[#1f1f1f] bg-[#141414] px-3.5 py-1.5 shadow-sm">
+          <span className="flex items-center gap-1.5 rounded-xl border border-[#1f1f1f] bg-[#141414] px-3.5 py-1.5 shadow-sm">
             <img
               alt=""
               aria-hidden="true"
@@ -168,7 +168,7 @@ export const Pricing02: React.FC<Pricing02Props> = ({
 
         <div className="flex w-full flex-col items-center gap-10">
           {/* Monthly / Yearly Toggle Switch */}
-          <div className="relative mt-8 sm:mt-10 flex items-center gap-4 rounded-[70px] bg-[#141414] px-5 py-2.5 border border-[#1f1f1f]">
+          <div className="relative mt-8 sm:mt-10 flex items-center gap-4 rounded-xl bg-[#141414] px-5 py-2.5 border border-[#1f1f1f]">
             <span
               className={`text-base font-semibold leading-normal tracking-[0.02em] transition-colors duration-200 ease motion-reduce:transition-none cursor-pointer ${
                 isYearly ? 'text-[#cacbce]' : 'text-[#cef240]'
@@ -269,7 +269,7 @@ export const Pricing02: React.FC<Pricing02Props> = ({
                       </h3>
 
                       {plan.isPopular && (
-                        <span className="flex shrink-0 items-center gap-1.5 rounded-[42px] border border-[#262626] bg-[#1a1a1a] px-3 py-1.5 shadow-sm">
+                        <span className="flex shrink-0 items-center gap-1.5 rounded-xl border border-[#262626] bg-[#1a1a1a] px-3 py-1.5 shadow-sm">
                           <img
                             alt=""
                             aria-hidden="true"
@@ -321,7 +321,7 @@ export const Pricing02: React.FC<Pricing02Props> = ({
                   <button
                     type="button"
                     onClick={() => onSelectPlan && onSelectPlan(plan)}
-                    className={`group relative flex min-h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-[53px] border border-[#262626] px-5 py-3.5 text-[15px] font-bold leading-[1.2] tracking-[0.02em] transition-all duration-200 ease active:scale-95 ${
+                    className={`group relative flex min-h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-[#262626] px-5 py-3.5 text-[15px] font-bold leading-[1.2] tracking-[0.02em] transition-all duration-200 ease active:scale-95 ${
                       plan.isPopular
                         ? 'bg-[#cef240] text-[#0f0f0f] shadow-md hover:brightness-105'
                         : 'bg-[#1a1a1a] text-[#f2f2f3] hover:bg-[#222222] hover:border-zinc-700'
@@ -345,7 +345,7 @@ export const Pricing02: React.FC<Pricing02Props> = ({
                     {plan.isPopular ? (
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[53px] opacity-0 transition-opacity duration-200 ease group-hover:opacity-100"
+                        className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl opacity-0 transition-opacity duration-200 ease group-hover:opacity-100"
                       >
                         <div className="absolute inset-y-[-20%] left-0 flex w-full animate-shine-infinite">
                           <div className="h-full w-14 -skew-x-12 bg-white/60 blur-[6px]" />

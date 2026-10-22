@@ -16,8 +16,7 @@ export function ScrollProgress({ color = '#ccff00' }: { color?: string }) {
       className="fixed top-0 left-0 right-0 z-50 h-[2.5px] origin-left pointer-events-none"
       style={{
         scaleX,
-        backgroundColor: color,
-        boxShadow: `0 0 12px ${color}90, 0 0 24px ${color}40`
+        backgroundColor: color
       }}
     />
   );

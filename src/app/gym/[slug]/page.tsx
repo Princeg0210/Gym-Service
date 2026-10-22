@@ -138,7 +138,7 @@ function DynamicGymLandingContent({ params }: GymPageProps) {
 
           <div className="space-y-2">
             <span
-              className="text-[10px] font-mono font-black uppercase tracking-wider px-3 py-1 rounded-full"
+              className="text-[10px] font-mono font-black uppercase tracking-wider px-3 py-1 rounded-lg"
               style={{
                 backgroundColor: `${gymProfile.primaryColor}20`,
                 color: gymProfile.primaryColor

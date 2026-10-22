@@ -130,12 +130,12 @@ export function Footer({ gymProfile }: FooterProps) {
         <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
           <p>© 2026 GymPRO India. All rights reserved. • {gymName}</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-zinc-300 transition-colors">
+            <Link href="/privacy" className="hover:text-zinc-300 transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-zinc-300 transition-colors">
-              Terms of Service
-            </a>
+            </Link>
+            <Link href="/terms" className="hover:text-zinc-300 transition-colors">
+              Terms & Conditions
+            </Link>
           </div>
         </div>
       </div>

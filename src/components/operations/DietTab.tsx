@@ -56,7 +56,7 @@ export function DietTab({ members }: DietTabProps) {
               >
                 {members.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {m.fullName} (+91 {m.phone}) — {m.status.toUpperCase()}
+                    {m.fullName} (+91 {m.phone}) - {m.status.toUpperCase()}
                   </option>
                 ))}
               </select>

@@ -836,7 +836,7 @@ export const INITIAL_DIET_PLANS: Record<string, DietPlan> = {
       }
     ],
     tips: [
-      'Soya chunks are 52% pure protein by dry weight — consume 40-50g at least 3-4 times a week.',
+      'Soya chunks are 52% pure protein by dry weight - consume 40-50g at least 3-4 times a week.',
       'Combine pulses with grain (e.g. Dal + Rice) to complete the essential amino acid profile.',
       'Stay hydrated with 3.5 to 4 Litres of water daily in Indian tropical climates.'
     ]

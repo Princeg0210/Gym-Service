@@ -266,7 +266,7 @@ export function PortalLoadingOverlay({
   isFinishing
 }: PortalLoadingOverlayProps) {
   const currentStep = isFinishing
-    ? 'Portal ready — Opening screen now...'
+    ? 'Portal ready - Opening screen now...'
     : portal.steps[Math.min(stepIndex, portal.steps.length - 1)] || portal.steps[0];
 
   return (
@@ -350,7 +350,7 @@ export function RouteLoadingScreen({
     'Initializing 3D kinetic floor & equipment...',
     'Synchronizing member attendance & roster...',
     'Verifying biometric checkpoints & access...',
-    'Finalizing interface — Welcome to GymPRO'
+    'Finalizing interface - Welcome to GymPRO'
   ];
 
   useEffect(() => {
@@ -371,7 +371,7 @@ export function RouteLoadingScreen({
   }, [duration, steps.length]);
 
   const currentStep = progress >= 100
-    ? 'Portal ready — Opening screen now...'
+    ? 'Portal ready - Opening screen now...'
     : steps[stepIndex] || steps[0];
 
   return (

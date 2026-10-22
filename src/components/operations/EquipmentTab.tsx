@@ -123,7 +123,7 @@ export function EquipmentTab({ equipmentList, onToggleStatus }: EquipmentTabProp
                     </select>
                   </td>
                   <td className="py-2.5 px-4 text-zinc-700 dark:text-zinc-300 max-w-xs truncate">
-                    {item.notes || '—'}
+                    {item.notes || '-'}
                   </td>
                 </tr>
               ))}

@@ -33,7 +33,7 @@ const COLOR_PRESETS = [
   { name: 'Crimson Fury', primary: '#ff3366', accent: '#e60049', secondary: '#1c1018' },
   { name: 'Electric Amber', primary: '#ffaa00', accent: '#f77f00', secondary: '#1e160a' },
   { name: 'Emerald Peak', primary: '#10b981', accent: '#059669', secondary: '#061a14' },
-  { name: 'Ultra Violet', primary: '#a855f7', accent: '#9333ea', secondary: '#180e29' },
+  { name: 'Steel Slate', primary: '#94a3b8', accent: '#64748b', secondary: '#0f172a' },
 ];
 
 export function GymCmsManager() {
@@ -245,7 +245,7 @@ export function GymCmsManager() {
             <div>
               <h2 className="text-lg font-black tracking-tight text-white flex items-center gap-2">
                 Gym Landing CMS & Tenant Customizer
-                <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono font-bold text-blue-400">
+                <span className="rounded-md border border-blue-500/40 bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono font-bold text-blue-400">
                   MULTI-TENANT
                 </span>
               </h2>
@@ -459,7 +459,7 @@ export function GymCmsManager() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span
-                    className={`rounded-full px-2.5 py-1 text-xs font-black ${
+                    className={`rounded-md px-2.5 py-1 text-xs font-black ${
                       currentGym.isPublished
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
@@ -1301,7 +1301,7 @@ export function GymCmsManager() {
                     </span>
                   </div>
                   <span
-                    className="text-xs font-bold px-3 py-1 rounded-full text-black font-black"
+                    className="text-xs font-bold px-3 py-1 rounded-lg text-black font-black"
                     style={{ backgroundColor: currentGym.primaryColor }}
                   >
                     Join Now

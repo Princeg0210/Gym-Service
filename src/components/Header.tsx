@@ -51,7 +51,7 @@ export function Header({ gymProfile, onBookFreeTrial }: HeaderProps) {
           <a
             href={onBookFreeTrial ? '#free-trial' : '#facilities'}
             onClick={handleTrialClick}
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-1.5 text-xs font-bold text-black transition-all hover:brightness-110 active:scale-95 shadow-sm"
             style={{ backgroundColor: primaryColor }}
           >
             <span>Free Trial</span>

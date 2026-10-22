@@ -563,7 +563,7 @@ export function AdminInvoicesDesk({
   // ─────────────────────────────────────────────────────────────
   const handleSendInvoiceWhatsApp = (invoice: InvoiceItem) => {
     const phone = cleanIndianPhone(invoice.memberPhone);
-    const message = `*INVOICE & DUES NOTICE — ${invoice.gymName.toUpperCase()}*
+    const message = `*INVOICE & DUES NOTICE - ${invoice.gymName.toUpperCase()}*
 
 Namaste *${invoice.memberName}*,
 Here are your current billing details:

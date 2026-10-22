@@ -271,11 +271,11 @@ export function FacilityArchitectureDiagram() {
                     stroke={selectedNodeId === 'node-athlete-app' ? '#ccff00' : 'rgba(255,255,255,0.15)'}
                     strokeWidth={selectedNodeId === 'node-athlete-app' ? '2' : '1'}
                   />
-                  <rect x="40" y="235" width="4" height="80" rx="2" fill="#a855f7" />
+                  <rect x="40" y="235" width="4" height="80" rx="2" fill="#06b6d4" />
                   <text x="56" y="260" fill="#ffffff" fontSize="11" fontWeight="700">Mobile Member Pass</text>
                   <text x="56" y="276" fill="#949eb2" fontSize="9">Dynamic Seeded QR</text>
-                  <rect x="56" y="287" width="64" height="16" rx="3" fill="rgba(168,85,247,0.15)" />
-                  <text x="61" y="299" fill="#c084fc" fontSize="8" fontWeight="600">CLIENT TOKEN</text>
+                  <rect x="56" y="287" width="64" height="16" rx="3" fill="rgba(6,182,212,0.15)" />
+                  <text x="61" y="299" fill="#38bdf8" fontSize="8" fontWeight="600">CLIENT TOKEN</text>
                 </g>
 
                 {/* Node 3: Core Engine (Focal Node in Accent) */}
