@@ -36,7 +36,8 @@ import {
   Lock,
   ExternalLink,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Award
 } from 'lucide-react';
 import { GymProMark } from './GymProLogo';
 import { useAdminAuth } from './AdminAuthGuard';
@@ -818,19 +819,28 @@ export function OperationsDashboard({
               <ChevronRight className="h-4 w-4 text-zinc-400" />
             </div>
 
-            {/* Direct Navigation to Member Portal & Showcase */}
-            <div className="flex items-center gap-2 pt-1 text-xs">
+            {/* Direct Navigation to Trainer, Member Portal & Showcase */}
+            <div className="flex items-center gap-1.5 pt-1 text-xs">
+              <Link
+                href="/trainer"
+                className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#232b3d] bg-[#0c1018] py-2 text-[11px] font-semibold text-zinc-300 hover:border-amber-400/40 hover:text-amber-400 transition-colors"
+                title="Coach / Trainer Portal"
+              >
+                <Award className="h-3 w-3 text-amber-400" />
+                <span>Trainer</span>
+              </Link>
               <Link
                 href="/member"
-                className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#0c1018] py-2 font-semibold text-zinc-300 hover:border-[#ccff00]/40 hover:text-[#ccff00] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#232b3d] bg-[#0c1018] py-2 text-[11px] font-semibold text-zinc-300 hover:border-[#ccff00]/40 hover:text-[#ccff00] transition-colors"
+                title="Athlete Member Arena"
               >
-                <Dumbbell className="h-3.5 w-3.5" />
-                <span>Member Arena</span>
+                <Dumbbell className="h-3 w-3 text-[#ccff00]" />
+                <span>Member</span>
               </Link>
               <Link
                 href="/"
                 className="flex items-center justify-center rounded-xl border border-[#232b3d] bg-[#0c1018] p-2 text-zinc-300 hover:text-white transition-colors"
-                title="Home Screen"
+                title="Home Showcase"
               >
                 <Home className="h-3.5 w-3.5" />
               </Link>

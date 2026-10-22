@@ -5,12 +5,17 @@ import {
   EquipmentItem,
   LeadItem,
   WorkoutRoutine,
-  Exercise
+  Exercise,
+  StaffTrainer,
+  TrainerSession,
+  DietPlan
 } from '@/types';
 import {
   INITIAL_EQUIPMENT,
   INITIAL_ROUTINES,
-  INITIAL_EXERCISES
+  INITIAL_EXERCISES,
+  INITIAL_TRAINERS,
+  INITIAL_DIET_PLANS
 } from './mockData';
 
 const KEYS = {
@@ -20,7 +25,10 @@ const KEYS = {
   EQUIPMENT: 'gympro_equipment_v2',
   LEADS: 'gympro_leads_v2',
   ROUTINES: 'gympro_routines_v2',
-  EXERCISES: 'gympro_exercises_v2'
+  EXERCISES: 'gympro_exercises_v2',
+  TRAINERS: 'gympro_trainers_v2',
+  TRAINER_SESSIONS: 'gympro_trainer_sessions_v1',
+  DIET_PLANS: 'gympro_diet_plans_v2'
 };
 
 export const AppStorage = {
@@ -122,6 +130,53 @@ export const AppStorage = {
     } catch {
       return INITIAL_EXERCISES;
     }
+  },
+
+  // ponytail: minimal trainer roster persistence
+  getTrainers(): StaffTrainer[] {
+    if (typeof window === 'undefined') return INITIAL_TRAINERS;
+    try {
+      const data = localStorage.getItem(KEYS.TRAINERS);
+      return data ? JSON.parse(data) : INITIAL_TRAINERS;
+    } catch {
+      return INITIAL_TRAINERS;
+    }
+  },
+
+  saveTrainers(trainers: StaffTrainer[]) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(KEYS.TRAINERS, JSON.stringify(trainers));
+  },
+
+  getTrainerSessions(): TrainerSession[] {
+    if (typeof window === 'undefined') return [];
+    try {
+      const data = localStorage.getItem(KEYS.TRAINER_SESSIONS);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveTrainerSessions(sessions: TrainerSession[]) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(KEYS.TRAINER_SESSIONS, JSON.stringify(sessions));
+  },
+
+  // ponytail: minimal diet plan library & coach customized diets persistence
+  getDietPlans(): DietPlan[] {
+    if (typeof window === 'undefined') return Object.values(INITIAL_DIET_PLANS);
+    try {
+      const data = localStorage.getItem(KEYS.DIET_PLANS);
+      return data ? JSON.parse(data) : Object.values(INITIAL_DIET_PLANS);
+    } catch {
+      return Object.values(INITIAL_DIET_PLANS);
+    }
+  },
+
+  saveDietPlans(plans: DietPlan[]) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(KEYS.DIET_PLANS, JSON.stringify(plans));
   },
 
   resetAll() {

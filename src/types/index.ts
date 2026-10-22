@@ -35,6 +35,8 @@ export interface Member {
   avatarSeed: string;
   assignedTrainerId?: string;
   assignedTrainerName?: string;
+  assignedRoutineId?: string;
+  assignedDietPlanId?: string;
 }
 
 export interface StaffTrainer {
@@ -48,6 +50,17 @@ export interface StaffTrainer {
   email?: string;
   status: 'active' | 'on_leave';
   assignedMemberIds: string[];
+}
+
+// ponytail: minimal trainer session record for coaching log
+export interface TrainerSession {
+  id: string;
+  trainerId: string;
+  memberId: string;
+  memberName: string;
+  date: string;
+  sessionType: 'Strength' | 'Cardio' | 'Assessment' | 'Nutrition';
+  notes: string;
 }
 
 export interface AttendanceRecord {
@@ -133,6 +146,8 @@ export interface WorkoutRoutine {
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
   exercises: WorkoutExerciseItem[];
   isAiGenerated?: boolean;
+  trainerId?: string;
+  assignedMemberId?: string;
 }
 
 export interface DietMeal {
@@ -153,6 +168,8 @@ export interface DietPlan {
   fatsGrams: number;
   meals: DietMeal[];
   tips: string[];
+  trainerId?: string;
+  assignedMemberId?: string;
 }
 
 export interface ExpiringAlertItem {

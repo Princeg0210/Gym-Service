@@ -25,7 +25,6 @@ import {
 } from 'lucide-react';
 import { GymProfile } from '@/types';
 import { sounds } from '@/lib/audio';
-import Pricing02, { PricingPlan } from '@/components/Pricing02';
 import ScrollProgress from '@/components/ScrollProgress';
 import BackToTop from '@/components/BackToTop';
 import ParticleDrift from '@/components/ParticleDrift';
@@ -185,61 +184,6 @@ export function ClubShowcase({
       a: 'Quarterly Pro and Annual VIP members receive 2 guest passes each month. First-time visitors can also claim our 1-Day Free VIP Pass anytime using the button above!'
     }
   ];
-
-  // Resolve multi-tenant dynamic membership plans for Pricing02
-  const tenantPricingPlans: PricingPlan[] = (gymProfile?.membershipPlans && gymProfile.membershipPlans.length > 0)
-    ? gymProfile.membershipPlans.map((plan) => ({
-        name: plan.name,
-        description: plan.badge || (plan.durationMonths === 1 ? 'Monthly membership pass' : plan.durationMonths === 12 ? 'Annual VIP membership pass' : 'Quarterly membership package'),
-        monthlyPrice: plan.durationMonths === 1 ? plan.feeInr : Math.round(plan.feeInr / (plan.durationMonths || 1)),
-        yearlyPrice: plan.durationMonths === 12 ? plan.feeInr : Math.round(plan.feeInr * 10),
-        buttonLabel: plan.isPopular ? 'Accelerate Growth' : 'Get Started',
-        isPopular: plan.isPopular,
-        features: plan.features || []
-      }))
-    : [
-        {
-          name: 'Starter Plan',
-          description: 'Full gym floor and weights arena access for self-directed athletes.',
-          monthlyPrice: 1999,
-          yearlyPrice: 17999,
-          buttonLabel: 'Get Started',
-          features: [
-            'Full Gym Floor & Free Weights Arena',
-            'Olympic Power Racks & Plate-Loaded Rigs',
-            'Locker Room & High-Pressure Showers',
-            'Mobile QR Check-in & Workout Tracker',
-          ],
-        },
-        {
-          name: 'Growth & Pro Plan',
-          description: 'Accelerate your physique transformations with personal coach guidance and diet blueprint.',
-          monthlyPrice: 4999,
-          yearlyPrice: 45000,
-          buttonLabel: 'Accelerate Growth',
-          isPopular: true,
-          features: [
-            'Unlimited All-Branch Arena Access',
-            '1-on-1 Personal Trainer Coaching Sessions',
-            'Custom High-Protein Indian Diet Blueprint',
-            'Instant WhatsApp Invoices & Receipts',
-            '30 Days Free Membership Freeze Allowance',
-          ],
-        },
-        {
-          name: 'Elite VIP Plan',
-          description: 'For dedicated athletes demanding bespoke master coaching, recovery, and concierge access.',
-          monthlyPrice: null,
-          yearlyPrice: null,
-          buttonLabel: 'Request Custom Quote',
-          features: [
-            'Dedicated Master Coach & Bi-Weekly Reviews',
-            'Comprehensive Biomarker & Body Fat Scans',
-            'Dedicated VIP Locker & Laundry Care',
-            'Unlimited Complimentary Guest Passes',
-          ],
-        },
-      ];
 
   // Resolve facilities from multi-tenant gym profile with clean default fallback
   const facilities = gymProfile?.facilities && gymProfile.facilities.length > 0
@@ -662,27 +606,6 @@ export function ClubShowcase({
 
         </motion.div>
       </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          SECTION 4: TRANSPARENT PRICING PLANS (ORIGINKIT PRICING-02)
-          ───────────────────────────────────────────────────────────── */}
-      <Pricing02
-        heading={`Membership Plans at ${gymName}`}
-        subheading="Clear Indian Rupee pricing with zero surprise charges. Instant UPI confirmation, certified coaching, and flexible billing cycles."
-        badgeLabel="Pricing plans"
-        plans={tenantPricingPlans}
-        currencySymbol="₹"
-        onSelectPlan={(plan) => {
-          if (plan.monthlyPrice === null) {
-            setIsTrialModalOpen(true);
-          } else if (onOpenAddMember) {
-            onOpenAddMember();
-          } else {
-            onSwitchMode('operations');
-          }
-        }}
-      />
-
 
       {/* ─────────────────────────────────────────────────────────────
           SECTION 7: FACILITY DETAILS & FAQ ACCORDION

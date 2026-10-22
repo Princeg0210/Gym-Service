@@ -151,7 +151,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4">
               <a
-                href="#pricing"
+                href="#faq"
                 className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-7 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-lg"
               >
                 <span>FREE TRIAL INQUIRY</span>
@@ -387,7 +387,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
               </p>
               <div className="mt-6">
                 <a
-                  href="#pricing"
+                  href="#faq"
                   className="inline-flex items-center gap-2 rounded-full bg-[#ccff00] text-black font-extrabold text-xs tracking-wider uppercase px-6 py-3.5 hover:bg-[#b8e600] active:scale-95 transition-all shadow-md"
                 >
                   <span>CLAIM FREE TRIAL PASS</span>
@@ -650,7 +650,7 @@ export function MoveShowcase({ onSwitchMode, onOpenAddMember, hideHeader = true,
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="#pricing"
+                href="#faq"
                 onClick={() => setSelectedQuickView(null)}
                 className="flex-1 py-3 text-center rounded-full bg-[#ccff00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
               >

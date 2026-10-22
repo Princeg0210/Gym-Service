@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { MemberPortal } from '@/components/MemberPortal';
 import { useGymData } from '@/lib/useGymData';
 import { usePortalLoading, RouteLoadingScreen } from '@/components/PortalLoadingScreen';
-import { Home } from 'lucide-react';
+import { Dumbbell, Home, Award, ShieldCheck } from 'lucide-react';
 import { GymProMark } from '@/components/GymProLogo';
 import { INITIAL_GYM_PROFILES } from '@/lib/mockGyms';
 import { GymProfile } from '@/types';
@@ -99,7 +99,21 @@ function MemberPageContent() {
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Link
+              href={activeGym ? `/trainer?gym=${activeGym.slug}` : '/trainer'}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Award className="h-3.5 w-3.5 text-amber-400" />
+              <span>Trainer</span>
+            </Link>
+            <Link
+              href={activeGym ? `/admin?gym=${activeGym.slug}` : '/admin'}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <ShieldCheck className="h-3.5 w-3.5 text-[#ccff00]" />
+              <span>Admin</span>
+            </Link>
             <Link
               href={homeHref}
               className="flex items-center gap-1.5 rounded-xl border border-[#232b3d] bg-[#121622] px-3.5 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors"

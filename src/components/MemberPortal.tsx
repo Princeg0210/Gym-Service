@@ -17,6 +17,7 @@ import {
   Info
 } from 'lucide-react';
 import { INITIAL_DIET_PLANS } from '@/lib/mockData';
+import { AppStorage } from '@/lib/storage';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -60,7 +61,13 @@ export function MemberPortal({
     currentMember?.dietaryPreference || 'vegetarian'
   );
 
-  const dietPlan: DietPlan = INITIAL_DIET_PLANS[dietPref] || INITIAL_DIET_PLANS.vegetarian;
+  const storedDietPlans = typeof window !== 'undefined' ? AppStorage.getDietPlans() : [];
+  const assignedPlan = storedDietPlans.find((d) => d.id === currentMember?.assignedDietPlanId);
+  const dietPlan: DietPlan =
+    assignedPlan ||
+    storedDietPlans.find((d) => d.preference === dietPref) ||
+    INITIAL_DIET_PLANS[dietPref] ||
+    INITIAL_DIET_PLANS.vegetarian;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 space-y-6">

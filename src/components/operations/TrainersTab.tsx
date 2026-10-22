@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StaffTrainer, Member } from '@/types';
+import { AppStorage } from '@/lib/storage';
 import {
   Users,
   Award,
@@ -29,48 +30,15 @@ interface TrainersTabProps {
 }
 
 export function TrainersTab({ members, initialTrainers }: TrainersTabProps) {
-  const [trainers, setTrainers] = useState<StaffTrainer[]>(
-    initialTrainers && initialTrainers.length > 0
-      ? initialTrainers
-      : [
-          {
-            id: 'tr-1',
-            name: 'Vikram Singh',
-            role: 'Head Strength Coach',
-            spec: 'Powerlifting & Barbell Training',
-            exp: '6 Years Exp.',
-            rating: '4.95',
-            phone: '9810112233',
-            email: 'vikram.coach@ironpulse.in',
-            status: 'active',
-            assignedMemberIds: ['mem-101', 'mem-103', 'mem-106']
-          },
-          {
-            id: 'tr-2',
-            name: 'Rajesh Sharma',
-            role: 'Senior Hypertrophy Coach',
-            spec: 'Muscle Building & Injury Prevention',
-            exp: '8 Years Exp.',
-            rating: '4.98',
-            phone: '9820223344',
-            email: 'rajesh.sharma@ironpulse.in',
-            status: 'active',
-            assignedMemberIds: ['mem-104', 'mem-108']
-          },
-          {
-            id: 'tr-3',
-            name: 'Priya Nair',
-            role: 'Functional & Nutrition Coach',
-            spec: 'High-Protein Diet Plans & Mobility',
-            exp: '5 Years Exp.',
-            rating: '4.92',
-            phone: '9830334455',
-            email: 'priya.nair@ironpulse.in',
-            status: 'active',
-            assignedMemberIds: ['mem-102', 'mem-105', 'mem-107']
-          }
-        ]
-  );
+  // ponytail: sync trainer roster with AppStorage
+  const [trainers, setTrainers] = useState<StaffTrainer[]>(() => {
+    if (initialTrainers && initialTrainers.length > 0) return initialTrainers;
+    return AppStorage.getTrainers();
+  });
+
+  useEffect(() => {
+    AppStorage.saveTrainers(trainers);
+  }, [trainers]);
 
   // Modal states
   const [isAddEditOpen, setIsAddEditOpen] = useState(false);
